@@ -15,7 +15,15 @@ import { persist } from "zustand/middleware";
 // TYPES
 // ─────────────────────────────────────────────────────────────────────────────────
 
-export type Theme = "light" | "dark" | "system";
+export type Theme = "light" | "dark";
+
+// Detect system preference
+function getSystemTheme(): Theme {
+  if (typeof window === "undefined") return "light";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+}
 
 interface UIState {
   /** Current theme setting (persisted) */
@@ -42,9 +50,9 @@ export const useUIStore = create<UIState>()(
   persist(
     (set) => ({
       // ─────────────────────────────────────────────────────────────────────────
-      // THEME (persisted)
+      // THEME (persisted) - defaults to system preference
       // ─────────────────────────────────────────────────────────────────────────
-      theme: "system",
+      theme: getSystemTheme(),
 
       setTheme: (theme) => set({ theme }),
 

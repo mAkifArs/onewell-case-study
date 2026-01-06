@@ -16,4 +16,3 @@ export function Navbar(): ReactNode {
     </nav>
   );
 }
-
