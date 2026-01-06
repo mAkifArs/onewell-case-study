@@ -13,6 +13,7 @@ import type {
 import { Skeleton } from "@/components/Skeleton";
 import { Panel } from "@/components/Panel";
 import { ProjectHeader } from "./ProjectHeader";
+import { DataTables } from "./DataTables";
 import styles from "./ProjectDashboard.module.scss";
 
 interface DashboardData {
@@ -91,9 +92,7 @@ export function ProjectDashboard(): ReactNode {
 
           <div className={styles.grid}>
             <Panel title="Data Tables" data-testid="data-tables-panel">
-              <p className={styles.placeholder}>
-                {data.tables.length} tables • Coming in Phase 5
-              </p>
+              <DataTables tables={data.tables} />
             </Panel>
 
             <Panel title="Recent Operations" data-testid="operations-timeline">
