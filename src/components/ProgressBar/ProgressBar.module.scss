@@ -1,0 +1,31 @@
+@use "@/styles/variables" as *;
+
+.container {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+}
+
+.track {
+  flex: 1;
+  height: 8px;
+  background: var(--color-bg-tertiary);
+  border-radius: $radius-full;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background: $color-navy;
+  border-radius: $radius-full;
+  transition: width 0.3s ease;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  min-width: 3ch;
+  text-align: right;
+}
+

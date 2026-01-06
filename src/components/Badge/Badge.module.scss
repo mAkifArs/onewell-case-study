@@ -1,0 +1,118 @@
+@use "@/styles/variables" as *;
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: $spacing-1 $spacing-2;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: $radius-sm;
+  white-space: nowrap;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PROJECT STATUS
+// ─────────────────────────────────────────────────────────────────────────────
+
+.draft {
+  background: rgba($color-status-draft, 0.15);
+  color: $color-status-draft;
+}
+
+.active {
+  background: rgba($color-status-active, 0.15);
+  color: $color-status-active;
+}
+
+.review {
+  background: rgba($color-status-review, 0.15);
+  color: darken($color-status-review, 10%);
+}
+
+.approved {
+  background: rgba($color-status-approved, 0.15);
+  color: $color-status-approved;
+}
+
+.locked {
+  background: rgba($color-status-locked, 0.15);
+  color: $color-status-locked;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PROJECT TYPE
+// ─────────────────────────────────────────────────────────────────────────────
+
+.ml {
+  background: rgba($color-type-ml, 0.15);
+  color: $color-type-ml;
+}
+
+.timeseries {
+  background: rgba($color-type-timeseries, 0.15);
+  color: $color-type-timeseries;
+}
+
+.scorecard {
+  background: rgba($color-type-scorecard, 0.15);
+  color: darken($color-type-scorecard, 10%);
+}
+
+.ai {
+  background: rgba($color-type-ai, 0.15);
+  color: $color-type-ai;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// COLUMN ROLES
+// ─────────────────────────────────────────────────────────────────────────────
+
+.exog {
+  background: rgba($color-role-exog, 0.15);
+  color: $color-role-exog;
+}
+
+.endog {
+  background: rgba($color-role-endog, 0.15);
+  color: $color-role-endog;
+}
+
+.not_used {
+  background: rgba($color-role-not-used, 0.15);
+  color: $color-role-not-used;
+}
+
+.time_id {
+  background: rgba($color-role-time-id, 0.15);
+  color: $color-role-time-id;
+}
+
+.lookup {
+  background: rgba($color-role-lookup, 0.15);
+  color: darken($color-role-lookup, 10%);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GENERIC
+// ─────────────────────────────────────────────────────────────────────────────
+
+.default {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
+}
+
+.success {
+  background: rgba($color-status-approved, 0.15);
+  color: $color-status-approved;
+}
+
+.warning {
+  background: rgba($color-gold, 0.15);
+  color: darken($color-gold, 10%);
+}
+
+.error {
+  background: rgba($color-coral, 0.15);
+  color: $color-coral;
+}
+

@@ -1,0 +1,23 @@
+@use "@/styles/variables" as *;
+
+.panel {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: $radius-lg;
+  padding: $spacing-5;
+  height: 100%;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 $spacing-4 0;
+  padding-bottom: $spacing-3;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.content {
+  color: var(--color-text-secondary);
+}
+
