@@ -4,7 +4,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: $spacing-4 $spacing-6;
+  padding: $spacing-1 $spacing-6;
   background: var(--color-bg-primary);
   border-bottom: 1px solid var(--color-border);
   position: sticky;
@@ -19,7 +19,7 @@
 }
 
 .logo {
-  height: 32px;
+  height: 40px;
   width: auto;
 
   // Invert logo colors in dark mode
@@ -33,4 +33,3 @@
   align-items: center;
   gap: $spacing-4;
 }
-

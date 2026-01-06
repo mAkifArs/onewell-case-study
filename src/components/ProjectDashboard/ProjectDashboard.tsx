@@ -93,15 +93,27 @@ export function ProjectDashboard(): ReactNode {
         <>
           <ProjectHeader project={data.project} />
 
-          <div className={styles.grid}>
-            <Panel title="Data Tables" data-testid="data-tables-panel">
+          {/* Main content: Data Tables + Operations side by side */}
+          <div className={styles.mainGrid}>
+            <Panel
+              title="Data Tables"
+              data-testid="data-tables-panel"
+              className={styles.tallPanel}
+            >
               <DataTables tables={data.tables} />
             </Panel>
 
-            <Panel title="Recent Operations" data-testid="operations-panel">
+            <Panel
+              title="Recent Operations"
+              data-testid="operations-panel"
+              className={styles.tallPanel}
+            >
               <OperationsTimeline operations={data.operations} />
             </Panel>
+          </div>
 
+          {/* Secondary content: Governance + Lineage */}
+          <div className={styles.secondaryGrid}>
             <Panel title="Governance" data-testid="governance-panel">
               <Governance governance={data.governance} />
             </Panel>
@@ -125,14 +137,28 @@ function DashboardSkeleton(): ReactNode {
         <Skeleton width="30%" height="1rem" />
       </div>
 
-      {/* Grid skeleton */}
-      <div className={styles.grid}>
-        {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className={styles.panelSkeleton}>
-            <Skeleton width="40%" height="1rem" />
-            <Skeleton width="100%" height="6rem" />
-          </div>
-        ))}
+      {/* Main grid skeleton */}
+      <div className={styles.mainGrid}>
+        <div className={styles.panelSkeleton}>
+          <Skeleton width="40%" height="1rem" />
+          <Skeleton width="100%" height="12rem" />
+        </div>
+        <div className={styles.panelSkeleton}>
+          <Skeleton width="40%" height="1rem" />
+          <Skeleton width="100%" height="12rem" />
+        </div>
+      </div>
+
+      {/* Secondary grid skeleton */}
+      <div className={styles.secondaryGrid}>
+        <div className={styles.panelSkeleton}>
+          <Skeleton width="40%" height="1rem" />
+          <Skeleton width="100%" height="6rem" />
+        </div>
+        <div className={styles.panelSkeleton}>
+          <Skeleton width="40%" height="1rem" />
+          <Skeleton width="100%" height="6rem" />
+        </div>
       </div>
     </>
   );
