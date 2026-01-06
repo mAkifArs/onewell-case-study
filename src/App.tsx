@@ -1,19 +1,11 @@
 import type { ReactNode } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { ProjectSelector } from "@/components/ProjectSelector";
 
-// Placeholder components - will be replaced
-function ProjectSelector(): ReactNode {
-  return (
-    <main>
-      <h1>Project Selector</h1>
-      <p>Select a project to view its dashboard.</p>
-    </main>
-  );
-}
-
+// Placeholder - will be replaced in Phase 4
 function ProjectDashboard(): ReactNode {
   return (
-    <main>
+    <main style={{ padding: "2rem" }}>
       <h1>Project Dashboard</h1>
       <p>Project details will appear here.</p>
     </main>
