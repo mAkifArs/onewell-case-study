@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { memo, type ReactNode } from "react";
 import type { Project } from "@/types";
 import { Badge } from "@/components/Badge";
 import { formatDate } from "@/utils";
@@ -8,7 +8,14 @@ interface ProjectHeaderProps {
   project: Project;
 }
 
-export function ProjectHeader({ project }: ProjectHeaderProps): ReactNode {
+interface MetaItem {
+  label: string;
+  value: string;
+}
+
+export const ProjectHeader = memo(function ProjectHeader({
+  project,
+}: ProjectHeaderProps): ReactNode {
   const statusVariant = project.status.toLowerCase() as
     | "draft"
     | "active"
@@ -16,56 +23,43 @@ export function ProjectHeader({ project }: ProjectHeaderProps): ReactNode {
     | "approved"
     | "locked";
 
+  const metaItems: MetaItem[] = [
+    { label: "Owner", value: project.owner.name },
+    ...(project.governance_manager
+      ? [
+          {
+            label: "Governance Manager",
+            value: project.governance_manager.name,
+          },
+        ]
+      : []),
+    { label: "Department", value: project.department.name },
+    { label: "Created", value: formatDate(project.created_at) },
+    { label: "Updated", value: formatDate(project.updated_at) },
+  ];
+
   return (
     <header className={styles.header} data-testid="project-header">
       <div className={styles.top}>
         <div className={styles.titleRow}>
           <h1 className={styles.title}>{project.project_name}</h1>
-          <div className={styles.badges}>
-            <Badge variant="default" showIcon={false}>
-              {project.project_type}
-            </Badge>
-            <Badge variant={statusVariant}>{project.status}</Badge>
-          </div>
+          <Badge variant={statusVariant}>{project.status}</Badge>
         </div>
+        <span className={styles.projectType}>
+          Project Type: {project.project_type}
+        </span>
 
         <p className={styles.objectives}>{project.objectives}</p>
       </div>
 
       <div className={styles.meta}>
-        <div className={styles.metaItem}>
-          <span className={styles.metaLabel}>Owner</span>
-          <span className={styles.metaValue}>{project.owner.name}</span>
-        </div>
-
-        {project.governance_manager && (
-          <div className={styles.metaItem}>
-            <span className={styles.metaLabel}>Governance Manager</span>
-            <span className={styles.metaValue}>
-              {project.governance_manager.name}
-            </span>
+        {metaItems.map((item) => (
+          <div key={item.label} className={styles.metaItem}>
+            <span className={styles.metaLabel}>{item.label}</span>
+            <span className={styles.metaValue}>{item.value}</span>
           </div>
-        )}
-
-        <div className={styles.metaItem}>
-          <span className={styles.metaLabel}>Department</span>
-          <Badge variant="default">{project.department.name}</Badge>
-        </div>
-
-        <div className={styles.metaItem}>
-          <span className={styles.metaLabel}>Created</span>
-          <span className={styles.metaValue}>
-            {formatDate(project.created_at)}
-          </span>
-        </div>
-
-        <div className={styles.metaItem}>
-          <span className={styles.metaLabel}>Updated</span>
-          <span className={styles.metaValue}>
-            {formatDate(project.updated_at)}
-          </span>
-        </div>
+        ))}
       </div>
     </header>
   );
-}
+});

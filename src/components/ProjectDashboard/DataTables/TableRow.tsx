@@ -1,6 +1,6 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronRight, History, CheckCircle } from "lucide-react";
+import { ChevronRight, History, CheckCircle } from "lucide-react";
 import type { ProjectTable } from "@/types";
 import { Badge } from "@/components/Badge";
 import { Modal } from "@/components/Modal";
@@ -13,9 +13,7 @@ import styles from "./DataTables.module.scss";
 interface TableRowProps {
   table: ProjectTable;
   isExpanded: boolean;
-  isVersionsExpanded: boolean;
   onToggle: () => void;
-  onToggleVersions: () => void;
 }
 
 const expandAnimation = {
@@ -28,10 +26,9 @@ const expandAnimation = {
 export function TableRow({
   table,
   isExpanded,
-  isVersionsExpanded,
   onToggle,
-  onToggleVersions,
 }: TableRowProps): ReactNode {
+  const [isVersionsOpen, setIsVersionsOpen] = useState(false);
   const currentVersion = table.versions.find(
     (v) => v.table_version_id === table.current_version_id
   );
@@ -93,7 +90,7 @@ export function TableRow({
         <Tooltip content="View version history" position="top">
           <button
             className={styles.historyButton}
-            onClick={onToggleVersions}
+            onClick={() => setIsVersionsOpen(true)}
             aria-label="Version history"
           >
             <History size={14} />
@@ -113,8 +110,8 @@ export function TableRow({
       </AnimatePresence>
 
       <Modal
-        isOpen={isVersionsExpanded}
-        onClose={onToggleVersions}
+        isOpen={isVersionsOpen}
+        onClose={() => setIsVersionsOpen(false)}
         title={`Version History — ${table.display_name}`}
       >
         <VersionHistory

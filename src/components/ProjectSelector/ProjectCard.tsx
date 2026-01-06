@@ -45,7 +45,9 @@ export const ProjectCard = memo(function ProjectCard({
           <h2 className={styles.cardTitle}>{project.project_name}</h2>
           <Badge variant={statusVariant}>{project.status}</Badge>
         </div>
-        <span className={styles.projectType}>{project.project_type}</span>
+        <span className={styles.projectType}>
+          Project Type: {project.project_type}
+        </span>
       </div>
 
       <p className={styles.cardObjectives}>{project.objectives}</p>
