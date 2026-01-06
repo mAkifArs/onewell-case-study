@@ -4,6 +4,7 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 
 export { useProjectStore } from "./projectStore";
+export { useDashboardStore } from "./dashboardStore";
 export { useUIStore } from "./uiStore";
 export type { Theme } from "./uiStore";
 

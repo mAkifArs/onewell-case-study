@@ -1,0 +1,9 @@
+@use "@/styles/variables" as *;
+
+.empty {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: $spacing-6;
+  font-size: 0.875rem;
+}
+

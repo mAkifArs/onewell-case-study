@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { Governance as GovernanceType } from "@/types";
+import { EmptyState } from "@/components/EmptyState";
 import { ApprovalList } from "./ApprovalList";
 import { ComplianceProgress } from "./ComplianceProgress";
 import { StakeholderList } from "./StakeholderList";
@@ -11,7 +12,7 @@ interface GovernanceProps {
 
 export function Governance({ governance }: GovernanceProps): ReactNode {
   if (!governance) {
-    return <p className={styles.empty}>No governance data available</p>;
+    return <EmptyState message="No governance data available" />;
   }
 
   return (
@@ -26,4 +27,3 @@ export function Governance({ governance }: GovernanceProps): ReactNode {
     </div>
   );
 }
-

@@ -15,34 +15,50 @@
 
 .graph {
   display: flex;
-  align-items: stretch;
-  gap: 0;
-  min-height: 200px;
-}
-
-.column {
-  flex: 1;
-  display: flex;
   flex-direction: column;
   gap: $spacing-2;
+  min-height: 180px;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LABELS ROW
+// ─────────────────────────────────────────────────────────────────────────────
+
+.labelsRow {
+  display: flex;
+  align-items: center;
 }
 
 .columnLabel {
+  flex: 1;
   font-size: 0.6875rem;
   font-weight: 600;
   color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   text-align: center;
-  padding-bottom: $spacing-2;
 }
 
-.nodes {
+.labelSpacer {
+  width: 60px;
+  flex-shrink: 0;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NODES ROW
+// ─────────────────────────────────────────────────────────────────────────────
+
+.nodesRow {
+  display: flex;
+  align-items: stretch;
+  flex: 1;
+}
+
+.column {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: $spacing-2;
-  flex: 1;
-  justify-content: center;
+  justify-content: space-evenly;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -113,7 +129,7 @@
 
   .highlighted &,
   .selected & {
-    color: $color-navy;
+    color: $color-info;  // Bright blue #3b82f6
   }
 }
 
@@ -137,4 +153,3 @@
   font-style: italic;
   margin: 0;
 }
-

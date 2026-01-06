@@ -1,0 +1,30 @@
+@use "@/styles/variables" as *;
+
+.error {
+  text-align: center;
+  padding: $spacing-6;
+  background: rgba($color-coral, 0.1);
+  border: 1px solid $color-coral;
+  border-radius: $radius-md;
+  margin-bottom: $spacing-6;
+
+  p {
+    color: $color-coral;
+    margin: 0 0 $spacing-3 0;
+  }
+
+  button {
+    padding: $spacing-2 $spacing-4;
+    background: $color-coral;
+    color: white;
+    border: none;
+    border-radius: $radius-sm;
+    cursor: pointer;
+    font-weight: 500;
+
+    &:hover {
+      background: $color-coral-700;
+    }
+  }
+}
+
