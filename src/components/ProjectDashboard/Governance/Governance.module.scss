@@ -148,8 +148,8 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 .stakeholderList {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: $spacing-2;
 }
 
@@ -160,6 +160,7 @@
   padding: $spacing-2 $spacing-3;
   background: var(--color-bg-secondary);
   border-radius: $radius-md;
+  min-width: 0; // Prevent overflow
 }
 
 .stakeholderAvatar {

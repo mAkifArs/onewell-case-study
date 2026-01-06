@@ -1,7 +1,10 @@
 import type { ReactNode } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronRight, History, CheckCircle } from "lucide-react";
 import type { ProjectTable } from "@/types";
 import { Badge } from "@/components/Badge";
+import { Modal } from "@/components/Modal";
+import { Tooltip } from "@/components/Tooltip";
 import { formatCompact, formatVersion, toTitleCase } from "@/utils";
 import { ColumnList } from "./ColumnList";
 import { VersionHistory } from "./VersionHistory";
@@ -14,6 +17,13 @@ interface TableRowProps {
   onToggle: () => void;
   onToggleVersions: () => void;
 }
+
+const expandAnimation = {
+  initial: { height: 0, opacity: 0 },
+  animate: { height: "auto", opacity: 1 },
+  exit: { height: 0, opacity: 0 },
+  transition: { duration: 0.2, ease: "easeInOut" },
+};
 
 export function TableRow({
   table,
@@ -40,7 +50,13 @@ export function TableRow({
           aria-expanded={isExpanded}
           data-testid={`table-expand-btn-${table.project_table_id}`}
         >
-          {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+          <motion.span
+            animate={{ rotate: isExpanded ? 90 : 0 }}
+            transition={{ duration: 0.2 }}
+            style={{ display: "flex" }}
+          >
+            <ChevronRight size={16} />
+          </motion.span>
         </button>
 
         <div className={styles.tableInfo}>
@@ -74,34 +90,39 @@ export function TableRow({
           </div>
         </div>
 
-        <button
-          className={styles.historyButton}
-          onClick={onToggleVersions}
-          title="Version history"
-        >
-          <History size={14} />
-        </button>
+        <Tooltip content="View version history" position="top">
+          <button
+            className={styles.historyButton}
+            onClick={onToggleVersions}
+            aria-label="Version history"
+          >
+            <History size={14} />
+          </button>
+        </Tooltip>
       </div>
 
-      {isExpanded && (
-        <div className={styles.expandedContent}>
-          <ColumnList
-            columns={table.columns}
-            tableId={table.project_table_id}
-          />
-        </div>
-      )}
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div className={styles.expandedContent} {...expandAnimation}>
+            <ColumnList
+              columns={table.columns}
+              tableId={table.project_table_id}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {isVersionsExpanded && (
-        <div className={styles.expandedContent}>
-          <VersionHistory
-            versions={table.versions}
-            currentVersionId={table.current_version_id}
-            tableId={table.project_table_id}
-          />
-        </div>
-      )}
+      <Modal
+        isOpen={isVersionsExpanded}
+        onClose={onToggleVersions}
+        title={`Version History — ${table.display_name}`}
+      >
+        <VersionHistory
+          versions={table.versions}
+          currentVersionId={table.current_version_id}
+          tableId={table.project_table_id}
+        />
+      </Modal>
     </div>
   );
 }
-

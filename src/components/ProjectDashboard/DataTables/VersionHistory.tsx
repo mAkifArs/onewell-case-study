@@ -25,7 +25,6 @@ export function VersionHistory({
       className={styles.versionHistory}
       data-testid={`version-history-${tableId}`}
     >
-      <h4 className={styles.sectionTitle}>Version History</h4>
       <div className={styles.versions}>
         {sortedVersions.map((version) => (
           <div
@@ -63,4 +62,3 @@ export function VersionHistory({
     </div>
   );
 }
-

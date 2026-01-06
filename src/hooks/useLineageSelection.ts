@@ -35,4 +35,3 @@ export function useLineageSelection(lineage: LineageRelation[]) {
     clearSelection,
   };
 }
-
