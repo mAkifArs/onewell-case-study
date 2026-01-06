@@ -5,96 +5,186 @@
   align-items: center;
   padding: $spacing-1 $spacing-2;
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 600;
   border-radius: $radius-sm;
   white-space: nowrap;
+
+  &.withIcon {
+    gap: $spacing-1;
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// PROJECT STATUS
-// ─────────────────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
+// PROJECT STATUS - Semantic colors (gray → blue → amber → green → purple)
+// ═══════════════════════════════════════════════════════════════════════════════
 
 .draft {
-  background: rgba($color-status-draft, 0.15);
-  color: $color-status-draft;
+  background: $color-gray-200;
+  color: $color-gray-700;
+
+  [data-theme="dark"] & {
+    background: $color-gray-700;
+    color: $color-gray-200;
+  }
 }
 
 .active {
-  background: rgba($color-status-active, 0.15);
-  color: $color-status-active;
+  // Blue - "in progress"
+  background: #dbeafe;
+  color: #1d4ed8;
+
+  [data-theme="dark"] & {
+    background: rgba(#3b82f6, 0.25);
+    color: #93c5fd;
+  }
 }
 
 .review {
-  background: rgba($color-status-review, 0.15);
-  color: darken($color-status-review, 10%);
+  // Amber/Orange - "needs attention"
+  background: #fef3c7;
+  color: #b45309;
+
+  [data-theme="dark"] & {
+    background: rgba(#f59e0b, 0.25);
+    color: #fcd34d;
+  }
 }
 
 .approved {
-  background: rgba($color-status-approved, 0.15);
-  color: $color-status-approved;
+  // Green - "success"
+  background: #d1fae5;
+  color: #047857;
+
+  [data-theme="dark"] & {
+    background: rgba(#10b981, 0.25);
+    color: #6ee7b7;
+  }
 }
 
 .locked {
-  background: rgba($color-status-locked, 0.15);
-  color: $color-status-locked;
+  // Slate/Dark - "final/immutable"
+  background: #e2e8f0;
+  color: #475569;
+
+  [data-theme="dark"] & {
+    background: rgba(#64748b, 0.3);
+    color: #cbd5e1;
+  }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// PROJECT TYPE
-// ─────────────────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
+// PROJECT TYPE - Distinct identity colors
+// ═══════════════════════════════════════════════════════════════════════════════
 
 .ml {
-  background: rgba($color-type-ml, 0.15);
-  color: $color-type-ml;
+  // Indigo - "machine learning"
+  background: #e0e7ff;
+  color: #4338ca;
+
+  [data-theme="dark"] & {
+    background: rgba(#6366f1, 0.25);
+    color: #a5b4fc;
+  }
 }
 
 .timeseries {
-  background: rgba($color-type-timeseries, 0.15);
-  color: $color-type-timeseries;
+  // Cyan/Teal - "time/trends"
+  background: #cffafe;
+  color: #0e7490;
+
+  [data-theme="dark"] & {
+    background: rgba(#06b6d4, 0.25);
+    color: #67e8f9;
+  }
 }
 
 .scorecard {
-  background: rgba($color-type-scorecard, 0.15);
-  color: darken($color-type-scorecard, 10%);
+  // Pink/Rose - "scoring"
+  background: #fce7f3;
+  color: #be185d;
+
+  [data-theme="dark"] & {
+    background: rgba(#ec4899, 0.25);
+    color: #f9a8d4;
+  }
 }
 
 .ai {
-  background: rgba($color-type-ai, 0.15);
-  color: $color-type-ai;
+  // Violet - "artificial intelligence"
+  background: #ede9fe;
+  color: #7c3aed;
+
+  [data-theme="dark"] & {
+    background: rgba(#8b5cf6, 0.25);
+    color: #c4b5fd;
+  }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
 // COLUMN ROLES
-// ─────────────────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
 
 .exog {
-  background: rgba($color-role-exog, 0.15);
-  color: $color-role-exog;
+  // Blue - predictor
+  background: #dbeafe;
+  color: #1d4ed8;
+
+  [data-theme="dark"] & {
+    background: rgba(#3b82f6, 0.25);
+    color: #93c5fd;
+  }
 }
 
 .endog {
-  background: rgba($color-role-endog, 0.15);
-  color: $color-role-endog;
+  // Green - target
+  background: #d1fae5;
+  color: #047857;
+
+  [data-theme="dark"] & {
+    background: rgba(#10b981, 0.25);
+    color: #6ee7b7;
+  }
 }
 
 .not_used {
-  background: rgba($color-role-not-used, 0.15);
-  color: $color-role-not-used;
+  background: $color-gray-200;
+  color: $color-gray-600;
+
+  [data-theme="dark"] & {
+    background: $color-gray-700;
+    color: $color-gray-300;
+  }
 }
 
 .time_id {
-  background: rgba($color-role-time-id, 0.15);
-  color: $color-role-time-id;
+  // Cyan - time
+  background: #cffafe;
+  color: #0e7490;
+
+  [data-theme="dark"] & {
+    background: rgba(#06b6d4, 0.25);
+    color: #67e8f9;
+  }
 }
 
 .lookup {
-  background: rgba($color-role-lookup, 0.15);
-  color: darken($color-role-lookup, 10%);
+  // Amber - reference
+  background: #fef3c7;
+  color: #b45309;
+
+  [data-theme="dark"] & {
+    background: rgba(#f59e0b, 0.25);
+    color: #fcd34d;
+  }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
 // GENERIC
-// ─────────────────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
 
 .default {
   background: var(--color-bg-tertiary);
@@ -102,17 +192,31 @@
 }
 
 .success {
-  background: rgba($color-status-approved, 0.15);
-  color: $color-status-approved;
+  background: #d1fae5;
+  color: #047857;
+
+  [data-theme="dark"] & {
+    background: rgba(#10b981, 0.25);
+    color: #6ee7b7;
+  }
 }
 
 .warning {
-  background: rgba($color-gold, 0.15);
-  color: darken($color-gold, 10%);
+  background: #fef3c7;
+  color: #b45309;
+
+  [data-theme="dark"] & {
+    background: rgba(#f59e0b, 0.25);
+    color: #fcd34d;
+  }
 }
 
 .error {
-  background: rgba($color-coral, 0.15);
-  color: $color-coral;
-}
+  background: $color-coral-100;
+  color: $color-coral-700;
 
+  [data-theme="dark"] & {
+    background: rgba($color-coral, 0.25);
+    color: $color-coral-300;
+  }
+}

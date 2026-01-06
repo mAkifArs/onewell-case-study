@@ -2,6 +2,7 @@
 
 .toggle {
   display: inline-flex;
+  gap: $spacing-1;
   background: var(--color-bg-secondary);
   border: 1px solid var(--color-border);
   border-radius: $radius-lg;
@@ -12,8 +13,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   background: transparent;
   border: none;
   border-radius: $radius-md;
@@ -21,15 +22,21 @@
   cursor: pointer;
   transition: all 0.2s;
 
-  &:hover {
+  &:hover:not([data-active="true"]) {
     color: var(--color-text-primary);
     background: var(--color-bg-tertiary);
   }
 
+  // Light mode: active button is dark (navy)
   &[data-active="true"] {
-    color: $color-navy;
-    background: var(--color-bg-primary);
+    color: $color-white;
+    background: $color-navy;
     box-shadow: $shadow-sm;
   }
-}
 
+  // Dark mode: active button is light
+  [data-theme="dark"] &[data-active="true"] {
+    color: $color-navy-900;
+    background: $color-white;
+  }
+}
