@@ -1,0 +1,42 @@
+// Colors
+$color-primary: #6366f1;
+$color-success: #10b981;
+$color-warning: #f59e0b;
+$color-error: #ef4444;
+
+// Column role colors
+$color-role-exog: #3b82f6;
+$color-role-endog: #10b981;
+$color-role-not-used: #6b7280;
+$color-role-time-id: #8b5cf6;
+$color-role-lookup: #f59e0b;
+
+// Status colors
+$color-status-draft: #6b7280;
+$color-status-active: #3b82f6;
+$color-status-review: #f59e0b;
+$color-status-approved: #10b981;
+$color-status-locked: #6366f1;
+
+// Project type colors
+$color-type-ml: #3b82f6;
+$color-type-timeseries: #8b5cf6;
+$color-type-scorecard: #f59e0b;
+$color-type-ai: #10b981;
+
+// Spacing
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+
+// Border radius
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 12px;
+
+// Typography
+$font-family-base: "IBM Plex Sans", sans-serif;
+$font-family-mono: "IBM Plex Mono", monospace;
+
