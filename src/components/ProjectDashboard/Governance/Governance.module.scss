@@ -1,0 +1,191 @@
+@use "@/styles/variables" as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-5;
+}
+
+.empty {
+  color: var(--color-text-muted);
+  font-style: italic;
+  text-align: center;
+  padding: $spacing-4;
+}
+
+.section {
+  // container for each section
+}
+
+.sectionTitle {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 $spacing-3 0;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// APPROVAL LIST
+// ─────────────────────────────────────────────────────────────────────────────
+
+.approvalList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+}
+
+.approvalItem {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  padding: $spacing-3;
+  background: var(--color-bg-secondary);
+  border-radius: $radius-md;
+  border-left: 3px solid transparent;
+
+  &[data-status="pending"] {
+    border-left-color: $color-gold;
+
+    .statusIcon {
+      color: $color-gold;
+    }
+
+    .statusBadge {
+      background: rgba($color-gold, 0.15);
+      color: $color-gold-700;
+    }
+  }
+
+  &[data-status="approved"] {
+    border-left-color: $color-success;
+
+    .statusIcon {
+      color: $color-success;
+    }
+
+    .statusBadge {
+      background: rgba($color-success, 0.15);
+      color: $color-success;
+    }
+  }
+
+  &[data-status="rejected"] {
+    border-left-color: $color-coral;
+
+    .statusIcon {
+      color: $color-coral;
+    }
+
+    .statusBadge {
+      background: rgba($color-coral, 0.15);
+      color: $color-coral;
+    }
+  }
+}
+
+.statusIcon {
+  flex-shrink: 0;
+}
+
+.approvalInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.approvalType {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+}
+
+.approver {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.statusBadge {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: $radius-sm;
+  text-transform: uppercase;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// COMPLIANCE
+// ─────────────────────────────────────────────────────────────────────────────
+
+.complianceCard {
+  padding: $spacing-3;
+  background: var(--color-bg-secondary);
+  border-radius: $radius-md;
+}
+
+.complianceHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-3;
+}
+
+.templateName {
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+}
+
+.itemCount {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STAKEHOLDER LIST
+// ─────────────────────────────────────────────────────────────────────────────
+
+.stakeholderList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-2;
+}
+
+.stakeholderItem {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  padding: $spacing-2 $spacing-3;
+  background: var(--color-bg-secondary);
+  border-radius: $radius-md;
+}
+
+.stakeholderAvatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: $color-navy;
+  color: white;
+  border-radius: $radius-full;
+}
+
+.stakeholderInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.stakeholderName {
+  font-weight: 500;
+  font-size: 0.8125rem;
+  color: var(--color-text-primary);
+}
+
+.stakeholderRole {
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+}
+

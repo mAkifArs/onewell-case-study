@@ -7,20 +7,22 @@ import type {
   Project,
   ProjectTable,
   Operation,
-  Governance,
+  Governance as GovernanceData,
   LineageRelation,
 } from "@/types";
 import { Skeleton } from "@/components/Skeleton";
 import { Panel } from "@/components/Panel";
 import { ProjectHeader } from "./ProjectHeader";
 import { DataTables } from "./DataTables";
+import { OperationsTimeline } from "./OperationsTimeline";
+import { Governance } from "./Governance";
 import styles from "./ProjectDashboard.module.scss";
 
 interface DashboardData {
   project: Project;
   tables: ProjectTable[];
   operations: Operation[];
-  governance: Governance | null;
+  governance: GovernanceData | null;
   lineage: LineageRelation[];
 }
 
@@ -39,12 +41,12 @@ export function ProjectDashboard(): ReactNode {
         setLoading(true);
         setError(null);
         const result = await fetchProjectDashboardData(projectId);
-        
+
         if (!result.project) {
           setError("Project not found");
           return;
         }
-        
+
         setData({
           project: result.project,
           tables: result.tables,
@@ -95,16 +97,12 @@ export function ProjectDashboard(): ReactNode {
               <DataTables tables={data.tables} />
             </Panel>
 
-            <Panel title="Recent Operations" data-testid="operations-timeline">
-              <p className={styles.placeholder}>
-                {data.operations.length} operations • Coming in Phase 6
-              </p>
+            <Panel title="Recent Operations" data-testid="operations-panel">
+              <OperationsTimeline operations={data.operations} />
             </Panel>
 
             <Panel title="Governance" data-testid="governance-panel">
-              <p className={styles.placeholder}>
-                {data.governance?.approvals.length ?? 0} approvals • Coming in Phase 7
-              </p>
+              <Governance governance={data.governance} />
             </Panel>
 
             <Panel title="Data Lineage" data-testid="lineage-view">
@@ -140,4 +138,3 @@ function DashboardSkeleton(): ReactNode {
     </>
   );
 }
-
