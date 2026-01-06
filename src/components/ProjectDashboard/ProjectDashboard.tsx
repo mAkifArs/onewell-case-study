@@ -16,6 +16,7 @@ import { ProjectHeader } from "./ProjectHeader";
 import { DataTables } from "./DataTables";
 import { OperationsTimeline } from "./OperationsTimeline";
 import { Governance } from "./Governance";
+import { DataLineage } from "./DataLineage";
 import styles from "./ProjectDashboard.module.scss";
 
 interface DashboardData {
@@ -105,10 +106,8 @@ export function ProjectDashboard(): ReactNode {
               <Governance governance={data.governance} />
             </Panel>
 
-            <Panel title="Data Lineage" data-testid="lineage-view">
-              <p className={styles.placeholder}>
-                {data.lineage.length} relations • Coming in Phase 8
-              </p>
+            <Panel title="Data Lineage" data-testid="lineage-panel">
+              <DataLineage lineage={data.lineage} tables={data.tables} />
             </Panel>
           </div>
         </>

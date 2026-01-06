@@ -1,0 +1,140 @@
+@use "@/styles/variables" as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+}
+
+.empty {
+  color: var(--color-text-muted);
+  font-style: italic;
+  text-align: center;
+  padding: $spacing-4;
+}
+
+.graph {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  min-height: 200px;
+}
+
+.column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+}
+
+.columnLabel {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: center;
+  padding-bottom: $spacing-2;
+}
+
+.nodes {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+  flex: 1;
+  justify-content: center;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CONNECTOR LINES
+// ─────────────────────────────────────────────────────────────────────────────
+
+.connectors {
+  width: 60px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.svg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.edge {
+  stroke: var(--color-border);
+  stroke-width: 2;
+  transition: stroke 0.2s, stroke-width 0.2s;
+
+  &[data-highlighted="true"] {
+    stroke: $color-navy;
+    stroke-width: 3;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NODE
+// ─────────────────────────────────────────────────────────────────────────────
+
+.node {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  padding: $spacing-2 $spacing-3;
+  background: var(--color-bg-secondary);
+  border: 2px solid var(--color-border);
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+
+  &:hover {
+    border-color: $color-navy-400;
+    background: var(--color-bg-tertiary);
+  }
+
+  &.highlighted {
+    border-color: $color-navy;
+    background: rgba($color-navy, 0.1);
+  }
+
+  &.selected {
+    border-color: $color-navy;
+    background: rgba($color-navy, 0.15);
+    box-shadow: 0 0 0 3px rgba($color-navy, 0.2);
+  }
+}
+
+.nodeIcon {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+
+  .highlighted &,
+  .selected & {
+    color: $color-navy;
+  }
+}
+
+.nodeName {
+  font-size: 0.75rem;
+  font-family: $font-family-mono;
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HINT
+// ─────────────────────────────────────────────────────────────────────────────
+
+.hint {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-align: center;
+  font-style: italic;
+  margin: 0;
+}
+
