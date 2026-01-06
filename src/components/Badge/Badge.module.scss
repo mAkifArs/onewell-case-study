@@ -66,13 +66,13 @@
 }
 
 .locked {
-  // Slate/Dark - "final/immutable"
-  background: #e2e8f0;
-  color: #475569;
+  // Red - "restricted/final"
+  background: #fee2e2;
+  color: #dc2626;
 
   [data-theme="dark"] & {
-    background: rgba(#64748b, 0.3);
-    color: #cbd5e1;
+    background: rgba(#ef4444, 0.25);
+    color: #fca5a5;
   }
 }
 

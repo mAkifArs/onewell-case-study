@@ -4,21 +4,13 @@ import { ProjectCard } from "./ProjectCard";
 
 interface ProjectGridProps {
   projects: Project[];
-  onSelect: (projectId: string) => void;
 }
 
-export function ProjectGrid({
-  projects,
-  onSelect,
-}: ProjectGridProps): ReactNode {
+export function ProjectGrid({ projects }: ProjectGridProps): ReactNode {
   return (
     <>
       {projects.map((project) => (
-        <ProjectCard
-          key={project.project_id}
-          project={project}
-          onClick={onSelect}
-        />
+        <ProjectCard key={project.project_id} project={project} />
       ))}
     </>
   );
