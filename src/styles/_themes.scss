@@ -1,22 +1,269 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// THEME SYSTEM
+// Light & Dark mode with OneWell-inspired palette
+// ═══════════════════════════════════════════════════════════════════════════════
+
+@use "variables" as *;
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// LIGHT THEME (Default)
+// ─────────────────────────────────────────────────────────────────────────────────
+
 :root {
-  --color-bg-primary: #ffffff;
-  --color-bg-secondary: #f8fafc;
-  --color-bg-tertiary: #f1f5f9;
-  --color-text-primary: #0f172a;
-  --color-text-secondary: #475569;
-  --color-text-muted: #94a3b8;
-  --color-border: #e2e8f0;
-  --color-border-light: #f1f5f9;
+  // Backgrounds
+  --color-bg-primary: #{$color-white};
+  --color-bg-secondary: #{$color-gray-50};
+  --color-bg-tertiary: #{$color-gray-100};
+  --color-bg-elevated: #{$color-white};
+  --color-bg-accent: #{$color-navy};
+  --color-bg-accent-subtle: #{$color-navy-100};
+  --color-bg-overlay: rgba(15, 23, 42, 0.5);
+
+  // Text
+  --color-text-primary: #{$color-navy-900};
+  --color-text-secondary: #{$color-gray-600};
+  --color-text-muted: #{$color-gray-400};
+  --color-text-inverse: #{$color-white};
+  --color-text-accent: #{$color-navy};
+  --color-text-link: #{$color-navy};
+  --color-text-link-hover: #{$color-navy-600};
+
+  // Borders
+  --color-border: #{$color-gray-200};
+  --color-border-light: #{$color-gray-100};
+  --color-border-dark: #{$color-gray-300};
+  --color-border-focus: #{$color-navy};
+
+  // Interactive states
+  --color-interactive: #{$color-navy};
+  --color-interactive-hover: #{$color-navy-700};
+  --color-interactive-active: #{$color-navy-900};
+  --color-interactive-disabled: #{$color-gray-300};
+
+  // Accent colors
+  --color-accent-primary: #{$color-coral};
+  --color-accent-primary-hover: #{$color-coral-600};
+  --color-accent-secondary: #{$color-gold};
+  --color-accent-secondary-hover: #{$color-gold-600};
+
+  // Status colors
+  --color-success: #{$color-success};
+  --color-success-bg: #d1fae5;
+  --color-warning: #{$color-gold-500};
+  --color-warning-bg: #{$color-gold-100};
+  --color-error: #{$color-coral};
+  --color-error-bg: #{$color-coral-100};
+  --color-info: #{$color-info};
+  --color-info-bg: #dbeafe;
+
+  // Shadows
+  --shadow-xs: #{$shadow-xs};
+  --shadow-sm: #{$shadow-sm};
+  --shadow-md: #{$shadow-md};
+  --shadow-lg: #{$shadow-lg};
+  --shadow-xl: #{$shadow-xl};
+  --shadow-focus: #{$shadow-focus};
+  --shadow-inner: #{$shadow-inner};
+
+  // Specific component colors
+  --color-panel-bg: #{$color-white};
+  --color-panel-border: #{$color-gray-200};
+  --color-card-bg: #{$color-white};
+  --color-card-border: #{$color-gray-200};
+  --color-input-bg: #{$color-white};
+  --color-input-border: #{$color-gray-300};
+  --color-input-focus-border: #{$color-navy};
+  --color-table-header-bg: #{$color-gray-50};
+  --color-table-row-hover: #{$color-gray-50};
+  --color-table-border: #{$color-gray-200};
+
+  // Header/Navigation
+  --color-header-bg: #{$color-navy};
+  --color-header-text: #{$color-white};
+  --color-nav-active: #{$color-gold};
+
+  // Skeleton loading
+  --color-skeleton-base: #{$color-gray-200};
+  --color-skeleton-shine: #{$color-gray-100};
+
+  // Scrollbar
+  --color-scrollbar-track: #{$color-gray-100};
+  --color-scrollbar-thumb: #{$color-gray-300};
+  --color-scrollbar-thumb-hover: #{$color-gray-400};
 }
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// DARK THEME
+// ─────────────────────────────────────────────────────────────────────────────────
 
 [data-theme="dark"] {
-  --color-bg-primary: #0f172a;
-  --color-bg-secondary: #1e293b;
-  --color-bg-tertiary: #334155;
-  --color-text-primary: #f8fafc;
-  --color-text-secondary: #cbd5e1;
-  --color-text-muted: #64748b;
-  --color-border: #334155;
-  --color-border-light: #1e293b;
+  // Backgrounds
+  --color-bg-primary: #{$color-gray-900};
+  --color-bg-secondary: #{$color-gray-800};
+  --color-bg-tertiary: #{$color-gray-700};
+  --color-bg-elevated: #{$color-gray-800};
+  --color-bg-accent: #{$color-navy-700};
+  --color-bg-accent-subtle: #{$color-navy-900};
+  --color-bg-overlay: rgba(0, 0, 0, 0.7);
+
+  // Text
+  --color-text-primary: #{$color-gray-50};
+  --color-text-secondary: #{$color-gray-300};
+  --color-text-muted: #{$color-gray-500};
+  --color-text-inverse: #{$color-gray-900};
+  --color-text-accent: #{$color-navy-300};
+  --color-text-link: #{$color-navy-300};
+  --color-text-link-hover: #{$color-navy-200};
+
+  // Borders
+  --color-border: #{$color-gray-700};
+  --color-border-light: #{$color-gray-800};
+  --color-border-dark: #{$color-gray-600};
+  --color-border-focus: #{$color-navy-400};
+
+  // Interactive states
+  --color-interactive: #{$color-navy-400};
+  --color-interactive-hover: #{$color-navy-300};
+  --color-interactive-active: #{$color-navy-200};
+  --color-interactive-disabled: #{$color-gray-600};
+
+  // Accent colors
+  --color-accent-primary: #{$color-coral-400};
+  --color-accent-primary-hover: #{$color-coral-300};
+  --color-accent-secondary: #{$color-gold-400};
+  --color-accent-secondary-hover: #{$color-gold-300};
+
+  // Status colors
+  --color-success: #{$color-success-light};
+  --color-success-bg: rgba(16, 185, 129, 0.15);
+  --color-warning: #{$color-gold-400};
+  --color-warning-bg: rgba(245, 184, 65, 0.15);
+  --color-error: #{$color-coral-400};
+  --color-error-bg: rgba(229, 75, 75, 0.15);
+  --color-info: #{$color-info-light};
+  --color-info-bg: rgba(59, 130, 246, 0.15);
+
+  // Shadows (more subtle in dark mode)
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+  --shadow-focus: 0 0 0 3px rgba(100, 149, 237, 0.3);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+
+  // Specific component colors
+  --color-panel-bg: #{$color-gray-800};
+  --color-panel-border: #{$color-gray-700};
+  --color-card-bg: #{$color-gray-800};
+  --color-card-border: #{$color-gray-700};
+  --color-input-bg: #{$color-gray-800};
+  --color-input-border: #{$color-gray-600};
+  --color-input-focus-border: #{$color-navy-400};
+  --color-table-header-bg: #{$color-gray-800};
+  --color-table-row-hover: #{$color-gray-700};
+  --color-table-border: #{$color-gray-700};
+
+  // Header/Navigation
+  --color-header-bg: #{$color-gray-900};
+  --color-header-text: #{$color-gray-50};
+  --color-nav-active: #{$color-gold-400};
+
+  // Skeleton loading
+  --color-skeleton-base: #{$color-gray-700};
+  --color-skeleton-shine: #{$color-gray-600};
+
+  // Scrollbar
+  --color-scrollbar-track: #{$color-gray-800};
+  --color-scrollbar-thumb: #{$color-gray-600};
+  --color-scrollbar-thumb-hover: #{$color-gray-500};
 }
 
+// ─────────────────────────────────────────────────────────────────────────────────
+// SYSTEM PREFERENCE (auto theme)
+// ─────────────────────────────────────────────────────────────────────────────────
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    // Backgrounds
+    --color-bg-primary: #{$color-gray-900};
+    --color-bg-secondary: #{$color-gray-800};
+    --color-bg-tertiary: #{$color-gray-700};
+    --color-bg-elevated: #{$color-gray-800};
+    --color-bg-accent: #{$color-navy-700};
+    --color-bg-accent-subtle: #{$color-navy-900};
+    --color-bg-overlay: rgba(0, 0, 0, 0.7);
+
+    // Text
+    --color-text-primary: #{$color-gray-50};
+    --color-text-secondary: #{$color-gray-300};
+    --color-text-muted: #{$color-gray-500};
+    --color-text-inverse: #{$color-gray-900};
+    --color-text-accent: #{$color-navy-300};
+    --color-text-link: #{$color-navy-300};
+    --color-text-link-hover: #{$color-navy-200};
+
+    // Borders
+    --color-border: #{$color-gray-700};
+    --color-border-light: #{$color-gray-800};
+    --color-border-dark: #{$color-gray-600};
+    --color-border-focus: #{$color-navy-400};
+
+    // Interactive states
+    --color-interactive: #{$color-navy-400};
+    --color-interactive-hover: #{$color-navy-300};
+    --color-interactive-active: #{$color-navy-200};
+    --color-interactive-disabled: #{$color-gray-600};
+
+    // Accent colors
+    --color-accent-primary: #{$color-coral-400};
+    --color-accent-primary-hover: #{$color-coral-300};
+    --color-accent-secondary: #{$color-gold-400};
+    --color-accent-secondary-hover: #{$color-gold-300};
+
+    // Status colors
+    --color-success: #{$color-success-light};
+    --color-success-bg: rgba(16, 185, 129, 0.15);
+    --color-warning: #{$color-gold-400};
+    --color-warning-bg: rgba(245, 184, 65, 0.15);
+    --color-error: #{$color-coral-400};
+    --color-error-bg: rgba(229, 75, 75, 0.15);
+    --color-info: #{$color-info-light};
+    --color-info-bg: rgba(59, 130, 246, 0.15);
+
+    // Shadows
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+    --shadow-focus: 0 0 0 3px rgba(100, 149, 237, 0.3);
+    --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+
+    // Component colors
+    --color-panel-bg: #{$color-gray-800};
+    --color-panel-border: #{$color-gray-700};
+    --color-card-bg: #{$color-gray-800};
+    --color-card-border: #{$color-gray-700};
+    --color-input-bg: #{$color-gray-800};
+    --color-input-border: #{$color-gray-600};
+    --color-input-focus-border: #{$color-navy-400};
+    --color-table-header-bg: #{$color-gray-800};
+    --color-table-row-hover: #{$color-gray-700};
+    --color-table-border: #{$color-gray-700};
+
+    // Header/Navigation
+    --color-header-bg: #{$color-gray-900};
+    --color-header-text: #{$color-gray-50};
+    --color-nav-active: #{$color-gold-400};
+
+    // Skeleton loading
+    --color-skeleton-base: #{$color-gray-700};
+    --color-skeleton-shine: #{$color-gray-600};
+
+    // Scrollbar
+    --color-scrollbar-track: #{$color-gray-800};
+    --color-scrollbar-thumb: #{$color-gray-600};
+    --color-scrollbar-thumb-hover: #{$color-gray-500};
+  }
+}
