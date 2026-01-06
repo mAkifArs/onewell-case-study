@@ -62,7 +62,8 @@ export const useProjectStore = create<ProjectState>()(
           set({ projects: data, isLoading: false });
         } catch (err) {
           set({
-            error: err instanceof Error ? err.message : "Failed to load projects",
+            error:
+              err instanceof Error ? err.message : "Failed to load projects",
             isLoading: false,
           });
         }

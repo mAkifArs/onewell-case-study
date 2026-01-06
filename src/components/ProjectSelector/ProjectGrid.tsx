@@ -7,7 +7,10 @@ interface ProjectGridProps {
   onSelect: (projectId: string) => void;
 }
 
-export function ProjectGrid({ projects, onSelect }: ProjectGridProps): ReactNode {
+export function ProjectGrid({
+  projects,
+  onSelect,
+}: ProjectGridProps): ReactNode {
   return (
     <>
       {projects.map((project) => (
@@ -20,4 +23,3 @@ export function ProjectGrid({ projects, onSelect }: ProjectGridProps): ReactNode
     </>
   );
 }
-

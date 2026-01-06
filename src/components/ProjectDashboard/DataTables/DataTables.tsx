@@ -9,20 +9,15 @@ interface DataTablesProps {
 }
 
 export function DataTables({ tables }: DataTablesProps): ReactNode {
-  const {
-    expandedIds: expandedTables,
-    toggle: toggleTable,
-  } = useExpandedState();
+  const { expandedIds: expandedTables, toggle: toggleTable } =
+    useExpandedState();
 
-  const {
-    expandedIds: expandedVersions,
-    toggle: toggleVersions,
-  } = useExpandedState();
+  const { expandedIds: expandedVersions, toggle: toggleVersions } =
+    useExpandedState();
 
   if (tables.length === 0) {
     return <EmptyState message="No tables in this project" />;
   }
-
   return (
     <TableList
       tables={tables}

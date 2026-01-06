@@ -16,4 +16,3 @@ export function ErrorState({ message, onRetry }: ErrorStateProps): ReactNode {
     </div>
   );
 }
-

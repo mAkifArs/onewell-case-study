@@ -1004,10 +1004,7 @@
         "input_parameters": {
           "join_type": "inner",
           "join_key": "customer_id",
-          "tables": [
-            "customer_transactions",
-            "customer_demographics"
-          ]
+          "tables": ["customer_transactions", "customer_demographics"]
         },
         "executed_by": {
           "user_id": "user-001",
@@ -1090,10 +1087,7 @@
         "operation_name": "remove_outliers",
         "input_parameters": {
           "method": "iqr",
-          "columns": [
-            "default_rate",
-            "loan_volume"
-          ]
+          "columns": ["default_rate", "loan_volume"]
         },
         "executed_by": {
           "user_id": "user-003",

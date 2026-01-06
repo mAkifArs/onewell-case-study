@@ -11,10 +11,7 @@ interface ColumnListProps {
 
 export function ColumnList({ columns, tableId }: ColumnListProps): ReactNode {
   return (
-    <div
-      className={styles.columnList}
-      data-testid={`column-list-${tableId}`}
-    >
+    <div className={styles.columnList} data-testid={`column-list-${tableId}`}>
       <h4 className={styles.sectionTitle}>Columns ({columns.length})</h4>
       <div className={styles.columns}>
         {columns.map((column) => (
@@ -37,4 +34,3 @@ export function ColumnList({ columns, tableId }: ColumnListProps): ReactNode {
     </div>
   );
 }
-

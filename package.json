@@ -12,7 +12,9 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
     "cypress": "cypress open",
-    "cypress:run": "cypress run"
+    "cypress:run": "cypress run",
+    "format": "prettier --write \"src/**/*.{ts,tsx,scss,json}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,scss,json}\""
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -33,10 +35,12 @@
     "@vitejs/plugin-react": "^4.3.4",
     "cypress": "^13.17.0",
     "eslint": "^9.17.0",
+    "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.16",
     "globals": "^15.14.0",
     "jsdom": "^25.0.1",
+    "prettier": "^3.7.4",
     "sass": "^1.83.0",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.18.2",

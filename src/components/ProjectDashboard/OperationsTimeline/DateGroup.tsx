@@ -25,4 +25,3 @@ export function DateGroup({ date, operations }: DateGroupProps): ReactNode {
     </div>
   );
 }
-

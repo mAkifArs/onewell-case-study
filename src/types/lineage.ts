@@ -11,4 +11,3 @@ export interface LineageRelation {
   parent_table: string; // table_name of source table
   parent_type: string; // 'source_dataset'
 }
-

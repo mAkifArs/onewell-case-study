@@ -17,4 +17,3 @@ export function BackButton(): ReactNode {
     </button>
   );
 }
-

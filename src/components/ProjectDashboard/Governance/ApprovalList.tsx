@@ -36,7 +36,9 @@ export function ApprovalList({ approvals }: ApprovalListProps): ReactNode {
                 <span className={styles.approvalType}>
                   {approval.approval_type.replace(/([A-Z])/g, " $1").trim()}
                 </span>
-                <span className={styles.approver}>{approval.approver.name}</span>
+                <span className={styles.approver}>
+                  {approval.approver.name}
+                </span>
               </div>
               <span
                 className={styles.statusBadge}
@@ -51,4 +53,3 @@ export function ApprovalList({ approvals }: ApprovalListProps): ReactNode {
     </div>
   );
 }
-

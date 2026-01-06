@@ -8,4 +8,3 @@ interface EmptyStateProps {
 export function EmptyState({ message }: EmptyStateProps): ReactNode {
   return <p className={styles.empty}>{message}</p>;
 }
-

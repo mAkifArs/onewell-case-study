@@ -82,7 +82,9 @@
 .edge {
   stroke: var(--color-border);
   stroke-width: 2;
-  transition: stroke 0.2s, stroke-width 0.2s;
+  transition:
+    stroke 0.2s,
+    stroke-width 0.2s;
 
   &[data-highlighted="true"] {
     stroke: $color-navy;
@@ -129,7 +131,7 @@
 
   .highlighted &,
   .selected & {
-    color: $color-info;  // Bright blue #3b82f6
+    color: $color-info; // Bright blue #3b82f6
   }
 }
 

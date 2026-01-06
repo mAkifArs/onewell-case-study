@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import type { Project } from "@/types";
 import { Badge } from "@/components/Badge";
-import { formatDate } from "@/utils";
 import styles from "./ProjectSelector.module.scss";
 
 interface ProjectCardProps {
@@ -16,12 +15,6 @@ export function ProjectCard({ project, onClick }: ProjectCardProps): ReactNode {
     | "review"
     | "approved"
     | "locked";
-
-  const typeVariant = project.project_type.toLowerCase() as
-    | "ml"
-    | "timeseries"
-    | "scorecard"
-    | "ai";
 
   return (
     <article
@@ -39,7 +32,9 @@ export function ProjectCard({ project, onClick }: ProjectCardProps): ReactNode {
       <div className={styles.cardHeader}>
         <h2 className={styles.cardTitle}>{project.project_name}</h2>
         <div className={styles.badges}>
-          <Badge variant={typeVariant}>{project.project_type}</Badge>
+          <Badge variant="default" showIcon={false}>
+            {project.project_type}
+          </Badge>
           <Badge variant={statusVariant}>{project.status}</Badge>
         </div>
       </div>
@@ -47,10 +42,10 @@ export function ProjectCard({ project, onClick }: ProjectCardProps): ReactNode {
       <p className={styles.cardObjectives}>{project.objectives}</p>
 
       <div className={styles.cardMeta}>
-        <span className={styles.owner}>{project.owner.name}</span>
-        <span className={styles.date}>Updated {formatDate(project.updated_at)}</span>
+        <span className={styles.department}>
+          Department: {project.department.name}
+        </span>
       </div>
     </article>
   );
 }
-

@@ -12,10 +12,7 @@ interface OperationsTimelineProps {
 export function OperationsTimeline({
   operations,
 }: OperationsTimelineProps): ReactNode {
-  const groups = useMemo(
-    () => groupOperationsByDate(operations),
-    [operations]
-  );
+  const groups = useMemo(() => groupOperationsByDate(operations), [operations]);
 
   if (operations.length === 0) {
     return <EmptyState message="No recent operations" />;

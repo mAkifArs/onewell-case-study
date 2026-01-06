@@ -67,7 +67,7 @@
   font-weight: $font-weight-bold;
   line-height: $line-height-tight;
   letter-spacing: $letter-spacing-tight;
-  
+
   @include md {
     font-size: $font-size-4xl;
   }
@@ -78,7 +78,7 @@
   font-weight: $font-weight-semibold;
   line-height: $line-height-tight;
   letter-spacing: $letter-spacing-tight;
-  
+
   @include md {
     font-size: $font-size-3xl;
   }
@@ -178,9 +178,10 @@
   border-radius: $radius-xl;
   box-shadow: var(--shadow-sm);
   padding: $card-padding;
-  transition: box-shadow $transition-base $ease-out,
-              border-color $transition-base $ease-out;
-  
+  transition:
+    box-shadow $transition-base $ease-out,
+    border-color $transition-base $ease-out;
+
   &:hover {
     box-shadow: var(--shadow-md);
   }
@@ -189,11 +190,11 @@
 @mixin card-interactive {
   @include card;
   cursor: pointer;
-  
+
   &:hover {
     border-color: var(--color-border-dark);
   }
-  
+
   &:active {
     transform: scale(0.99);
   }
@@ -228,7 +229,7 @@
   text-decoration: none;
   cursor: pointer;
   transition: all $transition-fast $ease-out;
-  
+
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
@@ -239,11 +240,11 @@
   @include button-base;
   background-color: var(--color-accent-primary);
   color: $color-white;
-  
+
   &:hover:not(:disabled) {
     background-color: var(--color-accent-primary-hover);
   }
-  
+
   &:focus-visible {
     outline: none;
     box-shadow: 0 0 0 3px rgba($color-coral, 0.3);
@@ -254,11 +255,11 @@
   @include button-base;
   background-color: var(--color-bg-accent);
   color: var(--color-text-inverse);
-  
+
   &:hover:not(:disabled) {
     background-color: var(--color-interactive-hover);
   }
-  
+
   &:focus-visible {
     outline: none;
     box-shadow: var(--shadow-focus);
@@ -270,12 +271,12 @@
   background-color: transparent;
   border: 1px solid var(--color-border);
   color: var(--color-text-primary);
-  
+
   &:hover:not(:disabled) {
     background-color: var(--color-bg-secondary);
     border-color: var(--color-border-dark);
   }
-  
+
   &:focus-visible {
     outline: none;
     box-shadow: var(--shadow-focus);
@@ -286,12 +287,12 @@
   @include button-base;
   background-color: transparent;
   color: var(--color-text-secondary);
-  
+
   &:hover:not(:disabled) {
     background-color: var(--color-bg-secondary);
     color: var(--color-text-primary);
   }
-  
+
   &:focus-visible {
     outline: none;
     box-shadow: var(--shadow-focus);
@@ -310,23 +311,24 @@
   border-radius: $input-radius;
   font-size: $font-size-sm;
   color: var(--color-text-primary);
-  transition: border-color $transition-fast $ease-out,
-              box-shadow $transition-fast $ease-out;
-  
+  transition:
+    border-color $transition-fast $ease-out,
+    box-shadow $transition-fast $ease-out;
+
   &::placeholder {
     color: var(--color-text-muted);
   }
-  
+
   &:hover:not(:disabled) {
     border-color: var(--color-border-dark);
   }
-  
+
   &:focus {
     outline: none;
     border-color: var(--color-input-focus-border);
     box-shadow: var(--shadow-focus);
   }
-  
+
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
@@ -375,16 +377,16 @@
     width: 8px;
     height: 8px;
   }
-  
+
   &::-webkit-scrollbar-track {
     background: var(--color-scrollbar-track);
     border-radius: $radius-full;
   }
-  
+
   &::-webkit-scrollbar-thumb {
     background: var(--color-scrollbar-thumb);
     border-radius: $radius-full;
-    
+
     &:hover {
       background: var(--color-scrollbar-thumb-hover);
     }
@@ -394,7 +396,7 @@
 @mixin hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-  
+
   &::-webkit-scrollbar {
     display: none;
   }
@@ -437,4 +439,3 @@
     transition: none !important;
   }
 }
-

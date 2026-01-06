@@ -16,7 +16,7 @@
 
 html {
   scroll-behavior: smooth;
-  
+
   @media (prefers-reduced-motion: reduce) {
     scroll-behavior: auto;
   }
@@ -46,7 +46,7 @@ main {
   max-width: 1536px;
   margin: 0 auto;
   padding: $spacing-6;
-  
+
   @media (min-width: $breakpoint-lg) {
     padding: $spacing-8;
   }
@@ -88,7 +88,7 @@ main {
 ::-webkit-scrollbar-thumb {
   background: var(--color-scrollbar-thumb);
   border-radius: $radius-full;
-  
+
   &:hover {
     background: var(--color-scrollbar-thumb-hover);
   }
@@ -123,7 +123,7 @@ main {
   border-radius: $radius-md;
   font-weight: $font-weight-medium;
   transition: top $transition-fast $ease-out;
-  
+
   &:focus {
     top: $spacing-4;
   }
@@ -138,7 +138,7 @@ main {
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 $spacing-4;
-  
+
   @media (min-width: $breakpoint-lg) {
     padding: 0 $spacing-6;
   }
@@ -164,49 +164,108 @@ main {
   justify-content: space-between;
 }
 
-.gap-1 { gap: $spacing-1; }
-.gap-2 { gap: $spacing-2; }
-.gap-3 { gap: $spacing-3; }
-.gap-4 { gap: $spacing-4; }
-.gap-5 { gap: $spacing-5; }
-.gap-6 { gap: $spacing-6; }
-.gap-8 { gap: $spacing-8; }
+.gap-1 {
+  gap: $spacing-1;
+}
+.gap-2 {
+  gap: $spacing-2;
+}
+.gap-3 {
+  gap: $spacing-3;
+}
+.gap-4 {
+  gap: $spacing-4;
+}
+.gap-5 {
+  gap: $spacing-5;
+}
+.gap-6 {
+  gap: $spacing-6;
+}
+.gap-8 {
+  gap: $spacing-8;
+}
 
 // ─────────────────────────────────────────────────────────────────────────────────
 // SPACING UTILITIES
 // ─────────────────────────────────────────────────────────────────────────────────
 
-.m-0 { margin: 0; }
-.mt-1 { margin-top: $spacing-1; }
-.mt-2 { margin-top: $spacing-2; }
-.mt-3 { margin-top: $spacing-3; }
-.mt-4 { margin-top: $spacing-4; }
-.mt-5 { margin-top: $spacing-5; }
-.mt-6 { margin-top: $spacing-6; }
-.mt-8 { margin-top: $spacing-8; }
+.m-0 {
+  margin: 0;
+}
+.mt-1 {
+  margin-top: $spacing-1;
+}
+.mt-2 {
+  margin-top: $spacing-2;
+}
+.mt-3 {
+  margin-top: $spacing-3;
+}
+.mt-4 {
+  margin-top: $spacing-4;
+}
+.mt-5 {
+  margin-top: $spacing-5;
+}
+.mt-6 {
+  margin-top: $spacing-6;
+}
+.mt-8 {
+  margin-top: $spacing-8;
+}
 
-.mb-1 { margin-bottom: $spacing-1; }
-.mb-2 { margin-bottom: $spacing-2; }
-.mb-3 { margin-bottom: $spacing-3; }
-.mb-4 { margin-bottom: $spacing-4; }
-.mb-5 { margin-bottom: $spacing-5; }
-.mb-6 { margin-bottom: $spacing-6; }
-.mb-8 { margin-bottom: $spacing-8; }
+.mb-1 {
+  margin-bottom: $spacing-1;
+}
+.mb-2 {
+  margin-bottom: $spacing-2;
+}
+.mb-3 {
+  margin-bottom: $spacing-3;
+}
+.mb-4 {
+  margin-bottom: $spacing-4;
+}
+.mb-5 {
+  margin-bottom: $spacing-5;
+}
+.mb-6 {
+  margin-bottom: $spacing-6;
+}
+.mb-8 {
+  margin-bottom: $spacing-8;
+}
 
-.p-0 { padding: 0; }
-.p-1 { padding: $spacing-1; }
-.p-2 { padding: $spacing-2; }
-.p-3 { padding: $spacing-3; }
-.p-4 { padding: $spacing-4; }
-.p-5 { padding: $spacing-5; }
-.p-6 { padding: $spacing-6; }
+.p-0 {
+  padding: 0;
+}
+.p-1 {
+  padding: $spacing-1;
+}
+.p-2 {
+  padding: $spacing-2;
+}
+.p-3 {
+  padding: $spacing-3;
+}
+.p-4 {
+  padding: $spacing-4;
+}
+.p-5 {
+  padding: $spacing-5;
+}
+.p-6 {
+  padding: $spacing-6;
+}
 
 // ─────────────────────────────────────────────────────────────────────────────────
 // TRANSITIONS
 // ─────────────────────────────────────────────────────────────────────────────────
 
 .transition {
-  transition-property: color, background-color, border-color, box-shadow, transform, opacity;
+  transition-property:
+    color, background-color, border-color, box-shadow, transform, opacity;
   transition-timing-function: $ease-out;
   transition-duration: $transition-base;
 }
@@ -244,7 +303,7 @@ main {
     background: white;
     color: black;
   }
-  
+
   .no-print {
     display: none !important;
   }

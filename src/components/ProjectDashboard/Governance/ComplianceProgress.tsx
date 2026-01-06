@@ -20,9 +20,11 @@ export function ComplianceProgress({
             {checklist.completed_items}/{checklist.total_items} items
           </span>
         </div>
-        <ProgressBar value={checklist.completion_percentage} data-testid="compliance-bar" />
+        <ProgressBar
+          value={checklist.completion_percentage}
+          data-testid="compliance-bar"
+        />
       </div>
     </div>
   );
 }
-

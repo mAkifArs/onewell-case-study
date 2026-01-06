@@ -20,4 +20,3 @@ export function OperationsList({ groups }: OperationsListProps): ReactNode {
     </div>
   );
 }
-

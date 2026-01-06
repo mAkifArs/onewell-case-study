@@ -4,10 +4,10 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 
 // Common types
-export type { User, Department } from './common';
+export type { User, Department } from "./common";
 
 // Project types
-export type { Project, ProjectStatus, ProjectType } from './project';
+export type { Project, ProjectStatus, ProjectType } from "./project";
 
 // Table types
 export type {
@@ -18,10 +18,10 @@ export type {
   ColumnRole,
   DataType,
   CheckpointType,
-} from './table';
+} from "./table";
 
 // Operation types
-export type { Operation, OperationType } from './operation';
+export type { Operation, OperationType } from "./operation";
 
 // Governance types
 export type {
@@ -32,8 +32,7 @@ export type {
   ApprovalStatus,
   ApprovalType,
   ChecklistStatus,
-} from './governance';
+} from "./governance";
 
 // Lineage types
-export type { LineageRelation } from './lineage';
-
+export type { LineageRelation } from "./lineage";

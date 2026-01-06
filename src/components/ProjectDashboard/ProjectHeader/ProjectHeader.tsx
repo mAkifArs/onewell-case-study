@@ -16,19 +16,15 @@ export function ProjectHeader({ project }: ProjectHeaderProps): ReactNode {
     | "approved"
     | "locked";
 
-  const typeVariant = project.project_type.toLowerCase() as
-    | "ml"
-    | "timeseries"
-    | "scorecard"
-    | "ai";
-
   return (
     <header className={styles.header} data-testid="project-header">
       <div className={styles.top}>
         <div className={styles.titleRow}>
           <h1 className={styles.title}>{project.project_name}</h1>
           <div className={styles.badges}>
-            <Badge variant={typeVariant}>{project.project_type}</Badge>
+            <Badge variant="default" showIcon={false}>
+              {project.project_type}
+            </Badge>
             <Badge variant={statusVariant}>{project.status}</Badge>
           </div>
         </div>
@@ -45,7 +41,9 @@ export function ProjectHeader({ project }: ProjectHeaderProps): ReactNode {
         {project.governance_manager && (
           <div className={styles.metaItem}>
             <span className={styles.metaLabel}>Governance Manager</span>
-            <span className={styles.metaValue}>{project.governance_manager.name}</span>
+            <span className={styles.metaValue}>
+              {project.governance_manager.name}
+            </span>
           </div>
         )}
 
@@ -56,15 +54,18 @@ export function ProjectHeader({ project }: ProjectHeaderProps): ReactNode {
 
         <div className={styles.metaItem}>
           <span className={styles.metaLabel}>Created</span>
-          <span className={styles.metaValue}>{formatDate(project.created_at)}</span>
+          <span className={styles.metaValue}>
+            {formatDate(project.created_at)}
+          </span>
         </div>
 
         <div className={styles.metaItem}>
           <span className={styles.metaLabel}>Updated</span>
-          <span className={styles.metaValue}>{formatDate(project.updated_at)}</span>
+          <span className={styles.metaValue}>
+            {formatDate(project.updated_at)}
+          </span>
         </div>
       </div>
     </header>
   );
 }
-

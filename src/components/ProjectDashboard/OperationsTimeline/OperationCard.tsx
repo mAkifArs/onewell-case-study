@@ -23,16 +23,19 @@ export function OperationCard({ operation }: OperationCardProps): ReactNode {
           <span className={styles.operationName}>
             {toTitleCase(operation.operation_name)}
           </span>
-          <span className={styles.operationType}>{operation.operation_type}</span>
+          <span className={styles.operationType}>
+            {operation.operation_type}
+          </span>
         </div>
 
         <div className={styles.operationMeta}>
           <span className={styles.executor}>{operation.executed_by.name}</span>
           <span className={styles.separator}>→</span>
-          <code className={styles.affectedTable}>{operation.affected_table}</code>
+          <code className={styles.affectedTable}>
+            {operation.affected_table}
+          </code>
         </div>
       </div>
     </div>
   );
 }
-
