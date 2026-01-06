@@ -1,0 +1,68 @@
+@use "@/styles/variables" as *;
+
+.header {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: $radius-lg;
+  padding: $spacing-5;
+}
+
+.top {
+  margin-bottom: $spacing-5;
+  padding-bottom: $spacing-5;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.titleRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $spacing-4;
+  flex-wrap: wrap;
+  margin-bottom: $spacing-2;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.badges {
+  display: flex;
+  gap: $spacing-2;
+}
+
+.objectives {
+  color: var(--color-text-secondary);
+  font-size: 0.9375rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-6;
+}
+
+.metaItem {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+}
+
+.metaLabel {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.metaValue {
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
