@@ -2,9 +2,7 @@ import { useState, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, History, CheckCircle } from "lucide-react";
 import type { ProjectTable } from "@/types";
-import { Badge } from "@/components/Badge";
 import { Modal } from "@/components/Modal";
-import { Tooltip } from "@/components/Tooltip";
 import { formatCompact, formatVersion, toTitleCase } from "@/utils";
 import { ColumnList } from "./ColumnList";
 import { VersionHistory } from "./VersionHistory";
@@ -63,39 +61,42 @@ export function TableRow({
           </div>
 
           <div className={styles.tableMeta}>
-            <Badge variant={table.table_type === "source" ? "default" : "ml"}>
+            <span className={styles.tableType} data-type={table.table_type}>
               {table.table_type}
-            </Badge>
-            <span className={styles.version}>
-              {formatVersion(currentVersion?.version_number ?? 1)}
             </span>
+            <span className={styles.metaSeparator}>·</span>
             <span className={styles.stats}>
               {formatCompact(currentVersion?.row_count ?? 0)} rows
             </span>
+            <span className={styles.metaSeparator}>·</span>
             <span className={styles.stats}>
               {currentVersion?.column_count ?? 0} cols
             </span>
             {hasCheckpoint && (
-              <span
-                className={styles.checkpoint}
-                data-testid={`checkpoint-badge-${currentVersion?.checkpoint_type}`}
-              >
-                <CheckCircle size={12} />
-                {toTitleCase(currentVersion?.checkpoint_type ?? "")}
-              </span>
+              <>
+                <span className={styles.metaSeparator}>·</span>
+                <span
+                  className={styles.checkpoint}
+                  data-testid={`checkpoint-badge-${currentVersion?.checkpoint_type}`}
+                >
+                  <CheckCircle size={12} />
+                  {toTitleCase(currentVersion?.checkpoint_type ?? "")}
+                </span>
+              </>
             )}
           </div>
         </div>
 
-        <Tooltip content="View version history" position="top">
-          <button
-            className={styles.historyButton}
-            onClick={() => setIsVersionsOpen(true)}
-            aria-label="Version history"
-          >
-            <History size={14} />
-          </button>
-        </Tooltip>
+        <button
+          className={styles.versionButton}
+          onClick={() => setIsVersionsOpen(true)}
+          aria-label="Version history"
+        >
+          <span className={styles.versionLabel}>
+            {formatVersion(currentVersion?.version_number ?? 1)}
+          </span>
+          <History size={14} />
+        </button>
       </div>
 
       <AnimatePresence>
