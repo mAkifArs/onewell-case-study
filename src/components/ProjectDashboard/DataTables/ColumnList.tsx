@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { Column } from "@/types";
 import { Badge } from "@/components/Badge";
 import { formatColumnRole } from "@/utils";
+import { DataTable, type DataTableColumn } from "./DataTable";
 import styles from "./DataTables.module.scss";
 
 interface ColumnListProps {
@@ -9,28 +10,39 @@ interface ColumnListProps {
   tableId: string;
 }
 
+const columnConfig: DataTableColumn<Column>[] = [
+  {
+    key: "display_name",
+    header: "Column",
+    render: (col) => (
+      <span className={styles.cellPrimary}>{col.display_name}</span>
+    ),
+  },
+  {
+    key: "column_name",
+    header: "Name",
+    render: (col) => (
+      <span className={styles.cellPrimary}>{col.column_name}</span>
+    ),
+  },
+  {
+    key: "role",
+    header: "Role",
+    render: (col) => (
+      <Badge variant={col.role} data-testid={`column-role-badge-${col.role}`}>
+        {formatColumnRole(col.role)}
+      </Badge>
+    ),
+  },
+];
+
 export function ColumnList({ columns, tableId }: ColumnListProps): ReactNode {
   return (
-    <div className={styles.columnList} data-testid={`column-list-${tableId}`}>
-      <h4 className={styles.sectionTitle}>Columns ({columns.length})</h4>
-      <div className={styles.columns}>
-        {columns.map((column) => (
-          <div
-            key={column.column_id}
-            className={styles.columnItem}
-            data-testid={`column-item-${column.column_name}`}
-          >
-            <code className={styles.columnName}>{column.column_name}</code>
-            <span className={styles.columnType}>{column.data_type}</span>
-            <Badge
-              variant={column.role}
-              data-testid={`column-role-badge-${column.role}`}
-            >
-              {formatColumnRole(column.role)}
-            </Badge>
-          </div>
-        ))}
-      </div>
-    </div>
+    <DataTable
+      columns={columnConfig}
+      data={columns}
+      getRowKey={(col) => col.column_id}
+      testId={`column-list-${tableId}`}
+    />
   );
 }

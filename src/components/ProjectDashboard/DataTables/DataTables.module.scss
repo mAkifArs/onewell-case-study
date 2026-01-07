@@ -134,71 +134,122 @@
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// COLUMN LIST
+// SHARED DATA TABLE
 // ─────────────────────────────────────────────────────────────────────────────
 
-.columnList {
-  // container
+.dataTableWrapper {
+  overflow-x: auto;
 }
 
-.columns {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-2;
-}
-
-.columnItem {
-  display: flex;
-  align-items: center;
-  gap: $spacing-3;
-  padding: $spacing-2;
-  background: var(--color-bg-secondary);
-  border-radius: $radius-sm;
-}
-
-.columnName {
-  font-family: $font-family-mono;
+.dataTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
   font-size: 0.8125rem;
-  color: var(--color-text-primary);
-  min-width: 120px;
-}
 
-.columnType {
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
-  min-width: 80px;
-}
+  th,
+  td {
+    padding: $spacing-2 $spacing-3;
+    text-align: left;
+  }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// VERSION HISTORY
-// ─────────────────────────────────────────────────────────────────────────────
+  th {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-secondary);
+    background: var(--color-bg-secondary);
 
-.versionHistory {
-  // container
-}
+    &:first-child {
+      border-top-left-radius: $radius-md;
+    }
 
-.versions {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-2;
-}
+    &:last-child {
+      border-top-right-radius: $radius-md;
+    }
+  }
 
-.versionItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: $spacing-2 $spacing-3;
-  background: var(--color-bg-secondary);
-  border-radius: $radius-sm;
-  border-left: 3px solid transparent;
+  td {
+    color: var(--color-text-secondary);
+    border-bottom: 1px solid var(--color-border-light);
+  }
 
-  &[data-current="true"] {
-    border-left-color: $color-navy;
-    background: rgba($color-navy, 0.05);
+  tbody tr {
+    transition: background 0.15s ease;
+
+    &:hover {
+      background: var(--color-bg-secondary) !important;
+    }
+
+    &[data-highlighted="true"] {
+      background: rgba($color-navy, 0.08);
+
+      td {
+        color: var(--color-text-primary);
+      }
+    }
+
+    &:last-child td {
+      border-bottom: none;
+    }
   }
 }
 
-.versionMain {
+// ─────────────────────────────────────────────────────────────────────────────
+// TABLE CELL STYLES (shared)
+// ─────────────────────────────────────────────────────────────────────────────
+
+.cellPrimary {
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.cellCode {
+  font-family: $font-family-mono;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  background: var(--color-bg-tertiary);
+  padding: 2px 6px;
+  border-radius: $radius-sm;
+}
+
+.cellMono {
+  font-family: $font-family-mono;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.cellWithBadge {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+}
+
+.cellBadge {
+  font-size: 0.5625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  padding: 2px 6px;
+  background: $color-navy;
+  color: white;
+  border-radius: $radius-sm;
+}
+
+.cellSuccess {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: $color-success;
+  font-weight: 500;
+}
+
+.cellMuted {
+  color: var(--color-text-muted);
+}
+
+.versionCell {
   display: flex;
   align-items: center;
   gap: $spacing-2;
@@ -206,30 +257,29 @@
 
 .versionNumber {
   font-weight: 600;
+  font-family: $font-family-mono;
   color: var(--color-text-primary);
 }
 
 .currentBadge {
-  font-size: 0.625rem;
-  font-weight: 500;
+  font-size: 0.5625rem;
+  font-weight: 600;
   text-transform: uppercase;
+  letter-spacing: 0.02em;
   padding: 2px 6px;
   background: $color-navy;
   color: white;
   border-radius: $radius-sm;
 }
 
-.versionMeta {
-  display: flex;
-  align-items: center;
-  gap: $spacing-2;
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
-}
-
-.checkpointSmall {
+.checkpointCell {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   color: $color-success;
+  font-weight: 500;
+}
+
+.noCheckpoint {
+  color: var(--color-text-muted);
 }

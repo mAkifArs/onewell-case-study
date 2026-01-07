@@ -2,13 +2,17 @@ import { type ReactNode, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
+import { clsx } from "clsx";
 import styles from "./Modal.module.scss";
+
+type ModalSize = "default" | "wide";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
   children: ReactNode;
+  size?: ModalSize;
 }
 
 export function Modal({
@@ -16,6 +20,7 @@ export function Modal({
   onClose,
   title,
   children,
+  size = "default",
 }: ModalProps): ReactNode {
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -50,7 +55,7 @@ export function Modal({
           onClick={onClose}
         >
           <motion.div
-            className={styles.modal}
+            className={clsx(styles.modal, styles[size])}
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}

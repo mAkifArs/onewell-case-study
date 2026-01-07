@@ -7,15 +7,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: $spacing-4;
+  padding: $spacing-3;
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(4px);
+
+  @media (min-width: $breakpoint-sm) {
+    padding: $spacing-4;
+  }
 }
 
 .modal {
   width: 100%;
   max-width: 500px;
-  max-height: 80vh;
+  max-height: 90vh;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   background: var(--color-bg-primary);
@@ -23,6 +28,22 @@
   border-radius: $radius-lg;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   overflow: hidden;
+
+  @media (min-width: $breakpoint-sm) {
+    max-height: 80vh;
+  }
+
+  &.wide {
+    max-width: 350px;
+
+    @media (min-width: $breakpoint-sm) {
+      max-width: 600px;
+    }
+
+    @media (min-width: $breakpoint-md) {
+      max-width: 720px;
+    }
+  }
 }
 
 .header {
@@ -63,6 +84,10 @@
 
 .content {
   flex: 1;
-  padding: $spacing-4;
-  overflow-y: auto;
+  padding: $spacing-3;
+  overflow: auto;
+
+  @media (min-width: $breakpoint-sm) {
+    padding: $spacing-4;
+  }
 }

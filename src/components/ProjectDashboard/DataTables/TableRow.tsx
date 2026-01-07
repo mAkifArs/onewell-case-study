@@ -113,6 +113,7 @@ export function TableRow({
         isOpen={isVersionsOpen}
         onClose={() => setIsVersionsOpen(false)}
         title={`Version History — ${table.display_name}`}
+        size="wide"
       >
         <VersionHistory
           versions={table.versions}
