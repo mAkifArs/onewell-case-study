@@ -1,0 +1,79 @@
+@use "@/styles/variables" as *;
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-2;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+// Size variants
+.sm {
+  font-size: 0.75rem;
+  gap: $spacing-1-5;
+
+  .dot {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+.md {
+  font-size: 0.875rem;
+  gap: $spacing-2;
+
+  .dot {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+// Dot base
+.dot {
+  border-radius: $radius-full;
+  flex-shrink: 0;
+}
+
+// Status colors - matching Badge component colors
+.draft {
+  background-color: $color-gray-500;
+
+  [data-theme="dark"] & {
+    background-color: $color-gray-400;
+  }
+}
+
+.active {
+  background-color: #2563eb;
+
+  [data-theme="dark"] & {
+    background-color: #60a5fa;
+  }
+}
+
+.review {
+  background-color: #d97706;
+
+  [data-theme="dark"] & {
+    background-color: #fbbf24;
+  }
+}
+
+.approved {
+  background-color: #059669;
+
+  [data-theme="dark"] & {
+    background-color: #34d399;
+  }
+}
+
+.locked {
+  background-color: #dc2626;
+
+  [data-theme="dark"] & {
+    background-color: #f87171;
+  }
+}
+

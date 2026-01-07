@@ -2,7 +2,7 @@ import { memo, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Project } from "@/types";
 import { useProjectStore } from "@/store";
-import { Badge } from "@/components/Badge";
+import { StatusIndicator } from "@/components/StatusIndicator";
 import styles from "./ProjectSelector.module.scss";
 
 interface ProjectCardProps {
@@ -20,13 +20,6 @@ export const ProjectCard = memo(function ProjectCard({
     navigate(`/projects/${project.project_id}`);
   };
 
-  const statusVariant = project.status.toLowerCase() as
-    | "draft"
-    | "active"
-    | "review"
-    | "approved"
-    | "locked";
-
   return (
     <article
       className={styles.card}
@@ -43,7 +36,7 @@ export const ProjectCard = memo(function ProjectCard({
       <div className={styles.cardHeader}>
         <div className={styles.titleRow}>
           <h2 className={styles.cardTitle}>{project.project_name}</h2>
-          <Badge variant={statusVariant}>{project.status}</Badge>
+          <StatusIndicator status={project.status} size="sm" />
         </div>
         <span className={styles.projectType}>
           Project Type: {project.project_type}

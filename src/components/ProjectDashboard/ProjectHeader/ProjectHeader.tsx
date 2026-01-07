@@ -1,6 +1,6 @@
 import { memo, type ReactNode } from "react";
 import type { Project } from "@/types";
-import { Badge } from "@/components/Badge";
+import { StatusIndicator } from "@/components/StatusIndicator";
 import { formatDate } from "@/utils";
 import styles from "./ProjectHeader.module.scss";
 
@@ -16,13 +16,6 @@ interface MetaItem {
 export const ProjectHeader = memo(function ProjectHeader({
   project,
 }: ProjectHeaderProps): ReactNode {
-  const statusVariant = project.status.toLowerCase() as
-    | "draft"
-    | "active"
-    | "review"
-    | "approved"
-    | "locked";
-
   const metaItems: MetaItem[] = [
     { label: "Owner", value: project.owner.name },
     ...(project.governance_manager
@@ -43,7 +36,7 @@ export const ProjectHeader = memo(function ProjectHeader({
       <div className={styles.top}>
         <div className={styles.titleRow}>
           <h1 className={styles.title}>{project.project_name}</h1>
-          <Badge variant={statusVariant}>{project.status}</Badge>
+          <StatusIndicator status={project.status} size="md" />
         </div>
         <span className={styles.projectType}>
           Project Type: {project.project_type}
