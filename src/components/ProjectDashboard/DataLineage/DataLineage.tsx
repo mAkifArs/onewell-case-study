@@ -1,10 +1,7 @@
 import type { ReactNode } from "react";
-import { useMemo } from "react";
 import type { LineageRelation, ProjectTable } from "@/types";
-import { useLineageSelection } from "@/hooks";
-import { buildLineageGraph } from "@/utils/lineageUtils";
 import { EmptyState } from "@/components/EmptyState";
-import { LineageGraph } from "./LineageGraph";
+import { LineageFlow } from "./LineageFlow";
 import styles from "./DataLineage.module.scss";
 
 interface DataLineageProps {
@@ -13,26 +10,13 @@ interface DataLineageProps {
 }
 
 export function DataLineage({ lineage, tables }: DataLineageProps): ReactNode {
-  const graph = useMemo(
-    () => buildLineageGraph(lineage, tables),
-    [lineage, tables]
-  );
-
-  const { selectedTable, highlightedTables, handleNodeClick } =
-    useLineageSelection(lineage);
-
   if (lineage.length === 0) {
     return <EmptyState message="No lineage data available" />;
   }
 
   return (
     <div className={styles.container} data-testid="lineage-view">
-      <LineageGraph
-        graph={graph}
-        highlightedTables={highlightedTables}
-        selectedTable={selectedTable}
-        onNodeClick={handleNodeClick}
-      />
+      <LineageFlow lineage={lineage} tables={tables} />
     </div>
   );
 }

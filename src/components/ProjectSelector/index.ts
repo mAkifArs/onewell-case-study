@@ -1,4 +1,3 @@
 export { ProjectSelector } from "./ProjectSelector";
-export { ProjectCard } from "./ProjectCard";
-export { ProjectGrid } from "./ProjectGrid";
+export { ProjectTable } from "./ProjectTable";
 export { LoadingSkeleton } from "./LoadingSkeleton";

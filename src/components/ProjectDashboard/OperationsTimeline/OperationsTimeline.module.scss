@@ -1,9 +1,62 @@
 @use "@/styles/variables" as *;
 
+// ─────────────────────────────────────────────────────────────────────────────
+// OPERATION ICON COLORS (CSS Custom Properties)
+// ─────────────────────────────────────────────────────────────────────────────
+
+:root {
+  // Upload - Navy blue
+  --op-color-upload: #{$color-navy};
+  --op-bg-upload: #{$color-navy-100};
+
+  // Merge - Purple
+  --op-color-merge: #8b5cf6;
+  --op-bg-merge: #ede9fe;
+
+  // Transform - Indigo
+  --op-color-transform: #6366f1;
+  --op-bg-transform: #e0e7ff;
+
+  // Clean/Filter - Rose
+  --op-color-clean: #f43f5e;
+  --op-bg-clean: #ffe4e6;
+
+  // Calculate - Amber
+  --op-color-calculate: #{$color-gold-600};
+  --op-bg-calculate: #{$color-gold-100};
+
+  // Aggregate - Teal
+  --op-color-aggregate: #14b8a6;
+  --op-bg-aggregate: #ccfbf1;
+
+  // TimeSeries - Cyan
+  --op-color-timeseries: #06b6d4;
+  --op-bg-timeseries: #cffafe;
+
+  // Default - Gray
+  --op-color-default: #{$color-gray-500};
+  --op-bg-default: #{$color-gray-100};
+}
+
+:global([data-theme="dark"]) {
+  --op-bg-upload: #{rgba($color-navy, 0.2)};
+  --op-bg-merge: #{rgba(#8b5cf6, 0.2)};
+  --op-bg-transform: #{rgba(#6366f1, 0.2)};
+  --op-bg-clean: #{rgba(#f43f5e, 0.2)};
+  --op-bg-calculate: #{rgba($color-gold-500, 0.2)};
+  --op-bg-aggregate: #{rgba(#14b8a6, 0.2)};
+  --op-bg-timeseries: #{rgba(#06b6d4, 0.2)};
+  --op-bg-default: #{rgba($color-gray-500, 0.2)};
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TIMELINE CONTAINER
+// ─────────────────────────────────────────────────────────────────────────────
+
 .timeline {
   display: flex;
   flex-direction: column;
-  gap: $spacing-4;
+  gap: $spacing-5;
 }
 
 .empty {
@@ -20,7 +73,7 @@
 .dateGroup {
   display: flex;
   flex-direction: column;
-  gap: $spacing-2;
+  gap: $spacing-3;
 }
 
 .dateHeader {
@@ -36,18 +89,39 @@
 }
 
 .dateLabel {
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.6875rem;
+  font-weight: 700;
   color: var(--color-text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   white-space: nowrap;
+  padding: $spacing-1 $spacing-2;
+  background: var(--color-bg-secondary);
+  border-radius: $radius-full;
 }
 
 .operations {
   display: flex;
   flex-direction: column;
   gap: $spacing-2;
+  position: relative;
+  padding-left: $spacing-1;
+
+  // Vertical timeline connector line
+  &::before {
+    content: "";
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(
+      to bottom,
+      var(--color-border-light) 0%,
+      var(--color-border-light) 100%
+    );
+    border-radius: $radius-full;
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -56,66 +130,101 @@
 
 .operationCard {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  gap: $spacing-3;
   padding: $spacing-3;
   background: var(--color-bg-secondary);
-  border-radius: $radius-md;
+  border-radius: $radius-lg;
   border: 1px solid var(--color-border-light);
+  position: relative;
+  margin-left: $spacing-1;
+  transition:
+    border-color $transition-fast $ease-out,
+    box-shadow $transition-fast $ease-out;
+
+  &:hover {
+    border-color: var(--color-border);
+    box-shadow: $shadow-sm;
+  }
 }
 
-.operationHeader {
-  margin-bottom: $spacing-3;
-  padding-bottom: $spacing-2;
-  border-bottom: 1px solid var(--color-border-light);
+// Icon wrapper with colored background
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border-radius: $radius-md;
+  background: var(--icon-bg);
+  color: var(--icon-color);
+  position: relative;
+  z-index: 1;
+
+  svg {
+    flex-shrink: 0;
+  }
 }
 
-.operationName {
-  font-weight: 600;
-  color: var(--color-text-primary);
-  font-size: 0.9375rem;
-}
-
-.operationDetails {
+// Content area
+.operationContent {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: $spacing-2;
 }
 
+.operationHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-2;
+}
+
+.operationName {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  font-size: 0.875rem;
+  line-height: 1.3;
+}
+
+.operationTime {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  font-family: $font-family-mono;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  padding: $spacing-0-5 $spacing-1-5;
+  background: var(--color-bg-tertiary);
+  border-radius: $radius-sm;
+  letter-spacing: 0.02em;
+}
+
+.operationDetails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-1 $spacing-4;
+}
+
 .detailRow {
   display: flex;
   align-items: baseline;
-  gap: $spacing-3;
+  gap: $spacing-1-5;
 }
 
 .detailLabel {
   font-size: 0.625rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--color-text-secondary);
-  min-width: 100px;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
   flex-shrink: 0;
 }
 
 .detailValue {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 500;
-  color: var(--color-text-primary);
-}
-
-.code {
-  font-size: 0.6875rem;
-  font-family: $font-family-mono;
-  padding: 2px 6px;
-  border-radius: $radius-sm;
-
-  // Light mode: light bg, dark text
-  color: $color-primary;
-  background: $color-navy-100;
-
-  // Dark mode: dark bg, light text
-  :global([data-theme="dark"]) & {
-    color: white;
-    background: $color-primary;
-  }
+  color: var(--color-text-secondary);
 }

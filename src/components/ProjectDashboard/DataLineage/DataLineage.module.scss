@@ -13,173 +13,100 @@
   padding: $spacing-4;
 }
 
-.graph {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-2;
-  min-height: 180px;
-  overflow-x: auto;
-}
-
 // ─────────────────────────────────────────────────────────────────────────────
-// LABELS ROW
+// REACT FLOW CONTAINER
 // ─────────────────────────────────────────────────────────────────────────────
 
-.labelsRow {
-  display: flex;
-  align-items: center;
-}
-
-.columnLabel {
-  flex: 1;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  text-align: center;
-}
-
-.labelSpacer {
-  width: 60px;
-  flex-shrink: 0;
-
-  @media (max-width: $breakpoint-sm) {
-    width: 40px;
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// NODES ROW
-// ─────────────────────────────────────────────────────────────────────────────
-
-.nodesRow {
-  display: flex;
-  align-items: stretch;
-  flex: 1;
-}
-
-.column {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: $spacing-2;
-}
-
-.lineageGroup {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-2;
-
-  &[data-has-gap="true"] {
-    margin-top: $spacing-4;
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// CONNECTOR LINES
-// ─────────────────────────────────────────────────────────────────────────────
-
-.connectors {
-  width: 60px;
-  min-width: 40px;
-  flex-shrink: 0;
-  position: relative;
-
-  @media (max-width: $breakpoint-sm) {
-    width: 40px;
-  }
-}
-
-.svg {
+.flowContainer {
   width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
+  height: 280px;
+  border-radius: $radius-md;
+  overflow: hidden;
 
-.edge {
-  stroke: var(--color-border);
-  stroke-width: 2;
-  transition:
-    stroke 0.2s,
-    stroke-width 0.2s;
+  // Override React Flow styles for our theme
+  :global {
+    .react-flow__node {
+      cursor: pointer;
+    }
 
-  &[data-highlighted="true"] {
-    stroke: $color-navy;
-    stroke-width: 3;
+    .react-flow__edge-path {
+      stroke: var(--color-border);
+      stroke-width: 2;
+    }
+
+    .react-flow__background {
+      background-color: var(--color-bg-secondary);
+    }
+  }
+
+  @media (max-width: $breakpoint-sm) {
+    height: 240px;
   }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// NODE
+// REACT FLOW NODE
 // ─────────────────────────────────────────────────────────────────────────────
 
-.node {
+.flowNode {
   display: flex;
   align-items: center;
   gap: $spacing-2;
   padding: $spacing-2 $spacing-3;
-  background: var(--color-bg-secondary);
+  background: var(--color-bg-primary);
   border: 2px solid var(--color-border);
   border-radius: $radius-md;
   cursor: pointer;
   transition: all 0.2s;
-  text-align: left;
-  min-width: 0; // Prevent overflow
-
-  @media (max-width: $breakpoint-sm) {
-    padding: $spacing-1-5 $spacing-2;
-  }
+  width: 200px;
 
   &:hover {
     border-color: $color-navy-400;
     background: var(--color-bg-tertiary);
   }
 
-  &.highlighted {
+  &[data-selected="true"] {
     border-color: $color-navy;
     background: rgba($color-navy, 0.1);
+    box-shadow: 0 0 0 3px rgba($color-navy, 0.15);
   }
 
-  &.selected {
-    border-color: $color-navy;
-    background: rgba($color-navy, 0.15);
-    box-shadow: 0 0 0 3px rgba($color-navy, 0.2);
+  // Source nodes - left side
+  &[data-type="source"] {
+    .flowNodeIcon {
+      color: $color-info;
+    }
+  }
+
+  // Derived nodes - right side
+  &[data-type="derived"] {
+    .flowNodeIcon {
+      color: $color-type-timeseries;
+    }
   }
 }
 
-.nodeIconWrapper {
-  display: flex;
+.flowNodeIcon {
   flex-shrink: 0;
-
-  @media (max-width: $breakpoint-sm) {
-    display: none;
-  }
-}
-
-.nodeIcon {
   color: var(--color-text-muted);
+  transition: color 0.2s;
 
-  .highlighted &,
-  .selected & {
-    color: $color-info; // Bright blue #3b82f6
+  .flowNode[data-selected="true"] & {
+    color: $color-navy;
   }
 }
 
-.nodeName {
-  font-size: 0.75rem;
-  font-family: $font-family-mono;
-  color: var(--color-text-primary);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  min-width: 0; // Allow text to shrink
+// ─────────────────────────────────────────────────────────────────────────────
+// REACT FLOW HANDLES
+// ─────────────────────────────────────────────────────────────────────────────
 
-  @media (max-width: $breakpoint-sm) {
-    font-size: 0.6875rem;
+.handle {
+  width: 8px !important;
+  height: 8px !important;
+  background: var(--color-border) !important;
+  border: 2px solid var(--color-bg-primary) !important;
+
+  .flowNode[data-selected="true"] & {
+    background: $color-navy !important;
   }
 }
-

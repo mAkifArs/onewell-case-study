@@ -2,14 +2,22 @@
 
 .page {
   min-height: 100vh;
-  padding: $spacing-8 $spacing-6;
+  padding: $spacing-8 $spacing-4;
   max-width: 1200px;
   margin: 0 auto;
+
+  @media (max-width: $breakpoint-sm) {
+    padding: $spacing-6 $spacing-3;
+  }
 }
 
 .header {
   text-align: center;
   margin-bottom: $spacing-10;
+
+  @media (max-width: $breakpoint-sm) {
+    margin-bottom: $spacing-6;
+  }
 }
 
 .title {
@@ -17,34 +25,20 @@
   font-weight: 700;
   color: var(--color-text-primary);
   margin: 0 0 $spacing-2 0;
+
+  @media (max-width: $breakpoint-sm) {
+    font-size: 1.5rem;
+  }
 }
 
 .subtitle {
   font-size: 1rem;
   color: var(--color-text-muted);
   margin: 0;
-}
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: $spacing-5;
-}
-
-.skeletonCard {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-3;
-  padding: $spacing-5;
-  background: var(--color-bg-primary);
-  border: 1px solid var(--color-border);
-  border-radius: $radius-lg;
-}
-
-.skeletonMeta {
-  margin-top: auto;
-  padding-top: $spacing-3;
-  border-top: 1px solid var(--color-border-light);
+  @media (max-width: $breakpoint-sm) {
+    font-size: 0.875rem;
+  }
 }
 
 .error {
@@ -76,79 +70,107 @@
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PROJECT CARD
+// SKELETON LOADING STATES
 // ─────────────────────────────────────────────────────────────────────────────
 
-.card {
+.skeletonContainer {
   display: flex;
   flex-direction: column;
-  gap: $spacing-3;
-  padding: $spacing-5;
+  gap: $spacing-4;
+}
+
+.skeletonToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-4;
+
+  @media (max-width: $breakpoint-sm) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.skeletonSearch {
+  flex: 1;
+  max-width: 400px;
+
+  @media (max-width: $breakpoint-sm) {
+    max-width: none;
+  }
+}
+
+.skeletonTableWrapper {
   background: var(--color-bg-primary);
   border: 1px solid var(--color-border);
   border-radius: $radius-lg;
-  cursor: pointer;
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
-
-  &:hover {
-    border-color: $color-navy;
-    box-shadow: $shadow-md;
-  }
-
-  &:focus {
-    outline: 2px solid $color-navy;
-    outline-offset: 2px;
-  }
-}
-
-.cardHeader {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-1;
-}
-
-.titleRow {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: $spacing-2;
-}
-
-.cardTitle {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  margin: 0;
-}
-
-.projectType {
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.cardObjectives {
-  font-size: 0.875rem;
-  color: var(--color-text-secondary);
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.cardMeta {
+.skeletonHeader {
   display: flex;
   align-items: center;
-  margin-top: auto;
-  padding-top: $spacing-3;
-  border-top: 1px solid var(--color-border-light);
+  padding: $spacing-3 $spacing-4;
+  background: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border-light);
+
+  @media (max-width: $breakpoint-sm) {
+    padding: $spacing-2 $spacing-3;
+  }
 }
 
-.department {
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
+.skeletonRow {
+  display: flex;
+  align-items: center;
+  padding: $spacing-3 $spacing-4;
+  border-bottom: 1px solid var(--color-border-light);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  @media (max-width: $breakpoint-sm) {
+    padding: $spacing-2 $spacing-3;
+  }
+}
+
+.skeletonCell {
+  // Column widths matching the table
+  &:nth-child(1) {
+    flex: 2;
+    min-width: 120px;
+  }
+  &:nth-child(2) {
+    flex: 1;
+    min-width: 70px;
+  }
+  &:nth-child(3) {
+    flex: 1;
+    min-width: 70px;
+  }
+  &:nth-child(4) {
+    flex: 1.5;
+    min-width: 100px;
+  }
+  &:nth-child(5) {
+    flex: 2;
+    min-width: 120px;
+  }
+  &:nth-child(6) {
+    flex: 1;
+    min-width: 80px;
+  }
+}
+
+// Responsive hiding for skeleton
+.hideOnTablet {
+  @media (max-width: $breakpoint-md) {
+    display: none;
+  }
+}
+
+.hideOnMobile {
+  @media (max-width: $breakpoint-sm) {
+    display: none;
+  }
 }

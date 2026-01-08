@@ -1,39 +1,63 @@
 import type { ReactNode } from "react";
+import { memo } from "react";
+import { Handle, Position, type NodeProps } from "@xyflow/react";
 import { Database, GitBranch } from "lucide-react";
-import { clsx } from "clsx";
+import type { LineageNodeData } from "@/utils/lineageUtils";
+import { TableIndicator } from "@/components/TableIndicator";
 import styles from "./DataLineage.module.scss";
 
-interface LineageNodeProps {
-  name: string;
-  type: "source" | "derived";
-  isHighlighted: boolean;
-  isSelected: boolean;
-  onClick: () => void;
+interface LineageNodeComponentProps extends NodeProps {
+  data: LineageNodeData;
 }
 
-export function LineageNode({
-  name,
-  type,
-  isHighlighted,
-  isSelected,
-  onClick,
-}: LineageNodeProps): ReactNode {
-  const Icon = type === "source" ? Database : GitBranch;
+function LineageNodeComponent({
+  data,
+  selected,
+}: LineageNodeComponentProps): ReactNode {
+  const Icon = data.tableType === "source" ? Database : GitBranch;
 
   return (
-    <button
-      className={clsx(
-        styles.node,
-        isHighlighted && styles.highlighted,
-        isSelected && styles.selected
-      )}
-      onClick={onClick}
-      data-testid={`lineage-node-${name}`}
+    <div
+      className={styles.flowNode}
+      data-type={data.tableType}
+      data-selected={selected}
     >
-      <span className={styles.nodeIconWrapper}>
-        <Icon size={14} className={styles.nodeIcon} />
-      </span>
-      <span className={styles.nodeName}>{name}</span>
-    </button>
+      {data.tableType === "derived" && (
+        <Handle
+          type="target"
+          position={Position.Left}
+          className={styles.handle}
+        />
+      )}
+
+      <div className={styles.flowNodeIcon}>
+        <Icon size={14} />
+      </div>
+      <TableIndicator
+        displayName={data.displayName}
+        tableName={data.tableName}
+        variant="stacked"
+        size="small"
+        truncate
+      />
+
+      {data.tableType === "source" && (
+        <Handle
+          type="source"
+          position={Position.Right}
+          className={styles.handle}
+        />
+      )}
+      {/* Some derived tables can also be sources for other derived tables */}
+      {data.tableType === "derived" && (
+        <Handle
+          type="source"
+          position={Position.Right}
+          className={styles.handle}
+        />
+      )}
+    </div>
   );
 }
+
+export const LineageNodeMemo = memo(LineageNodeComponent);

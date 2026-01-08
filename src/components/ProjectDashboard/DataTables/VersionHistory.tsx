@@ -1,9 +1,12 @@
 import type { ReactNode } from "react";
 import { CheckCircle } from "lucide-react";
 import type { TableVersion } from "@/types";
+import {
+  DataTable,
+  type DataTableColumn,
+  dataTableStyles,
+} from "@/components/DataTable";
 import { formatDate, formatVersion, formatCompact, toTitleCase } from "@/utils";
-import { DataTable, type DataTableColumn } from "./DataTable";
-import styles from "./DataTables.module.scss";
 
 interface VersionHistoryProps {
   versions: TableVersion[];
@@ -26,12 +29,12 @@ export function VersionHistory({
       key: "version",
       header: "Version",
       render: (v) => (
-        <span className={styles.cellWithBadge}>
-          <span className={styles.cellMono}>
+        <span className={dataTableStyles.cellWithBadge}>
+          <span className={dataTableStyles.cellMono}>
             {formatVersion(v.version_number)}
           </span>
           {v.table_version_id === currentVersionId && (
-            <span className={styles.cellBadge}>current</span>
+            <span className={dataTableStyles.cellBadge}>current</span>
           )}
         </span>
       ),
@@ -61,12 +64,12 @@ export function VersionHistory({
       header: "Checkpoint",
       render: (v) =>
         v.checkpoint_type ? (
-          <span className={styles.cellSuccess}>
+          <span className={dataTableStyles.cellSuccess}>
             <CheckCircle size={12} />
             {toTitleCase(v.checkpoint_type)}
           </span>
         ) : (
-          <span className={styles.cellMuted}>—</span>
+          <span className={dataTableStyles.cellMuted}>—</span>
         ),
     },
   ];

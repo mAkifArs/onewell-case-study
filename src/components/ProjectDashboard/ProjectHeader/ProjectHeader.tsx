@@ -1,6 +1,9 @@
 import { memo, type ReactNode } from "react";
 import type { Project } from "@/types";
-import { StatusIndicator } from "@/components/StatusIndicator";
+import {
+  ProjectTypeBadge,
+  ProjectStatusBadge,
+} from "@/components/ProjectBadge";
 import { formatDate } from "@/utils";
 import styles from "./ProjectHeader.module.scss";
 
@@ -8,50 +11,56 @@ interface ProjectHeaderProps {
   project: Project;
 }
 
-interface MetaItem {
-  label: string;
-  value: string;
-}
-
 export const ProjectHeader = memo(function ProjectHeader({
   project,
 }: ProjectHeaderProps): ReactNode {
-  const metaItems: MetaItem[] = [
-    { label: "Owner", value: project.owner.name },
-    ...(project.governance_manager
-      ? [
-          {
-            label: "Governance Manager",
-            value: project.governance_manager.name,
-          },
-        ]
-      : []),
-    { label: "Department", value: project.department.name },
-    { label: "Created", value: formatDate(project.created_at) },
-    { label: "Updated", value: formatDate(project.updated_at) },
-  ];
-
   return (
     <header className={styles.header} data-testid="project-header">
       <div className={styles.top}>
         <div className={styles.titleRow}>
           <h1 className={styles.title}>{project.project_name}</h1>
-          <StatusIndicator status={project.status} size="md" />
+          <div className={styles.badges}>
+            <ProjectTypeBadge type={project.project_type} />
+            <ProjectStatusBadge status={project.status} />
+          </div>
         </div>
-        <span className={styles.projectType}>
-          Project Type: {project.project_type}
-        </span>
 
         <p className={styles.objectives}>{project.objectives}</p>
       </div>
 
       <div className={styles.meta}>
-        {metaItems.map((item) => (
-          <div key={item.label} className={styles.metaItem}>
-            <span className={styles.metaLabel}>{item.label}</span>
-            <span className={styles.metaValue}>{item.value}</span>
+        <div className={styles.metaItem}>
+          <span className={styles.metaLabel}>Owner</span>
+          <span className={styles.metaValue}>{project.owner.name}</span>
+        </div>
+
+        {project.governance_manager && (
+          <div className={styles.metaItem}>
+            <span className={styles.metaLabel}>Governance</span>
+            <span className={styles.metaValue}>
+              {project.governance_manager.name}
+            </span>
           </div>
-        ))}
+        )}
+
+        <div className={styles.metaItem}>
+          <span className={styles.metaLabel}>Department</span>
+          <span className={styles.metaValue}>{project.department.name}</span>
+        </div>
+
+        <div className={styles.metaItem}>
+          <span className={styles.metaLabel}>Created</span>
+          <span className={styles.metaValue}>
+            {formatDate(project.created_at)}
+          </span>
+        </div>
+
+        <div className={styles.metaItem}>
+          <span className={styles.metaLabel}>Updated</span>
+          <span className={styles.metaValue}>
+            {formatDate(project.updated_at)}
+          </span>
+        </div>
       </div>
     </header>
   );
