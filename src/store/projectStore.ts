@@ -1,12 +1,36 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 // PROJECT STORE
 // Manages project list and selection state
+// localStorage is ONLY used for offline fallback (not automatic caching)
 // ═══════════════════════════════════════════════════════════════════════════════
 
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import type { Project } from "@/types";
 import { fetchProjects } from "@/services";
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// OFFLINE STORAGE HELPERS
+// Only used when network is unavailable
+// ─────────────────────────────────────────────────────────────────────────────────
+
+const OFFLINE_STORAGE_KEY = "onewell-offline-projects";
+
+function saveForOffline(projects: Project[]): void {
+  try {
+    localStorage.setItem(OFFLINE_STORAGE_KEY, JSON.stringify(projects));
+  } catch {
+    // localStorage might be full or unavailable
+  }
+}
+
+function loadFromOfflineStorage(): Project[] | null {
+  try {
+    const data = localStorage.getItem(OFFLINE_STORAGE_KEY);
+    return data ? JSON.parse(data) : null;
+  } catch {
+    return null;
+  }
+}
 
 // ─────────────────────────────────────────────────────────────────────────────────
 // TYPES
@@ -42,43 +66,49 @@ interface ProjectState {
 // STORE
 // ─────────────────────────────────────────────────────────────────────────────────
 
-export const useProjectStore = create<ProjectState>()(
-  persist(
-    (set, get) => ({
-      projects: [],
-      isLoading: false,
-      error: null,
-      selectedProjectId: null,
+export const useProjectStore = create<ProjectState>()((set, get) => ({
+  projects: [],
+  isLoading: true, // Start with loading true to avoid initial flash
+  error: null,
+  selectedProjectId: null,
 
-      loadProjects: async () => {
-        // Skip if already loading or data exists
-        if (get().isLoading) return;
-        if (get().projects.length > 0) return;
+  loadProjects: async () => {
+    const state = get();
 
-        set({ isLoading: true, error: null });
+    // Skip if we already have data
+    if (state.projects.length > 0) return;
 
-        try {
-          const data = await fetchProjects();
-          set({ projects: data, isLoading: false });
-        } catch (err) {
-          set({
-            error:
-              err instanceof Error ? err.message : "Failed to load projects",
-            isLoading: false,
-          });
-        }
-      },
+    const isOnline = navigator.onLine;
 
-      selectProject: (id) => set({ selectedProjectId: id }),
-
-      clearSelection: () => set({ selectedProjectId: null }),
-
-      clearError: () => set({ error: null }),
-    }),
-    {
-      name: "onewell-project",
-      // Only persist selectedProjectId, not the fetched data
-      partialize: (state) => ({ selectedProjectId: state.selectedProjectId }),
+    // OFFLINE: Try to load from localStorage
+    if (!isOnline) {
+      const cached = loadFromOfflineStorage();
+      if (cached && cached.length > 0) {
+        set({ projects: cached });
+        return;
+      }
+      set({ error: "No internet connection and no cached data available" });
+      return;
     }
-  )
-);
+
+    // ONLINE: Fetch from API (isLoading is already true from initial state)
+    try {
+      const data = await fetchProjects();
+      set({ projects: data, isLoading: false, error: null });
+
+      // Save for offline use
+      saveForOffline(data);
+    } catch (err) {
+      set({
+        error: err instanceof Error ? err.message : "Failed to load projects",
+        isLoading: false,
+      });
+    }
+  },
+
+  selectProject: (id) => set({ selectedProjectId: id }),
+
+  clearSelection: () => set({ selectedProjectId: null }),
+
+  clearError: () => set({ error: null }),
+}));

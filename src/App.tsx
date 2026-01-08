@@ -9,6 +9,7 @@ import {
 import { ProjectSelector } from "@/components/ProjectSelector";
 import { ProjectDashboard } from "@/components/ProjectDashboard";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { NetworkStatus } from "@/components/NetworkStatus";
 import { Navbar } from "@/components/Navbar";
 import { useTheme } from "@/hooks";
 
@@ -20,6 +21,7 @@ function AppLayout({ children }: { children: ReactNode }): ReactNode {
     <>
       <Navbar />
       {children}
+      <NetworkStatus />
     </>
   );
 }

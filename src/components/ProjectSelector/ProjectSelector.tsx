@@ -7,7 +7,6 @@ import styles from "./ProjectSelector.module.scss";
 
 export function ProjectSelector(): ReactNode {
   const { projects, isLoading, error } = useProjects();
-
   return (
     <main className={styles.page} data-testid="project-selector">
       <header className={styles.header}>

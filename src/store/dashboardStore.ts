@@ -1,9 +1,11 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 // DASHBOARD STORE
 // Manages project dashboard data (tables, operations, governance, lineage)
+// Includes offline caching via localStorage
 // ═══════════════════════════════════════════════════════════════════════════════
 
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import type {
   Project,
   ProjectTable,
@@ -25,6 +27,20 @@ interface DashboardData {
   lineage: LineageRelation[];
 }
 
+interface CachedDashboard {
+  data: DashboardData;
+  cachedAt: number;
+}
+
+/** Per-section error tracking for graceful degradation */
+interface SectionErrors {
+  project?: string;
+  tables?: string;
+  operations?: string;
+  governance?: string;
+  lineage?: string;
+}
+
 interface DashboardState {
   /** Current project ID being viewed */
   currentProjectId: string | null;
@@ -32,14 +48,20 @@ interface DashboardState {
   /** Dashboard data for current project */
   data: DashboardData | null;
 
+  /** Cached dashboard data by project ID (for offline support) */
+  cache: Record<string, CachedDashboard>;
+
   /** Loading state */
   isLoading: boolean;
 
-  /** Error message if fetch failed */
+  /** Global error message (e.g., project not found) */
   error: string | null;
 
+  /** Per-section errors (allows partial rendering) */
+  sectionErrors: SectionErrors;
+
   /** Load dashboard data for a project */
-  loadDashboard: (projectId: string) => Promise<void>;
+  loadDashboard: (projectId: string, forceRefresh?: boolean) => Promise<void>;
 
   /** Clear dashboard data */
   clearDashboard: () => void;
@@ -52,61 +74,131 @@ interface DashboardState {
 // STORE
 // ─────────────────────────────────────────────────────────────────────────────────
 
-export const useDashboardStore = create<DashboardState>((set, get) => ({
-  currentProjectId: null,
-  data: null,
-  isLoading: false,
-  error: null,
+export const useDashboardStore = create<DashboardState>()(
+  persist(
+    (set, get) => ({
+      currentProjectId: null,
+      data: null,
+      cache: {},
+      isLoading: false,
+      error: null,
+      sectionErrors: {},
 
-  loadDashboard: async (projectId: string) => {
-    const state = get();
+      loadDashboard: async (projectId: string, forceRefresh = false) => {
+        const state = get();
 
-    // Skip if already loading this project
-    if (state.isLoading && state.currentProjectId === projectId) return;
+        // Skip if already loading this project
+        if (state.isLoading && state.currentProjectId === projectId) return;
 
-    // Skip if data already loaded for this project
-    if (state.data && state.currentProjectId === projectId) return;
+        const isOnline = navigator.onLine;
+        const cachedData = state.cache[projectId];
 
-    set({ isLoading: true, error: null, currentProjectId: projectId });
+        // If offline, use cached data
+        if (!isOnline) {
+          if (cachedData) {
+            set({
+              currentProjectId: projectId,
+              data: cachedData.data,
+              isLoading: false,
+              error: null,
+              sectionErrors: {},
+            });
+            return;
+          }
+          // No cached data and offline
+          set({
+            currentProjectId: projectId,
+            error: "No internet connection and no cached data for this project",
+            isLoading: false,
+            data: null,
+            sectionErrors: {},
+          });
+          return;
+        }
 
-    try {
-      const result = await fetchProjectDashboardData(projectId);
+        // If data already loaded for this project and not forcing refresh
+        if (
+          !forceRefresh &&
+          state.data &&
+          state.currentProjectId === projectId
+        ) {
+          return;
+        }
 
-      if (!result.project) {
         set({
-          error: "Project not found",
-          isLoading: false,
-          data: null,
+          isLoading: true,
+          error: null,
+          sectionErrors: {},
+          currentProjectId: projectId,
         });
-        return;
-      }
 
-      set({
-        data: {
+        // With Promise.allSettled, this won't throw - errors are in result.errors
+        const result = await fetchProjectDashboardData(projectId);
+
+        // Check if project itself failed (critical error)
+        if (!result.project) {
+          // Check cache as fallback
+          if (cachedData) {
+            set({
+              data: cachedData.data,
+              isLoading: false,
+              error: "Project not found. Showing cached version.",
+              sectionErrors: result.errors,
+            });
+            return;
+          }
+          set({
+            error: result.errors.project ?? "Project not found",
+            isLoading: false,
+            data: null,
+            sectionErrors: result.errors,
+          });
+          return;
+        }
+
+        const dashboardData: DashboardData = {
           project: result.project,
           tables: result.tables,
           operations: result.operations,
           governance: result.governance,
           lineage: result.lineage,
-        },
-        isLoading: false,
-      });
-    } catch (err) {
-      set({
-        error: err instanceof Error ? err.message : "Failed to load project",
-        isLoading: false,
-        data: null,
-      });
-    }
-  },
+        };
 
-  clearDashboard: () =>
-    set({
-      currentProjectId: null,
-      data: null,
-      isLoading: false,
-      error: null,
+        // Update cache (only cache successful data)
+        const newCache = { ...state.cache };
+        if (Object.keys(result.errors).length === 0) {
+          // Only update cache if there were no errors
+          newCache[projectId] = {
+            data: dashboardData,
+            cachedAt: Date.now(),
+          };
+        }
+
+        set({
+          data: dashboardData,
+          isLoading: false,
+          cache: newCache,
+          sectionErrors: result.errors,
+        });
+      },
+
+      clearDashboard: () =>
+        set({
+          currentProjectId: null,
+          data: null,
+          isLoading: false,
+          error: null,
+          sectionErrors: {},
+        }),
+
+      clearError: () => set({ error: null, sectionErrors: {} }),
     }),
-
-  clearError: () => set({ error: null }),
-}));
+    {
+      name: "onewell-dashboard",
+      // Persist cache for offline support
+      partialize: (state) => ({
+        cache: state.cache,
+      }),
+    }
+  )
+);

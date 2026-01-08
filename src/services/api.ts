@@ -1,6 +1,8 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 // API SERVICE
-// Mock API layer with simulated network delays
+// Simulates network behavior (delays, errors) and calls the data repository
+// This layer is responsible for async operations and error simulation only
+// Includes request deduplication to prevent redundant simultaneous requests
 // ═══════════════════════════════════════════════════════════════════════════════
 
 import type {
@@ -10,7 +12,7 @@ import type {
   Governance,
   LineageRelation,
 } from "../types";
-import data from "../data/data.json";
+import * as repository from "./repository";
 
 // ─────────────────────────────────────────────────────────────────────────────────
 // CONFIGURATION
@@ -25,7 +27,38 @@ const SIMULATED_DELAY = {
 const FAILURE_RATE = 0;
 
 // ─────────────────────────────────────────────────────────────────────────────────
-// HELPERS
+// REQUEST DEDUPLICATION
+// Tracks in-flight requests to prevent duplicate simultaneous calls
+// If a request is already in progress, return the same promise
+// ─────────────────────────────────────────────────────────────────────────────────
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const inFlightRequests = new Map<string, Promise<any>>();
+
+/**
+ * Wraps an async function with request deduplication.
+ * If a request with the same key is already in flight, returns the existing promise.
+ * Once the request completes, removes it from the in-flight map.
+ */
+function deduplicate<T>(key: string, requestFn: () => Promise<T>): Promise<T> {
+  // Check if this request is already in flight
+  const existing = inFlightRequests.get(key);
+  if (existing) {
+    return existing as Promise<T>;
+  }
+
+  // Create new request and track it
+  const request = requestFn().finally(() => {
+    // Remove from in-flight map when done (success or error)
+    inFlightRequests.delete(key);
+  });
+
+  inFlightRequests.set(key, request);
+  return request;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// NETWORK SIMULATION HELPERS
 // ─────────────────────────────────────────────────────────────────────────────────
 
 /**
@@ -48,101 +81,98 @@ async function maybeThrowError(): Promise<void> {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────────
-// TYPE CASTING HELPERS
-// JSON imports need proper typing - using unknown as intermediate cast
-// because JSON structure may have optional fields omitted
-// ─────────────────────────────────────────────────────────────────────────────────
-
-const projectsData = data.projects as unknown as Project[];
-const projectTablesData = data.project_tables as unknown as Record<
-  string,
-  ProjectTable[]
->;
-const recentOperationsData = data.recent_operations as unknown as Record<
-  string,
-  Operation[]
->;
-const governanceData = data.governance as unknown as Record<string, Governance>;
-const tableLineageData = data.table_lineage as unknown as Record<
-  string,
-  LineageRelation[]
->;
-
-// ─────────────────────────────────────────────────────────────────────────────────
 // API ENDPOINTS
+// Each function simulates a network call, then delegates to repository
+// All functions are wrapped with deduplication to prevent redundant requests
 // ─────────────────────────────────────────────────────────────────────────────────
 
 /**
  * GET /projects
  * Fetches all projects
  */
-export async function fetchProjects(): Promise<Project[]> {
-  await simulateDelay();
-  await maybeThrowError();
-  return projectsData;
+export function fetchProjects(): Promise<Project[]> {
+  return deduplicate("projects", async () => {
+    await simulateDelay();
+    await maybeThrowError();
+    return repository.getAllProjects();
+  });
 }
 
 /**
  * GET /projects/:id
  * Fetches a single project by ID
  */
-export async function fetchProjectById(id: string): Promise<Project | null> {
-  await simulateDelay();
-  await maybeThrowError();
-  return projectsData.find((p) => p.project_id === id) ?? null;
+export function fetchProjectById(id: string): Promise<Project | null> {
+  return deduplicate(`project:${id}`, async () => {
+    await simulateDelay();
+    await maybeThrowError();
+    return repository.getProjectById(id);
+  });
 }
 
 /**
  * GET /projects/:id/tables
  * Fetches all tables for a project
  */
-export async function fetchProjectTables(
-  projectId: string
-): Promise<ProjectTable[]> {
-  await simulateDelay();
-  await maybeThrowError();
-  return projectTablesData[projectId] ?? [];
+export function fetchProjectTables(projectId: string): Promise<ProjectTable[]> {
+  return deduplicate(`tables:${projectId}`, async () => {
+    await simulateDelay();
+    await maybeThrowError();
+    return repository.getProjectTables(projectId);
+  });
 }
 
 /**
  * GET /projects/:id/operations
  * Fetches recent operations for a project (last 10)
  */
-export async function fetchProjectOperations(
+export function fetchProjectOperations(
   projectId: string
 ): Promise<Operation[]> {
-  await simulateDelay();
-  await maybeThrowError();
-  return (recentOperationsData[projectId] ?? []).slice(0, 10);
+  return deduplicate(`operations:${projectId}`, async () => {
+    await simulateDelay();
+    await maybeThrowError();
+    return repository.getProjectOperations(projectId, 10);
+  });
 }
 
 /**
  * GET /projects/:id/governance
  * Fetches governance data for a project
  */
-export async function fetchProjectGovernance(
+export function fetchProjectGovernance(
   projectId: string
 ): Promise<Governance | null> {
-  await simulateDelay();
-  await maybeThrowError();
-  return governanceData[projectId] ?? null;
+  return deduplicate(`governance:${projectId}`, async () => {
+    await simulateDelay();
+    await maybeThrowError();
+    return repository.getProjectGovernance(projectId);
+  });
 }
 
 /**
  * GET /projects/:id/lineage
  * Fetches table lineage data for a project
  */
-export async function fetchProjectLineage(
+export function fetchProjectLineage(
   projectId: string
 ): Promise<LineageRelation[]> {
-  await simulateDelay();
-  await maybeThrowError();
-  return tableLineageData[projectId] ?? [];
+  return deduplicate(`lineage:${projectId}`, async () => {
+    await simulateDelay();
+    await maybeThrowError();
+    return repository.getProjectLineage(projectId);
+  });
 }
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// COMPOSITE ENDPOINTS
+// ─────────────────────────────────────────────────────────────────────────────────
 
 /**
  * Fetches all data for a project dashboard in parallel
- * More efficient than sequential calls
+ * Uses Promise.allSettled to handle partial failures gracefully
+ * - If some APIs fail, we still return data from successful calls
+ * - Each panel can show its own error state independently
  */
 export async function fetchProjectDashboardData(projectId: string): Promise<{
   project: Project | null;
@@ -150,8 +180,9 @@ export async function fetchProjectDashboardData(projectId: string): Promise<{
   operations: Operation[];
   governance: Governance | null;
   lineage: LineageRelation[];
+  errors: Record<string, string>;
 }> {
-  const [project, tables, operations, governance, lineage] = await Promise.all([
+  const results = await Promise.allSettled([
     fetchProjectById(projectId),
     fetchProjectTables(projectId),
     fetchProjectOperations(projectId),
@@ -159,11 +190,43 @@ export async function fetchProjectDashboardData(projectId: string): Promise<{
     fetchProjectLineage(projectId),
   ]);
 
+  const errors: Record<string, string> = {};
+
+  // Extract values or set defaults for failed requests
+  const project = results[0].status === "fulfilled" ? results[0].value : null;
+  if (results[0].status === "rejected") {
+    errors.project = results[0].reason?.message ?? "Failed to load project";
+  }
+
+  const tables = results[1].status === "fulfilled" ? results[1].value : [];
+  if (results[1].status === "rejected") {
+    errors.tables = results[1].reason?.message ?? "Failed to load tables";
+  }
+
+  const operations = results[2].status === "fulfilled" ? results[2].value : [];
+  if (results[2].status === "rejected") {
+    errors.operations =
+      results[2].reason?.message ?? "Failed to load operations";
+  }
+
+  const governance =
+    results[3].status === "fulfilled" ? results[3].value : null;
+  if (results[3].status === "rejected") {
+    errors.governance =
+      results[3].reason?.message ?? "Failed to load governance";
+  }
+
+  const lineage = results[4].status === "fulfilled" ? results[4].value : [];
+  if (results[4].status === "rejected") {
+    errors.lineage = results[4].reason?.message ?? "Failed to load lineage";
+  }
+
   return {
     project,
     tables,
     operations,
     governance,
     lineage,
+    errors,
   };
 }

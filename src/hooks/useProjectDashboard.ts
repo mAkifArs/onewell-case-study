@@ -14,6 +14,7 @@ export function useProjectDashboard(projectId: string | undefined) {
   const data = useDashboardStore((state) => state.data);
   const isLoading = useDashboardStore((state) => state.isLoading);
   const error = useDashboardStore((state) => state.error);
+  const sectionErrors = useDashboardStore((state) => state.sectionErrors);
   const currentProjectId = useDashboardStore((state) => state.currentProjectId);
   const loadDashboard = useDashboardStore((state) => state.loadDashboard);
   const clearDashboard = useDashboardStore((state) => state.clearDashboard);
@@ -38,6 +39,8 @@ export function useProjectDashboard(projectId: string | undefined) {
     data,
     isLoading,
     error,
+    /** Per-section errors (e.g., { tables: "Failed to load", lineage: "..." }) */
+    sectionErrors,
     isReady: !isLoading && data !== null && currentProjectId === projectId,
     reload: () => {
       if (projectId) {

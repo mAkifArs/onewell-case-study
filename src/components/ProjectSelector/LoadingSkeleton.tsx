@@ -1,10 +1,12 @@
-import type { ReactNode } from "react";
+import { memo, type ReactNode } from "react";
 import { Skeleton } from "@/components/Skeleton";
 import styles from "./ProjectSelector.module.scss";
 
-const SKELETON_ROWS = 5;
+// Pre-computed array to avoid recreation on each render
+const SKELETON_ROWS = [0, 1, 2, 3, 4];
 
-export function LoadingSkeleton(): ReactNode {
+// Memoized since this is a pure static component with no props
+export const LoadingSkeleton = memo(function LoadingSkeleton(): ReactNode {
   return (
     <div className={styles.skeletonContainer}>
       {/* Toolbar: Search + Count */}
@@ -38,7 +40,7 @@ export function LoadingSkeleton(): ReactNode {
         </div>
 
         {/* Data rows */}
-        {Array.from({ length: SKELETON_ROWS }).map((_, i) => (
+        {SKELETON_ROWS.map((i) => (
           <div key={i} className={styles.skeletonRow}>
             <div className={styles.skeletonCell}>
               <Skeleton height="1rem" width="160px" />
@@ -63,4 +65,4 @@ export function LoadingSkeleton(): ReactNode {
       </div>
     </div>
   );
-}
+});
