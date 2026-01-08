@@ -1,11 +1,5 @@
-import type { ReactNode } from "react";
-import type {
-  Project,
-  ProjectTable,
-  Operation,
-  Governance as GovernanceType,
-  LineageRelation,
-} from "@/types";
+import { memo, type ReactNode } from "react";
+import { PanelInfo } from "@/constants";
 import { Panel } from "@/components/Panel";
 import { ProjectHeader } from "./ProjectHeader";
 import { DataTables } from "./DataTables";
@@ -14,74 +8,53 @@ import { Governance } from "./Governance";
 import { DataLineage } from "./DataLineage";
 import styles from "./ProjectDashboard.module.scss";
 
-interface DashboardContentProps {
-  project: Project;
-  tables: ProjectTable[];
-  operations: Operation[];
-  governance: GovernanceType | null;
-  lineage: LineageRelation[];
-}
-
-// Panel info descriptions
-const PANEL_INFO = {
-  dataTables:
-    "View all source and derived tables in this project. Expand rows to see column details with their roles. Click version history to see table evolution.",
-  operations:
-    "Timeline of recent data transformations and operations performed on project tables, grouped by date.",
-  governance:
-    "Track approval workflows, compliance checklist progress, and project stakeholders.",
-  lineage:
-    "Visual representation of data flow. Source tables on the left feed into derived tables on the right. Click a table to highlight its upstream dependencies.",
-};
-
-export function DashboardContent({
-  project,
-  tables,
-  operations,
-  governance,
-  lineage,
-}: DashboardContentProps): ReactNode {
+/**
+ * Dashboard content layout.
+ * Each panel component fetches its own data from the store.
+ */
+export const DashboardContent = memo(function DashboardContent(): ReactNode {
   return (
     <>
-      <ProjectHeader project={project} />
+      <ProjectHeader />
 
       <div className={styles.mainGrid}>
         <Panel
           title="Data Tables"
-          info={PANEL_INFO.dataTables}
+          info={PanelInfo.DATA_TABLES}
           data-testid="data-tables-panel"
           className={styles.tallPanel}
         >
-          <DataTables tables={tables} />
+          <DataTables />
         </Panel>
 
         <Panel
           title="Recent Operations"
-          info={PANEL_INFO.operations}
+          info={PanelInfo.OPERATIONS}
           data-testid="operations-panel"
           className={styles.tallPanel}
         >
-          <OperationsTimeline operations={operations} />
+          <OperationsTimeline />
         </Panel>
       </div>
 
       <div className={styles.secondaryGrid}>
         <Panel
           title="Governance"
-          info={PANEL_INFO.governance}
+          info={PanelInfo.GOVERNANCE}
           data-testid="governance-panel"
         >
-          <Governance governance={governance} />
+          <Governance />
         </Panel>
 
         <Panel
           title="Data Lineage"
-          info={PANEL_INFO.lineage}
+          info={PanelInfo.LINEAGE}
           data-testid="lineage-panel"
         >
-          <DataLineage lineage={lineage} tables={tables} />
+          <DataLineage />
         </Panel>
       </div>
     </>
   );
-}
+});
+

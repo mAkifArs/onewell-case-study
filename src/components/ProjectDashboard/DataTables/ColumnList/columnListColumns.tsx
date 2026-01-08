@@ -1,19 +1,9 @@
-import type { ReactNode } from "react";
 import type { Column } from "@/types";
 import { Badge } from "@/components/Badge";
-import {
-  DataTable,
-  type DataTableColumn,
-  dataTableStyles,
-} from "@/components/DataTable";
+import { type DataTableColumn, dataTableStyles } from "@/components/DataTable";
 import { formatColumnRole } from "@/utils";
 
-interface ColumnListProps {
-  columns: Column[];
-  tableId: string;
-}
-
-const columnConfig: DataTableColumn<Column>[] = [
+export const columnListColumns: DataTableColumn<Column>[] = [
   {
     key: "display_name",
     header: "Column",
@@ -39,13 +29,3 @@ const columnConfig: DataTableColumn<Column>[] = [
   },
 ];
 
-export function ColumnList({ columns, tableId }: ColumnListProps): ReactNode {
-  return (
-    <DataTable
-      columns={columnConfig}
-      data={columns}
-      getRowKey={(col) => col.column_id}
-      testId={`column-list-${tableId}`}
-    />
-  );
-}

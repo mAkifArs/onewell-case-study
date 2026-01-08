@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 import { useProjects } from "@/hooks";
 import { ErrorState } from "@/components/ErrorState";
-import { LoadingSkeleton } from "./LoadingSkeleton";
 import { ProjectTable } from "./ProjectTable";
+import { LoadingSkeleton } from "./LoadingSkeleton";
 import styles from "./ProjectSelector.module.scss";
 
 export function ProjectSelector(): ReactNode {

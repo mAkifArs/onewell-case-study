@@ -2,11 +2,12 @@ import { useState, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, History, CheckCircle } from "lucide-react";
 import type { ProjectTable } from "@/types";
+import { expandAnimation } from "@/constants";
 import { Modal } from "@/components/Modal";
 import { TableIndicator } from "@/components/TableIndicator";
 import { formatCompact, formatVersion, toTitleCase } from "@/utils";
-import { ColumnList } from "./ColumnList";
-import { VersionHistory } from "./VersionHistory";
+import { ColumnList } from "./ColumnList/ColumnList";
+import { VersionHistory } from "./VersionHistory/VersionHistory";
 import styles from "./DataTables.module.scss";
 
 interface TableRowProps {
@@ -15,23 +16,16 @@ interface TableRowProps {
   onToggle: () => void;
 }
 
-const expandAnimation = {
-  initial: { height: 0, opacity: 0 },
-  animate: { height: "auto", opacity: 1 },
-  exit: { height: 0, opacity: 0 },
-  transition: { duration: 0.2, ease: "easeInOut" },
-};
-
 export function TableRow({
   table,
   isExpanded,
   onToggle,
 }: TableRowProps): ReactNode {
   const [isVersionsOpen, setIsVersionsOpen] = useState(false);
+
   const currentVersion = table.versions.find(
     (v) => v.table_version_id === table.current_version_id
   );
-
   const hasCheckpoint = currentVersion?.checkpoint_type !== null;
 
   return (
@@ -39,21 +33,13 @@ export function TableRow({
       className={styles.tableRow}
       data-testid={`table-row-${table.project_table_id}`}
     >
+      {/* Header row */}
       <div className={styles.tableHeader}>
-        <button
-          className={styles.expandButton}
-          onClick={onToggle}
-          aria-expanded={isExpanded}
-          data-testid={`table-expand-btn-${table.project_table_id}`}
-        >
-          <motion.span
-            animate={{ rotate: isExpanded ? 90 : 0 }}
-            transition={{ duration: 0.2 }}
-            style={{ display: "flex" }}
-          >
-            <ChevronRight size={16} />
-          </motion.span>
-        </button>
+        <ExpandButton
+          isExpanded={isExpanded}
+          onToggle={onToggle}
+          tableId={table.project_table_id}
+        />
 
         <div className={styles.tableInfo}>
           <div className={styles.tableName}>
@@ -64,45 +50,23 @@ export function TableRow({
             />
           </div>
 
-          <div className={styles.tableMeta}>
-            <span className={styles.tableType} data-type={table.table_type}>
-              {table.table_type}
-            </span>
-            <span className={styles.metaSeparator}>·</span>
-            <span className={styles.stats}>
-              {formatCompact(currentVersion?.row_count ?? 0)} rows
-            </span>
-            <span className={styles.metaSeparator}>·</span>
-            <span className={styles.stats}>
-              {currentVersion?.column_count ?? 0} cols
-            </span>
-            {hasCheckpoint && (
-              <>
-                <span className={styles.metaSeparator}>·</span>
-                <span
-                  className={styles.checkpoint}
-                  data-testid={`checkpoint-badge-${currentVersion?.checkpoint_type}`}
-                >
-                  <CheckCircle size={12} />
-                  {toTitleCase(currentVersion?.checkpoint_type ?? "")}
-                </span>
-              </>
-            )}
-          </div>
+          <TableMeta
+            tableType={table.table_type}
+            rowCount={currentVersion?.row_count ?? 0}
+            columnCount={currentVersion?.column_count ?? 0}
+            checkpointType={
+              hasCheckpoint ? currentVersion?.checkpoint_type : null
+            }
+          />
         </div>
 
-        <button
-          className={styles.versionButton}
+        <VersionButton
+          versionNumber={currentVersion?.version_number ?? 1}
           onClick={() => setIsVersionsOpen(true)}
-          aria-label="Version history"
-        >
-          <span className={styles.versionLabel}>
-            {formatVersion(currentVersion?.version_number ?? 1)}
-          </span>
-          <History size={14} />
-        </button>
+        />
       </div>
 
+      {/* Expanded content */}
       <AnimatePresence>
         {isExpanded && (
           <motion.div className={styles.expandedContent} {...expandAnimation}>
@@ -114,6 +78,7 @@ export function TableRow({
         )}
       </AnimatePresence>
 
+      {/* Version history modal */}
       <Modal
         isOpen={isVersionsOpen}
         onClose={() => setIsVersionsOpen(false)}
@@ -127,5 +92,99 @@ export function TableRow({
         />
       </Modal>
     </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// SUB-COMPONENTS
+// ─────────────────────────────────────────────────────────────────────────────────
+
+interface ExpandButtonProps {
+  isExpanded: boolean;
+  onToggle: () => void;
+  tableId: string;
+}
+
+function ExpandButton({
+  isExpanded,
+  onToggle,
+  tableId,
+}: ExpandButtonProps): ReactNode {
+  return (
+    <button
+      className={styles.expandButton}
+      onClick={onToggle}
+      aria-expanded={isExpanded}
+      data-testid={`table-expand-btn-${tableId}`}
+    >
+      <motion.span
+        animate={{ rotate: isExpanded ? 90 : 0 }}
+        transition={{ duration: 0.2 }}
+        style={{ display: "flex" }}
+      >
+        <ChevronRight size={16} />
+      </motion.span>
+    </button>
+  );
+}
+
+interface TableMetaProps {
+  tableType: string;
+  rowCount: number;
+  columnCount: number;
+  checkpointType: string | null | undefined;
+}
+
+function TableMeta({
+  tableType,
+  rowCount,
+  columnCount,
+  checkpointType,
+}: TableMetaProps): ReactNode {
+  return (
+    <div className={styles.tableMeta}>
+      <span className={styles.tableType} data-type={tableType}>
+        {tableType}
+      </span>
+      <span className={styles.metaSeparator}>·</span>
+      <span className={styles.stats}>{formatCompact(rowCount)} rows</span>
+      <span className={styles.metaSeparator}>·</span>
+      <span className={styles.stats}>{columnCount} cols</span>
+      {checkpointType && (
+        <>
+          <span className={styles.metaSeparator}>·</span>
+          <span
+            className={styles.checkpoint}
+            data-testid={`checkpoint-badge-${checkpointType}`}
+          >
+            <CheckCircle size={12} />
+            {toTitleCase(checkpointType)}
+          </span>
+        </>
+      )}
+    </div>
+  );
+}
+
+interface VersionButtonProps {
+  versionNumber: number;
+  onClick: () => void;
+}
+
+function VersionButton({
+  versionNumber,
+  onClick,
+}: VersionButtonProps): ReactNode {
+  return (
+    <button
+      className={styles.versionButton}
+      onClick={onClick}
+      aria-label="Version history"
+    >
+      <span className={styles.versionLabel}>
+        {formatVersion(versionNumber)}
+      </span>
+      <History size={14} />
+    </button>
   );
 }

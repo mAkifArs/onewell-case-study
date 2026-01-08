@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 // DASHBOARD STORE
-// Manages project dashboard data (tables, operations, governance, lineage)
-// Includes offline caching via localStorage
+// Manages project dashboard data with granular state for each section
+// Each panel can select only what it needs - no prop drilling!
 // ═══════════════════════════════════════════════════════════════════════════════
 
 import { create } from "zustand";
@@ -19,16 +19,12 @@ import { fetchProjectDashboardData } from "@/services";
 // TYPES
 // ─────────────────────────────────────────────────────────────────────────────────
 
-interface DashboardData {
+interface CachedDashboard {
   project: Project;
   tables: ProjectTable[];
   operations: Operation[];
   governance: Governance | null;
   lineage: LineageRelation[];
-}
-
-interface CachedDashboard {
-  data: DashboardData;
   cachedAt: number;
 }
 
@@ -45,8 +41,12 @@ interface DashboardState {
   /** Current project ID being viewed */
   currentProjectId: string | null;
 
-  /** Dashboard data for current project */
-  data: DashboardData | null;
+  /** Individual data sections - each panel selects only what it needs */
+  project: Project | null;
+  tables: ProjectTable[];
+  operations: Operation[];
+  governance: Governance | null;
+  lineage: LineageRelation[];
 
   /** Cached dashboard data by project ID (for offline support) */
   cache: Record<string, CachedDashboard>;
@@ -61,7 +61,7 @@ interface DashboardState {
   sectionErrors: SectionErrors;
 
   /** Load dashboard data for a project */
-  loadDashboard: (projectId: string, forceRefresh?: boolean) => Promise<void>;
+  loadDashboard: (projectId: string) => Promise<void>;
 
   /** Clear dashboard data */
   clearDashboard: () => void;
@@ -78,17 +78,21 @@ export const useDashboardStore = create<DashboardState>()(
   persist(
     (set, get) => ({
       currentProjectId: null,
-      data: null,
+      project: null,
+      tables: [],
+      operations: [],
+      governance: null,
+      lineage: [],
       cache: {},
-      isLoading: false,
+      isLoading: true, // Start with loading true
       error: null,
       sectionErrors: {},
 
-      loadDashboard: async (projectId: string, forceRefresh = false) => {
+      loadDashboard: async (projectId: string) => {
         const state = get();
 
-        // Skip if already loading this project
-        if (state.isLoading && state.currentProjectId === projectId) return;
+        // Skip if already loaded for this project
+        if (state.project && state.currentProjectId === projectId) return;
 
         const isOnline = navigator.onLine;
         const cachedData = state.cache[projectId];
@@ -98,7 +102,11 @@ export const useDashboardStore = create<DashboardState>()(
           if (cachedData) {
             set({
               currentProjectId: projectId,
-              data: cachedData.data,
+              project: cachedData.project,
+              tables: cachedData.tables,
+              operations: cachedData.operations,
+              governance: cachedData.governance,
+              lineage: cachedData.lineage,
               isLoading: false,
               error: null,
               sectionErrors: {},
@@ -110,25 +118,17 @@ export const useDashboardStore = create<DashboardState>()(
             currentProjectId: projectId,
             error: "No internet connection and no cached data for this project",
             isLoading: false,
-            data: null,
+            project: null,
+            tables: [],
+            operations: [],
+            governance: null,
+            lineage: [],
             sectionErrors: {},
           });
           return;
         }
 
-        // If data already loaded for this project and not forcing refresh
-        if (
-          !forceRefresh &&
-          state.data &&
-          state.currentProjectId === projectId
-        ) {
-          return;
-        }
-
         set({
-          isLoading: true,
-          error: null,
-          sectionErrors: {},
           currentProjectId: projectId,
         });
 
@@ -140,7 +140,11 @@ export const useDashboardStore = create<DashboardState>()(
           // Check cache as fallback
           if (cachedData) {
             set({
-              data: cachedData.data,
+              project: cachedData.project,
+              tables: cachedData.tables,
+              operations: cachedData.operations,
+              governance: cachedData.governance,
+              lineage: cachedData.lineage,
               isLoading: false,
               error: "Project not found. Showing cached version.",
               sectionErrors: result.errors,
@@ -150,32 +154,35 @@ export const useDashboardStore = create<DashboardState>()(
           set({
             error: result.errors.project ?? "Project not found",
             isLoading: false,
-            data: null,
+            project: null,
+            tables: [],
+            operations: [],
+            governance: null,
+            lineage: [],
             sectionErrors: result.errors,
           });
           return;
         }
 
-        const dashboardData: DashboardData = {
-          project: result.project,
-          tables: result.tables,
-          operations: result.operations,
-          governance: result.governance,
-          lineage: result.lineage,
-        };
-
         // Update cache (only cache successful data)
         const newCache = { ...state.cache };
         if (Object.keys(result.errors).length === 0) {
-          // Only update cache if there were no errors
           newCache[projectId] = {
-            data: dashboardData,
+            project: result.project,
+            tables: result.tables,
+            operations: result.operations,
+            governance: result.governance,
+            lineage: result.lineage,
             cachedAt: Date.now(),
           };
         }
 
         set({
-          data: dashboardData,
+          project: result.project,
+          tables: result.tables,
+          operations: result.operations,
+          governance: result.governance,
+          lineage: result.lineage,
           isLoading: false,
           cache: newCache,
           sectionErrors: result.errors,
@@ -185,8 +192,12 @@ export const useDashboardStore = create<DashboardState>()(
       clearDashboard: () =>
         set({
           currentProjectId: null,
-          data: null,
-          isLoading: false,
+          project: null,
+          tables: [],
+          operations: [],
+          governance: null,
+          lineage: [],
+          isLoading: true, // Reset to loading for next project
           error: null,
           sectionErrors: {},
         }),

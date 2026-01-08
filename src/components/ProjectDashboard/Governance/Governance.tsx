@@ -1,16 +1,18 @@
-import type { ReactNode } from "react";
-import type { Governance as GovernanceType } from "@/types";
+import { memo, type ReactNode } from "react";
+import { useDashboardGovernance } from "@/hooks";
 import { EmptyState } from "@/components/EmptyState";
 import { ApprovalList } from "./ApprovalList";
 import { ComplianceProgress } from "./ComplianceProgress";
 import { StakeholderList } from "./StakeholderList";
 import styles from "./Governance.module.scss";
 
-interface GovernanceProps {
-  governance: GovernanceType | null;
-}
+/**
+ * Governance component - uses store directly.
+ * Only re-renders when governance data changes.
+ */
+export const Governance = memo(function Governance(): ReactNode {
+  const governance = useDashboardGovernance();
 
-export function Governance({ governance }: GovernanceProps): ReactNode {
   if (!governance) {
     return <EmptyState message="No governance data available" />;
   }
@@ -26,4 +28,4 @@ export function Governance({ governance }: GovernanceProps): ReactNode {
       <StakeholderList stakeholders={governance.stakeholders} />
     </div>
   );
-}
+});

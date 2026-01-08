@@ -1,17 +1,15 @@
-import type { ReactNode } from "react";
-import { useMemo } from "react";
-import type { Operation } from "@/types";
+import { memo, useMemo, type ReactNode } from "react";
+import { useDashboardOperations } from "@/hooks";
 import { groupOperationsByDate } from "@/utils/operationUtils";
 import { EmptyState } from "@/components/EmptyState";
 import { OperationsList } from "./OperationsList";
 
-interface OperationsTimelineProps {
-  operations: Operation[];
-}
-
-export function OperationsTimeline({
-  operations,
-}: OperationsTimelineProps): ReactNode {
+/**
+ * Operations timeline component - uses store directly.
+ * Only re-renders when operations data changes.
+ */
+export const OperationsTimeline = memo(function OperationsTimeline(): ReactNode {
+  const operations = useDashboardOperations();
   const groups = useMemo(() => groupOperationsByDate(operations), [operations]);
 
   if (operations.length === 0) {
@@ -19,4 +17,4 @@ export function OperationsTimeline({
   }
 
   return <OperationsList groups={groups} />;
-}
+});

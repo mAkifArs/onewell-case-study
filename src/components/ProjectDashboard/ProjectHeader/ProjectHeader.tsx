@@ -1,5 +1,5 @@
 import { memo, type ReactNode } from "react";
-import type { Project } from "@/types";
+import { useDashboardProject } from "@/hooks";
 import {
   ProjectTypeBadge,
   ProjectStatusBadge,
@@ -7,13 +7,15 @@ import {
 import { formatDate } from "@/utils";
 import styles from "./ProjectHeader.module.scss";
 
-interface ProjectHeaderProps {
-  project: Project;
-}
+/**
+ * Project header component - uses store directly.
+ * Only re-renders when project data changes.
+ */
+export const ProjectHeader = memo(function ProjectHeader(): ReactNode {
+  const project = useDashboardProject();
 
-export const ProjectHeader = memo(function ProjectHeader({
-  project,
-}: ProjectHeaderProps): ReactNode {
+  if (!project) return null;
+
   return (
     <header className={styles.header} data-testid="project-header">
       <div className={styles.top}>

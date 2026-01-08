@@ -1,23 +1,33 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// USE PROJECT DASHBOARD HOOK
-// Custom hook for accessing project dashboard data
+// DASHBOARD HOOKS
+// Granular hooks for each dashboard section - each component selects only what
+// it needs, preventing unnecessary re-renders across the dashboard
 // ═══════════════════════════════════════════════════════════════════════════════
 
 import { useEffect } from "react";
+import { useShallow } from "zustand/shallow";
 import { useDashboardStore } from "@/store";
 
+// ─────────────────────────────────────────────────────────────────────────────────
+// MAIN HOOK: Loads dashboard and provides loading/error state
+// Used by ProjectDashboard.tsx to trigger data loading
+// ─────────────────────────────────────────────────────────────────────────────────
+
 /**
- * Hook to access and auto-load project dashboard data.
- * Automatically triggers fetch when projectId changes.
+ * Main hook that triggers dashboard data loading.
+ * Returns only loading/error state - individual panels use their own hooks.
  */
 export function useProjectDashboard(projectId: string | undefined) {
-  const data = useDashboardStore((state) => state.data);
-  const isLoading = useDashboardStore((state) => state.isLoading);
-  const error = useDashboardStore((state) => state.error);
-  const sectionErrors = useDashboardStore((state) => state.sectionErrors);
-  const currentProjectId = useDashboardStore((state) => state.currentProjectId);
-  const loadDashboard = useDashboardStore((state) => state.loadDashboard);
-  const clearDashboard = useDashboardStore((state) => state.clearDashboard);
+  const { isLoading, error, currentProjectId, loadDashboard, clearDashboard } =
+    useDashboardStore(
+      useShallow((state) => ({
+        isLoading: state.isLoading,
+        error: state.error,
+        currentProjectId: state.currentProjectId,
+        loadDashboard: state.loadDashboard,
+        clearDashboard: state.clearDashboard,
+      }))
+    );
 
   useEffect(() => {
     if (projectId) {
@@ -25,29 +35,69 @@ export function useProjectDashboard(projectId: string | undefined) {
     }
   }, [projectId, loadDashboard]);
 
-  // Clear data when unmounting or projectId becomes undefined
+  // Clear data when unmounting
   useEffect(() => {
     return () => {
-      // Only clear if navigating away (projectId undefined)
-      if (!projectId) {
-        clearDashboard();
-      }
+      clearDashboard();
     };
-  }, [projectId, clearDashboard]);
+  }, [clearDashboard]);
 
   return {
-    data,
     isLoading,
     error,
-    /** Per-section errors (e.g., { tables: "Failed to load", lineage: "..." }) */
-    sectionErrors,
-    isReady: !isLoading && data !== null && currentProjectId === projectId,
-    reload: () => {
-      if (projectId) {
-        // Force reload by clearing first
-        clearDashboard();
-        loadDashboard(projectId);
-      }
-    },
+    isReady: !isLoading && currentProjectId === projectId,
   };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// GRANULAR HOOKS: Each panel uses its own hook
+// Only re-renders when its specific data changes!
+// ─────────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Hook for ProjectHeader - only re-renders when project changes
+ */
+export function useDashboardProject() {
+  return useDashboardStore((state) => state.project);
+}
+
+/**
+ * Hook for DataTables panel - only re-renders when tables change
+ */
+export function useDashboardTables() {
+  return useDashboardStore((state) => state.tables);
+}
+
+/**
+ * Hook for Operations panel - only re-renders when operations change
+ */
+export function useDashboardOperations() {
+  return useDashboardStore((state) => state.operations);
+}
+
+/**
+ * Hook for Governance panel - only re-renders when governance changes
+ */
+export function useDashboardGovernance() {
+  return useDashboardStore((state) => state.governance);
+}
+
+/**
+ * Hook for DataLineage panel - returns both lineage and tables
+ * Uses shallow comparison to prevent re-renders when other data changes
+ */
+export function useDashboardLineage() {
+  return useDashboardStore(
+    useShallow((state) => ({
+      lineage: state.lineage,
+      tables: state.tables,
+    }))
+  );
+}
+
+/**
+ * Hook to get section-specific errors
+ */
+export function useDashboardSectionErrors() {
+  return useDashboardStore((state) => state.sectionErrors);
 }

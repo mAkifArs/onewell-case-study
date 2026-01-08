@@ -1,6 +1,10 @@
-import type { ReactNode } from "react";
+import { memo, type ReactNode } from "react";
 import { Skeleton } from "@/components/Skeleton";
-import styles from "./ProjectDashboard.module.scss";
+import styles from "./DashboardSkeleton.module.scss";
+
+// Pre-computed arrays to avoid allocation on each render
+const TABLE_ROWS = [0, 1, 2];
+const STAKEHOLDER_ROWS = [0, 1, 2];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SKELETON: ProjectHeader
@@ -12,21 +16,17 @@ function HeaderSkeleton(): ReactNode {
       {/* Top section: Title + badges, Objectives */}
       <div className={styles.headerTop}>
         <div className={styles.headerTitleRow}>
-          {/* Title: 1.5rem font × ~1.3 line-height = ~2rem */}
           <Skeleton width="320px" height="2rem" />
           <div className={styles.headerBadges}>
-            {/* Badges: 0.75rem font + 8px padding + line-height ≈ 1.75rem */}
             <Skeleton width="70px" height="1.75rem" variant="rectangular" />
             <Skeleton width="80px" height="1.75rem" variant="rectangular" />
           </div>
         </div>
-        {/* Objectives: 0.9375rem × 1.5 line-height ≈ 1.4rem */}
         <Skeleton width="100%" height="1.4rem" />
       </div>
 
-      {/* Meta section - inline style matching actual component */}
+      {/* Meta section */}
       <div className={styles.headerMeta}>
-        {/* Label: 0.625rem × ~1.4 ≈ 0.875rem, Value: 0.8125rem × ~1.4 ≈ 1.15rem */}
         <div className={styles.headerMetaItem}>
           <Skeleton width="40px" height="0.875rem" />
           <Skeleton width="75px" height="1.125rem" />
@@ -53,7 +53,7 @@ function HeaderSkeleton(): ReactNode {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SKELETON: Panel with content
+// SKELETON: Panel wrapper
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface PanelSkeletonProps {
@@ -65,7 +65,6 @@ function PanelSkeleton({ children, className }: PanelSkeletonProps): ReactNode {
   return (
     <div className={`${styles.panelSkeleton} ${className ?? ""}`}>
       <div className={styles.panelSkeletonHeader}>
-        {/* Panel title: ~1rem font × ~1.4 line-height ≈ 1.4rem */}
         <Skeleton width="130px" height="1.4rem" />
         <Skeleton width="20px" height="20px" variant="circular" />
       </div>
@@ -75,7 +74,7 @@ function PanelSkeleton({ children, className }: PanelSkeletonProps): ReactNode {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SKELETON: Data Tables panel content
+// SKELETON: Data Tables
 // ─────────────────────────────────────────────────────────────────────────────
 
 function TableRowSkeleton(): ReactNode {
@@ -84,20 +83,16 @@ function TableRowSkeleton(): ReactNode {
       <Skeleton width="16px" height="16px" variant="circular" />
       <div className={styles.tableRowInfo}>
         <div className={styles.tableRowName}>
-          {/* Display name: ~1rem font × 1.4 ≈ 1.4rem */}
           <Skeleton width="130px" height="1.4rem" />
-          {/* Code badge: smaller monospace */}
           <Skeleton width="120px" height="1.25rem" variant="rectangular" />
         </div>
         <div className={styles.tableRowMeta}>
-          {/* Small meta text: ~0.75rem × 1.4 ≈ 1rem */}
           <Skeleton width="45px" height="1rem" />
           <Skeleton width="65px" height="1rem" />
           <Skeleton width="50px" height="1rem" />
           <Skeleton width="90px" height="1rem" />
         </div>
       </div>
-      {/* Version button */}
       <Skeleton width="55px" height="2rem" variant="rectangular" />
     </div>
   );
@@ -106,7 +101,7 @@ function TableRowSkeleton(): ReactNode {
 function DataTablesSkeleton(): ReactNode {
   return (
     <div className={styles.tableListSkeleton}>
-      {Array.from({ length: 3 }).map((_, i) => (
+      {TABLE_ROWS.map((i) => (
         <TableRowSkeleton key={i} />
       ))}
     </div>
@@ -114,24 +109,19 @@ function DataTablesSkeleton(): ReactNode {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SKELETON: Operations panel content
+// SKELETON: Operations
 // ─────────────────────────────────────────────────────────────────────────────
 
 function OperationCardSkeleton(): ReactNode {
   return (
     <div className={styles.operationCardSkeleton}>
-      {/* Icon */}
       <Skeleton width="36px" height="36px" variant="rectangular" />
-      {/* Content */}
       <div className={styles.operationContent}>
         <div className={styles.operationHeader}>
-          {/* Operation name: ~0.9375rem × 1.4 ≈ 1.3rem */}
           <Skeleton width="110px" height="1.3rem" />
-          {/* Time badge */}
           <Skeleton width="55px" height="1.5rem" variant="rectangular" />
         </div>
         <div className={styles.operationMeta}>
-          {/* Meta items: ~0.75rem × 1.4 ≈ 1rem */}
           <Skeleton width="95px" height="1rem" />
           <Skeleton width="85px" height="1rem" />
           <Skeleton width="110px" height="1rem" />
@@ -144,9 +134,7 @@ function OperationCardSkeleton(): ReactNode {
 function OperationsSkeleton(): ReactNode {
   return (
     <div className={styles.operationsSkeleton}>
-      {/* Date group */}
       <div className={styles.dateGroupSkeleton}>
-        {/* Date label: ~0.75rem × 1.4 ≈ 1rem */}
         <Skeleton width="110px" height="1rem" />
         <OperationCardSkeleton />
         <OperationCardSkeleton />
@@ -156,7 +144,7 @@ function OperationsSkeleton(): ReactNode {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SKELETON: Governance panel content
+// SKELETON: Governance
 // ─────────────────────────────────────────────────────────────────────────────
 
 function GovernanceSkeleton(): ReactNode {
@@ -164,7 +152,6 @@ function GovernanceSkeleton(): ReactNode {
     <div className={styles.governanceSkeleton}>
       {/* Approvals */}
       <div className={styles.governanceSection}>
-        {/* Section title: h4 ~0.875rem × 1.4 ≈ 1.2rem */}
         <Skeleton width="80px" height="1.2rem" />
         <div className={styles.approvalSkeleton}>
           <div className={styles.approvalRow}>
@@ -189,7 +176,7 @@ function GovernanceSkeleton(): ReactNode {
       <div className={styles.governanceSection}>
         <Skeleton width="95px" height="1.2rem" />
         <div className={styles.stakeholdersSkeleton}>
-          {Array.from({ length: 3 }).map((_, i) => (
+          {STAKEHOLDER_ROWS.map((i) => (
             <div key={i} className={styles.stakeholderSkeleton}>
               <Skeleton width="36px" height="36px" variant="circular" />
               <div>
@@ -205,20 +192,17 @@ function GovernanceSkeleton(): ReactNode {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SKELETON: Lineage panel content
+// SKELETON: Lineage
 // ─────────────────────────────────────────────────────────────────────────────
 
 function LineageSkeleton(): ReactNode {
   return (
     <div className={styles.lineageSkeleton}>
-      {/* Source nodes */}
       <div className={styles.lineageColumn}>
         <Skeleton width="160px" height="50px" variant="rectangular" />
         <Skeleton width="160px" height="50px" variant="rectangular" />
       </div>
-      {/* Connectors area */}
       <div className={styles.lineageConnectors} />
-      {/* Derived node */}
       <div className={styles.lineageColumn}>
         <Skeleton width="160px" height="50px" variant="rectangular" />
       </div>
@@ -230,7 +214,11 @@ function LineageSkeleton(): ReactNode {
 // MAIN SKELETON COMPONENT
 // ─────────────────────────────────────────────────────────────────────────────
 
-export function DashboardSkeleton(): ReactNode {
+/**
+ * Dashboard loading skeleton.
+ * Memoized since it's a pure static component.
+ */
+export const DashboardSkeleton = memo(function DashboardSkeleton(): ReactNode {
   return (
     <>
       <HeaderSkeleton />
@@ -254,4 +242,5 @@ export function DashboardSkeleton(): ReactNode {
       </div>
     </>
   );
-}
+});
+
