@@ -5,6 +5,7 @@ export {
   useDashboardProject,
   useDashboardTables,
   useDashboardOperations,
+  useDashboardOperationsGrouped,
   useDashboardGovernance,
   useDashboardLineage,
   useDashboardSectionErrors,

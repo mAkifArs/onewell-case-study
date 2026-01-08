@@ -4,9 +4,10 @@
 // it needs, preventing unnecessary re-renders across the dashboard
 // ═══════════════════════════════════════════════════════════════════════════════
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useShallow } from "zustand/shallow";
 import { useDashboardStore } from "@/store";
+import { groupOperationsByDate } from "@/utils/operationUtils";
 
 // ─────────────────────────────────────────────────────────────────────────────────
 // MAIN HOOK: Loads dashboard and provides loading/error state
@@ -69,10 +70,20 @@ export function useDashboardTables() {
 }
 
 /**
- * Hook for Operations panel - only re-renders when operations change
+ * Hook for Operations panel - returns raw operations
+ * Only re-renders when operations change
  */
 export function useDashboardOperations() {
   return useDashboardStore((state) => state.operations);
+}
+
+/**
+ * Hook for Operations panel - returns operations grouped by date
+ * Memoizes the grouping transformation
+ */
+export function useDashboardOperationsGrouped() {
+  const operations = useDashboardStore((state) => state.operations);
+  return useMemo(() => groupOperationsByDate(operations), [operations]);
 }
 
 /**

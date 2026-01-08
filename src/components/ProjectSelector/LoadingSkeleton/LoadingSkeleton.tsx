@@ -1,4 +1,5 @@
 import { memo, type ReactNode } from "react";
+import clsx from "clsx";
 import { Skeleton } from "@/components/Skeleton";
 import styles from "./LoadingSkeleton.module.scss";
 
@@ -31,13 +32,13 @@ export const LoadingSkeleton = memo(function LoadingSkeleton(): ReactNode {
           <div className={styles.cell}>
             <Skeleton height="0.75rem" width="50px" />
           </div>
-          <div className={`${styles.cell} ${styles.hideOnMobile}`}>
+          <div className={clsx(styles.cell, styles.hideOnMobile)}>
             <Skeleton height="0.75rem" width="50px" />
           </div>
-          <div className={`${styles.cell} ${styles.hideOnTablet}`}>
+          <div className={clsx(styles.cell, styles.hideOnTablet)}>
             <Skeleton height="0.75rem" width="80px" />
           </div>
-          <div className={`${styles.cell} ${styles.hideOnMobile}`}>
+          <div className={clsx(styles.cell, styles.hideOnMobile)}>
             <Skeleton height="0.75rem" width="60px" />
           </div>
         </div>
@@ -54,13 +55,13 @@ export const LoadingSkeleton = memo(function LoadingSkeleton(): ReactNode {
             <div className={styles.cell}>
               <Skeleton height="1.5rem" width="70px" variant="rectangular" />
             </div>
-            <div className={`${styles.cell} ${styles.hideOnMobile}`}>
+            <div className={clsx(styles.cell, styles.hideOnMobile)}>
               <Skeleton height="1rem" width="100px" />
             </div>
-            <div className={`${styles.cell} ${styles.hideOnTablet}`}>
+            <div className={clsx(styles.cell, styles.hideOnTablet)}>
               <Skeleton height="1rem" width="130px" />
             </div>
-            <div className={`${styles.cell} ${styles.hideOnMobile}`}>
+            <div className={clsx(styles.cell, styles.hideOnMobile)}>
               <Skeleton height="1rem" width="80px" />
             </div>
           </div>

@@ -1,4 +1,5 @@
 import { useMemo, type ReactNode } from "react";
+import clsx from "clsx";
 import { Clock, CheckCircle, XCircle } from "lucide-react";
 import type { Approval } from "@/types";
 import { LabelValue } from "@/components/LabelValue";
@@ -66,7 +67,7 @@ function ApprovalCard({ approval }: ApprovalCardProps): ReactNode {
           {formatApprovalType(approval.approval_type)}
         </span>
         <span
-          className={`${styles.approvalStatus} ${statusClass}`}
+          className={clsx(styles.approvalStatus, statusClass)}
           data-testid={`approval-status-${approval.status.toLowerCase()}`}
         >
           <Icon size={14} />

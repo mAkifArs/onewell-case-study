@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import clsx from "clsx";
 import styles from "./LabelValue.module.scss";
 
 interface LabelValueProps {
@@ -23,10 +24,9 @@ export function LabelValue({
   if (value === null || value === undefined) return null;
 
   return (
-    <div className={`${styles.container} ${styles[variant]} ${className ?? ""}`}>
+    <div className={clsx(styles.container, styles[variant], className)}>
       <span className={styles.label}>{label}</span>
       <span className={styles.value}>{value}</span>
     </div>
   );
 }
-

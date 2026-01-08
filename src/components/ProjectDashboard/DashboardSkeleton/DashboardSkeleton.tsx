@@ -1,4 +1,5 @@
 import { memo, type ReactNode } from "react";
+import clsx from "clsx";
 import { Skeleton } from "@/components/Skeleton";
 import styles from "./DashboardSkeleton.module.scss";
 
@@ -63,7 +64,7 @@ interface PanelSkeletonProps {
 
 function PanelSkeleton({ children, className }: PanelSkeletonProps): ReactNode {
   return (
-    <div className={`${styles.panelSkeleton} ${className ?? ""}`}>
+    <div className={clsx(styles.panelSkeleton, className)}>
       <div className={styles.panelSkeletonHeader}>
         <Skeleton width="130px" height="1.4rem" />
         <Skeleton width="20px" height="20px" variant="circular" />
@@ -243,4 +244,3 @@ export const DashboardSkeleton = memo(function DashboardSkeleton(): ReactNode {
     </>
   );
 });
-

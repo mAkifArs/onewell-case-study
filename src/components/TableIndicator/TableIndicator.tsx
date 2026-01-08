@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import clsx from "clsx";
 import styles from "./TableIndicator.module.scss";
 
 interface TableIndicatorProps {
@@ -28,7 +29,13 @@ export function TableIndicator({
 
   return (
     <span
-      className={`${styles.indicator} ${styles[variant]} ${styles[size]} ${truncate ? styles.truncate : ""} ${className ?? ""}`}
+      className={clsx(
+        styles.indicator,
+        styles[variant],
+        styles[size],
+        truncate && styles.truncate,
+        className
+      )}
     >
       {showDisplayName && (
         <span className={styles.displayName}>{displayName}</span>
@@ -37,4 +44,3 @@ export function TableIndicator({
     </span>
   );
 }
-
