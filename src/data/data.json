@@ -1625,6 +1625,11 @@
       },
       {
         "child_table": "risk_scores",
+        "parent_table": "economic_indicators",
+        "parent_type": "source_dataset"
+      },
+      {
+        "child_table": "risk_scores",
         "parent_table": "credit_bureau",
         "parent_type": "source_dataset"
       },

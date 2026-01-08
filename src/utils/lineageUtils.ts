@@ -1,92 +1,137 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 // LINEAGE UTILITIES
-// Graph building and traversal functions for data lineage
+// Graph building and React Flow transformation for data lineage
 // ═══════════════════════════════════════════════════════════════════════════════
 
+import type { Node, Edge } from "@xyflow/react";
 import type { LineageRelation, ProjectTable } from "@/types";
 
-export interface SourceGroup {
-  targetDerived: string;
-  sources: string[];
+// Node data interface - needs index signature for React Flow compatibility
+export interface LineageNodeData {
+  tableName: string;
+  displayName: string;
+  tableType: "source" | "derived";
+  [key: string]: unknown;
 }
 
-export interface LineageGraph {
-  sources: string[];
-  derived: string[];
-  sourceGroups: SourceGroup[];
-  edges: Array<{ from: string; to: string }>;
+// React Flow output
+export interface ReactFlowGraph {
+  nodes: Node<LineageNodeData>[];
+  edges: Edge[];
 }
+
+// Node dimensions for layout
+const NODE_WIDTH = 176;
+const NODE_HEIGHT = 54;
+const HORIZONTAL_GAP = 80;
+const VERTICAL_GAP = 16;
 
 /**
- * Builds a graph representation from lineage relations and tables.
- * Sources = tables that are parents but NOT children (true source tables)
- * Derived = tables that are children (derived from something)
+ * Transforms lineage data into React Flow nodes and edges.
+ * Supports many-to-one, one-to-many, and many-to-many relationships.
  */
-export function buildLineageGraph(
+export function buildReactFlowGraph(
   lineage: LineageRelation[],
   tables: ProjectTable[]
-): LineageGraph {
-  const tableNames = new Set(tables.map((t) => t.table_name));
-  const edges: Array<{ from: string; to: string }> = [];
+): ReactFlowGraph {
+  const tableMap = new Map(tables.map((t) => [t.table_name, t]));
 
-  // Collect all parent and child tables from relations
+  // Deduplicate edges and collect parent/child tables
+  const edgeSet = new Set<string>();
+  const edges: Edge[] = [];
   const parentTables = new Set<string>();
   const childTables = new Set<string>();
 
   for (const relation of lineage) {
-    if (tableNames.has(relation.parent_table)) {
+    const edgeKey = `${relation.parent_table}->${relation.child_table}`;
+    if (edgeSet.has(edgeKey)) continue;
+    edgeSet.add(edgeKey);
+
+    if (tableMap.has(relation.parent_table)) {
       parentTables.add(relation.parent_table);
     }
-    if (tableNames.has(relation.child_table)) {
+    if (tableMap.has(relation.child_table)) {
       childTables.add(relation.child_table);
     }
-    edges.push({ from: relation.parent_table, to: relation.child_table });
+
+    edges.push({
+      id: edgeKey,
+      source: relation.parent_table,
+      target: relation.child_table,
+      type: "smoothstep",
+      animated: false,
+    });
   }
 
-  // Sources = tables that are parents but NOT derived from anything (not in childTables)
-  const sources = new Set<string>();
+  // Identify source tables (parents but not children)
+  const sources: string[] = [];
   for (const table of parentTables) {
     if (!childTables.has(table)) {
-      sources.add(table);
+      sources.push(table);
     }
   }
 
-  // Also add source-type tables that aren't in any relation
+  // Also add source-type tables not in relations
   for (const table of tables) {
-    if (table.table_type === "source" && !childTables.has(table.table_name)) {
-      sources.add(table.table_name);
+    if (
+      table.table_type === "source" &&
+      !childTables.has(table.table_name) &&
+      !sources.includes(table.table_name)
+    ) {
+      sources.push(table.table_name);
     }
   }
 
-  // Build source groups - group sources by their target derived table
-  const sourcesByDerived = new Map<string, string[]>();
-  for (const edge of edges) {
-    if (sources.has(edge.from)) {
-      const existing = sourcesByDerived.get(edge.to) ?? [];
-      existing.push(edge.from);
-      sourcesByDerived.set(edge.to, existing);
-    }
-  }
+  const derived = Array.from(childTables);
 
-  // Convert to sourceGroups array, maintaining derived table order
-  const derivedArray = Array.from(childTables);
-  const sourceGroups: SourceGroup[] = [];
-  for (const derived of derivedArray) {
-    const groupSources = sourcesByDerived.get(derived);
-    if (groupSources && groupSources.length > 0) {
-      sourceGroups.push({
-        targetDerived: derived,
-        sources: groupSources,
-      });
-    }
-  }
+  // Calculate positions
+  const sourceHeight =
+    sources.length * (NODE_HEIGHT + VERTICAL_GAP) - VERTICAL_GAP;
+  const derivedHeight =
+    derived.length * (NODE_HEIGHT + VERTICAL_GAP) - VERTICAL_GAP;
+  const maxHeight = Math.max(sourceHeight, derivedHeight);
 
-  return {
-    sources: Array.from(sources),
-    derived: derivedArray,
-    sourceGroups,
-    edges,
-  };
+  const sourceStartY = (maxHeight - sourceHeight) / 2;
+  const derivedStartY = (maxHeight - derivedHeight) / 2;
+
+  // Create nodes
+  const nodes: Node<LineageNodeData>[] = [];
+
+  sources.forEach((name, index) => {
+    const table = tableMap.get(name);
+    nodes.push({
+      id: name,
+      type: "lineageNode",
+      position: {
+        x: 0,
+        y: sourceStartY + index * (NODE_HEIGHT + VERTICAL_GAP),
+      },
+      data: {
+        tableName: name,
+        displayName: table?.display_name ?? name,
+        tableType: "source",
+      },
+    });
+  });
+
+  derived.forEach((name, index) => {
+    const table = tableMap.get(name);
+    nodes.push({
+      id: name,
+      type: "lineageNode",
+      position: {
+        x: NODE_WIDTH + HORIZONTAL_GAP,
+        y: derivedStartY + index * (NODE_HEIGHT + VERTICAL_GAP),
+      },
+      data: {
+        tableName: name,
+        displayName: table?.display_name ?? name,
+        tableType: "derived",
+      },
+    });
+  });
+
+  return { nodes, edges };
 }
 
 /**
