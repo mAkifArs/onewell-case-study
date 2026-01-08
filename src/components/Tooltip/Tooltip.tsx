@@ -1,4 +1,10 @@
-import { type ReactNode, useState, useRef, useEffect } from "react";
+import {
+  type ReactNode,
+  useState,
+  useRef,
+  useEffect,
+  useLayoutEffect,
+} from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import styles from "./Tooltip.module.scss";
@@ -9,6 +15,9 @@ interface TooltipProps {
   position?: "top" | "bottom" | "left" | "right";
 }
 
+const GAP = 8;
+const VIEWPORT_PADDING = 12;
+
 export function Tooltip({
   content,
   children,
@@ -16,41 +25,81 @@ export function Tooltip({
 }: TooltipProps): ReactNode {
   const [isVisible, setIsVisible] = useState(false);
   const [coords, setCoords] = useState({ top: 0, left: 0 });
+  const [theme, setTheme] = useState<string | null>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
+  // Get current theme from document
   useEffect(() => {
-    if (isVisible && triggerRef.current) {
-      const rect = triggerRef.current.getBoundingClientRect();
-      const tooltipHeight = 28; // approximate height
-      const tooltipWidth = 130; // approximate width
-      const gap = 6;
+    const updateTheme = () => {
+      const currentTheme = document.documentElement.getAttribute("data-theme");
+      setTheme(currentTheme);
+    };
+
+    updateTheme();
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Calculate position after tooltip is rendered (so we can measure it)
+  useLayoutEffect(() => {
+    if (isVisible && triggerRef.current && tooltipRef.current) {
+      const triggerRect = triggerRef.current.getBoundingClientRect();
+      const tooltipRect = tooltipRef.current.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
 
       let top = 0;
       let left = 0;
 
       switch (position) {
         case "top":
-          top = rect.top - tooltipHeight - gap;
-          left = rect.left + rect.width / 2 - tooltipWidth / 2;
+          top = triggerRect.top - tooltipRect.height - GAP;
+          left =
+            triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2;
           break;
         case "bottom":
-          top = rect.bottom + gap;
-          left = rect.left + rect.width / 2 - tooltipWidth / 2;
+          top = triggerRect.bottom + GAP;
+          left =
+            triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2;
           break;
         case "left":
-          top = rect.top + rect.height / 2 - tooltipHeight / 2;
-          left = rect.left - tooltipWidth - gap;
+          top =
+            triggerRect.top + triggerRect.height / 2 - tooltipRect.height / 2;
+          left = triggerRect.left - tooltipRect.width - GAP;
           break;
         case "right":
-          top = rect.top + rect.height / 2 - tooltipHeight / 2;
-          left = rect.right + gap;
+          top =
+            triggerRect.top + triggerRect.height / 2 - tooltipRect.height / 2;
+          left = triggerRect.right + GAP;
           break;
+      }
+
+      // Edge detection - prevent overflow
+      if (left < VIEWPORT_PADDING) {
+        left = VIEWPORT_PADDING;
+      } else if (left + tooltipRect.width > viewportWidth - VIEWPORT_PADDING) {
+        left = viewportWidth - tooltipRect.width - VIEWPORT_PADDING;
+      }
+
+      if (top < VIEWPORT_PADDING) {
+        // Flip to bottom if no room on top
+        top = triggerRect.bottom + GAP;
+      } else if (top + tooltipRect.height > viewportHeight - VIEWPORT_PADDING) {
+        // Flip to top if no room on bottom
+        top = triggerRect.top - tooltipRect.height - GAP;
       }
 
       setCoords({ top, left });
     }
-  }, [isVisible, position]);
+  }, [isVisible, position, content]);
 
   return (
     <>
@@ -70,11 +119,12 @@ export function Tooltip({
             <motion.div
               ref={tooltipRef}
               className={styles.tooltip}
+              data-theme={theme}
               style={{ top: coords.top, left: coords.left }}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.1 }}
+              initial={{ opacity: 0, y: position === "top" ? 4 : -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: position === "top" ? 4 : -4 }}
+              transition={{ duration: 0.15 }}
             >
               {content}
             </motion.div>

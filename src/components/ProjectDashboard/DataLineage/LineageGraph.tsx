@@ -29,7 +29,7 @@ export function LineageGraph({
       {/* Nodes row with connectors */}
       <div className={styles.nodesRow}>
         <LineageColumn
-          tables={graph.sources}
+          sourceGroups={graph.sourceGroups}
           type="source"
           highlightedTables={highlightedTables}
           selectedTable={selectedTable}
@@ -39,7 +39,7 @@ export function LineageGraph({
         <LineageEdges graph={graph} highlightedTables={highlightedTables} />
 
         <LineageColumn
-          tables={graph.derived}
+          sourceGroups={graph.sourceGroups}
           type="derived"
           highlightedTables={highlightedTables}
           selectedTable={selectedTable}

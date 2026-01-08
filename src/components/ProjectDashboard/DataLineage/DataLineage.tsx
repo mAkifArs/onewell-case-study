@@ -33,10 +33,6 @@ export function DataLineage({ lineage, tables }: DataLineageProps): ReactNode {
         selectedTable={selectedTable}
         onNodeClick={handleNodeClick}
       />
-
-      <p className={styles.hint}>
-        Click a table to highlight its upstream dependencies
-      </p>
     </div>
   );
 }

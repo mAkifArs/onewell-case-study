@@ -22,6 +22,18 @@ interface DashboardContentProps {
   lineage: LineageRelation[];
 }
 
+// Panel info descriptions
+const PANEL_INFO = {
+  dataTables:
+    "View all source and derived tables in this project. Expand rows to see column details with their roles. Click version history to see table evolution.",
+  operations:
+    "Timeline of recent data transformations and operations performed on project tables, grouped by date.",
+  governance:
+    "Track approval workflows, compliance checklist progress, and project stakeholders.",
+  lineage:
+    "Visual representation of data flow. Source tables on the left feed into derived tables on the right. Click a table to highlight its upstream dependencies.",
+};
+
 export function DashboardContent({
   project,
   tables,
@@ -36,6 +48,7 @@ export function DashboardContent({
       <div className={styles.mainGrid}>
         <Panel
           title="Data Tables"
+          info={PANEL_INFO.dataTables}
           data-testid="data-tables-panel"
           className={styles.tallPanel}
         >
@@ -44,6 +57,7 @@ export function DashboardContent({
 
         <Panel
           title="Recent Operations"
+          info={PANEL_INFO.operations}
           data-testid="operations-panel"
           className={styles.tallPanel}
         >
@@ -52,11 +66,19 @@ export function DashboardContent({
       </div>
 
       <div className={styles.secondaryGrid}>
-        <Panel title="Governance" data-testid="governance-panel">
+        <Panel
+          title="Governance"
+          info={PANEL_INFO.governance}
+          data-testid="governance-panel"
+        >
           <Governance governance={governance} />
         </Panel>
 
-        <Panel title="Data Lineage" data-testid="lineage-panel">
+        <Panel
+          title="Data Lineage"
+          info={PANEL_INFO.lineage}
+          data-testid="lineage-panel"
+        >
           <DataLineage lineage={lineage} tables={tables} />
         </Panel>
       </div>

@@ -30,7 +30,9 @@ export function LineageNode({
       onClick={onClick}
       data-testid={`lineage-node-${name}`}
     >
-      <Icon size={14} className={styles.nodeIcon} />
+      <span className={styles.nodeIconWrapper}>
+        <Icon size={14} className={styles.nodeIcon} />
+      </span>
       <span className={styles.nodeName}>{name}</span>
     </button>
   );
