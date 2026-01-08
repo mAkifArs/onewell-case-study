@@ -1,10 +1,14 @@
-import type { ReactNode } from "react";
+import { memo, type ReactNode } from "react";
 import { useState, useMemo } from "react";
 import { Search, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import type { DataTableProps, SortState, DataTableColumn } from "./types";
 import styles from "./DataTable.module.scss";
 
-export function DataTable<T>({
+/**
+ * Generic data table component with search, sort, and row click support.
+ * Memoized to prevent unnecessary re-renders.
+ */
+function DataTableComponent<T>({
   columns,
   data,
   getRowKey,
@@ -184,3 +188,5 @@ export function DataTable<T>({
   );
 }
 
+// Export memoized version with generic type preserved
+export const DataTable = memo(DataTableComponent) as typeof DataTableComponent;

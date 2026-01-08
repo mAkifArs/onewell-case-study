@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { memo, type ReactNode } from "react";
 import { clsx } from "clsx";
 import {
   FileEdit,
@@ -65,7 +65,11 @@ interface BadgeProps {
   "data-testid"?: string;
 }
 
-export function Badge({
+/**
+ * Badge component for status, type, and role indicators.
+ * Memoized to prevent unnecessary re-renders in lists.
+ */
+export const Badge = memo(function Badge({
   children,
   variant = "default",
   showIcon = true,
@@ -88,4 +92,4 @@ export function Badge({
       {children}
     </span>
   );
-}
+});

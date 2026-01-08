@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { memo, type ReactNode } from "react";
 import { clsx } from "clsx";
 import { Info } from "lucide-react";
 import { Tooltip } from "@/components/Tooltip";
@@ -17,7 +17,11 @@ interface PanelProps {
   "data-testid"?: string;
 }
 
-export function Panel({
+/**
+ * Panel wrapper component with title and optional info tooltip.
+ * Memoized to prevent unnecessary re-renders.
+ */
+export const Panel = memo(function Panel({
   title,
   children,
   info,
@@ -39,4 +43,4 @@ export function Panel({
       <div className={styles.content}>{children}</div>
     </section>
   );
-}
+});

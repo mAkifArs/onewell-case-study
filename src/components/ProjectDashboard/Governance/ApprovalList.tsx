@@ -1,7 +1,8 @@
-import { useMemo, type ReactNode } from "react";
+import { memo, useMemo, type ReactNode } from "react";
 import clsx from "clsx";
-import { Clock, CheckCircle, XCircle } from "lucide-react";
 import type { Approval } from "@/types";
+import { getApprovalStatusIcon } from "@/constants";
+import { formatApprovalType } from "@/utils";
 import { LabelValue } from "@/components/LabelValue";
 import styles from "./Governance.module.scss";
 
@@ -9,17 +10,13 @@ interface ApprovalListProps {
   approvals: Approval[];
 }
 
-const STATUS_ICONS = {
-  Pending: Clock,
-  Approved: CheckCircle,
-  Rejected: XCircle,
-} as const;
-
-function formatApprovalType(type: string): string {
-  return type.replace(/([A-Z])/g, " $1").trim();
-}
-
-export function ApprovalList({ approvals }: ApprovalListProps): ReactNode {
+/**
+ * Approval list component.
+ * Memoized to prevent re-renders when parent re-renders.
+ */
+export const ApprovalList = memo(function ApprovalList({
+  approvals,
+}: ApprovalListProps): ReactNode {
   if (approvals.length === 0) {
     return null;
   }
@@ -34,7 +31,7 @@ export function ApprovalList({ approvals }: ApprovalListProps): ReactNode {
       </div>
     </div>
   );
-}
+});
 
 // ─────────────────────────────────────────────────────────────────────────────────
 // SUB-COMPONENTS
@@ -44,8 +41,10 @@ interface ApprovalCardProps {
   approval: Approval;
 }
 
-function ApprovalCard({ approval }: ApprovalCardProps): ReactNode {
-  const Icon = STATUS_ICONS[approval.status];
+const ApprovalCard = memo(function ApprovalCard({
+  approval,
+}: ApprovalCardProps): ReactNode {
+  const Icon = getApprovalStatusIcon(approval.status);
   const statusClass = styles[`status${approval.status}`];
 
   // Map approval data to label-value items
@@ -81,11 +80,15 @@ function ApprovalCard({ approval }: ApprovalCardProps): ReactNode {
             item.value && (
               <span key={item.label} className={styles.metaItem}>
                 {index > 0 && <span className={styles.metaSeparator}>·</span>}
-                <LabelValue label={item.label} value={item.value} variant="inline" />
+                <LabelValue
+                  label={item.label}
+                  value={item.value}
+                  variant="inline"
+                />
               </span>
             )
         )}
       </div>
     </div>
   );
-}
+});

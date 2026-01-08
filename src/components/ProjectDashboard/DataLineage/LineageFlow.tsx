@@ -1,4 +1,4 @@
-import type { ReactNode, MouseEvent } from "react";
+import { memo, type ReactNode, type MouseEvent } from "react";
 import { useCallback, useMemo } from "react";
 import {
   ReactFlow,
@@ -28,7 +28,17 @@ const nodeTypes: NodeTypes = {
   lineageNode: LineageNodeMemo,
 };
 
-export function LineageFlow({ lineage, tables }: LineageFlowProps): ReactNode {
+// CSS variable for highlight color (theme-aware)
+const HIGHLIGHT_STROKE = "var(--color-interactive)";
+
+/**
+ * Lineage flow component using ReactFlow.
+ * Memoized to prevent unnecessary re-renders.
+ */
+export const LineageFlow = memo(function LineageFlow({
+  lineage,
+  tables,
+}: LineageFlowProps): ReactNode {
   // Build initial graph
   const initialGraph = useMemo(
     () => buildReactFlowGraph(lineage, tables),
@@ -54,22 +64,19 @@ export function LineageFlow({ lineage, tables }: LineageFlowProps): ReactNode {
 
       // Update edges - highlight connected edges
       setEdges((eds) =>
-        eds.map((e) => ({
-          ...e,
-          animated:
-            highlightedIds.has(e.source) && highlightedIds.has(e.target),
-          style: {
-            ...e.style,
-            stroke:
-              highlightedIds.has(e.source) && highlightedIds.has(e.target)
-                ? "#1e3a5f"
-                : undefined,
-            strokeWidth:
-              highlightedIds.has(e.source) && highlightedIds.has(e.target)
-                ? 2
-                : 1,
-          },
-        }))
+        eds.map((e) => {
+          const isHighlighted =
+            highlightedIds.has(e.source) && highlightedIds.has(e.target);
+          return {
+            ...e,
+            animated: isHighlighted,
+            style: {
+              ...e.style,
+              stroke: isHighlighted ? HIGHLIGHT_STROKE : undefined,
+              strokeWidth: isHighlighted ? 2 : 1,
+            },
+          };
+        })
       );
     },
     [lineage, setNodes, setEdges]
@@ -93,14 +100,16 @@ export function LineageFlow({ lineage, tables }: LineageFlowProps): ReactNode {
   }, [setNodes, setEdges]);
 
   // Calculate height based on number of nodes
-  const sourceCount = initialGraph.nodes.filter(
-    (n) => n.data.tableType === "source"
-  ).length;
-  const derivedCount = initialGraph.nodes.filter(
-    (n) => n.data.tableType === "derived"
-  ).length;
-  const maxNodes = Math.max(sourceCount, derivedCount);
-  const dynamicHeight = Math.max(240, maxNodes * 70 + 40);
+  const dynamicHeight = useMemo(() => {
+    const sourceCount = initialGraph.nodes.filter(
+      (n) => n.data.tableType === "source"
+    ).length;
+    const derivedCount = initialGraph.nodes.filter(
+      (n) => n.data.tableType === "derived"
+    ).length;
+    const maxNodes = Math.max(sourceCount, derivedCount);
+    return Math.max(240, maxNodes * 70 + 40);
+  }, [initialGraph.nodes]);
 
   return (
     <div className={styles.flowContainer} style={{ height: dynamicHeight }}>
@@ -130,4 +139,4 @@ export function LineageFlow({ lineage, tables }: LineageFlowProps): ReactNode {
       </ReactFlow>
     </div>
   );
-}
+});

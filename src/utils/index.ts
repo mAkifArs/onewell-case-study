@@ -10,6 +10,7 @@ export {
   toTitleCase,
   formatVersion,
   formatColumnRole,
+  formatApprovalType,
 } from "./formatters";
 export { buildReactFlowGraph, getUpstreamTables } from "./lineageUtils";
 export type { ReactFlowGraph, LineageNodeData } from "./lineageUtils";

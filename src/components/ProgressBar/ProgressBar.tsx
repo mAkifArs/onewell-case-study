@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { memo, type ReactNode } from "react";
 import { clsx } from "clsx";
 import styles from "./ProgressBar.module.scss";
 
@@ -17,18 +17,29 @@ interface ProgressBarProps {
   "data-testid"?: string;
 }
 
+// CSS variables for gradient colors (theme-aware)
+const GRADIENT_COLORS = {
+  low: "var(--color-error)", // red/coral
+  mid: "var(--color-warning)", // gold
+  high: "var(--color-success)", // green
+} as const;
+
 function getGradientColor(value: number): string {
   // Red (low) → Gold (mid) → Green (high)
   if (value < 33) {
-    return "#ef4444"; // coral/red
+    return GRADIENT_COLORS.low;
   } else if (value < 67) {
-    return "#d4a00a"; // gold
+    return GRADIENT_COLORS.mid;
   } else {
-    return "#10b981"; // green/success
+    return GRADIENT_COLORS.high;
   }
 }
 
-export function ProgressBar({
+/**
+ * Progress bar component with optional gradient coloring.
+ * Memoized to prevent unnecessary re-renders.
+ */
+export const ProgressBar = memo(function ProgressBar({
   value,
   showLabel = true,
   colorMode = "default",
@@ -59,4 +70,4 @@ export function ProgressBar({
       {showLabel && <span className={styles.label}>{clampedValue}%</span>}
     </div>
   );
-}
+});

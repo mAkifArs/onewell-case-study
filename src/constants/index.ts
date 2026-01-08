@@ -7,3 +7,8 @@ export {
   getOperationStyle,
   type OperationStyle,
 } from "./operationConfig";
+export {
+  ApprovalStatusConfig,
+  getApprovalStatusIcon,
+  type ApprovalStatusStyle,
+} from "./approvalConfig";

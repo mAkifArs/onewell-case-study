@@ -13,6 +13,7 @@ export interface GroupedOperations {
 
 /**
  * Groups operations by date for timeline display.
+ * Uses O(n) algorithm with push instead of O(n²) with spread.
  */
 export function groupOperationsByDate(
   operations: Operation[]
@@ -21,8 +22,12 @@ export function groupOperationsByDate(
 
   for (const op of operations) {
     const key = getDateGroupKey(op.execution_timestamp);
-    const existing = groups.get(key) ?? [];
-    groups.set(key, [...existing, op]);
+    const existing = groups.get(key);
+    if (existing) {
+      existing.push(op);
+    } else {
+      groups.set(key, [op]);
+    }
   }
 
   return Array.from(groups.entries()).map(([date, ops]) => ({

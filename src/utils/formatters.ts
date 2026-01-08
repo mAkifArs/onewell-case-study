@@ -4,13 +4,19 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**
+ * Cached Intl.NumberFormat for compact number formatting.
+ * Created once, reused for all calls.
+ */
+const compactFormatter = new Intl.NumberFormat("en-US", {
+  notation: "compact",
+  maximumFractionDigits: 1,
+});
+
+/**
  * Format a number in compact form: 50000 => "50K"
  */
 export function formatCompact(value: number): string {
-  return new Intl.NumberFormat("en-US", {
-    notation: "compact",
-    maximumFractionDigits: 1,
-  }).format(value);
+  return compactFormatter.format(value);
 }
 
 /**
@@ -54,3 +60,10 @@ export function formatColumnRole(
   return ROLE_LABELS[role];
 }
 
+/**
+ * Format approval type: "DevCompletion" => "Dev Completion"
+ * Adds space before each capital letter
+ */
+export function formatApprovalType(type: string): string {
+  return type.replace(/([A-Z])/g, " $1").trim();
+}

@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { memo, type ReactNode } from "react";
 import type { ComplianceChecklist } from "@/types";
 import { LabelValue } from "@/components/LabelValue";
 import { ProgressBar } from "@/components/ProgressBar";
@@ -8,7 +8,11 @@ interface ComplianceProgressProps {
   checklist: ComplianceChecklist;
 }
 
-export function ComplianceProgress({
+/**
+ * Compliance progress component.
+ * Memoized to prevent re-renders when parent re-renders.
+ */
+export const ComplianceProgress = memo(function ComplianceProgress({
   checklist,
 }: ComplianceProgressProps): ReactNode {
   return (
@@ -36,4 +40,4 @@ export function ComplianceProgress({
       </div>
     </div>
   );
-}
+});
