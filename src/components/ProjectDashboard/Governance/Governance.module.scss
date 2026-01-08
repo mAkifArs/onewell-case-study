@@ -36,64 +36,21 @@
   gap: $spacing-2;
 }
 
-.approvalItem {
-  display: flex;
-  align-items: center;
-  gap: $spacing-3;
-  padding: $spacing-3;
+.approvalCard {
   background: var(--color-bg-secondary);
   border-radius: $radius-md;
-  border-left: 3px solid transparent;
+  padding: $spacing-3;
 
-  &[data-status="pending"] {
-    border-left-color: $color-gold;
-
-    .statusIcon {
-      color: $color-gold;
-    }
-
-    .statusBadge {
-      background: rgba($color-gold, 0.15);
-      color: $color-gold-700;
-    }
-  }
-
-  &[data-status="approved"] {
-    border-left-color: $color-success;
-
-    .statusIcon {
-      color: $color-success;
-    }
-
-    .statusBadge {
-      background: rgba($color-success, 0.15);
-      color: $color-success;
-    }
-  }
-
-  &[data-status="rejected"] {
-    border-left-color: $color-coral;
-
-    .statusIcon {
-      color: $color-coral;
-    }
-
-    .statusBadge {
-      background: rgba($color-coral, 0.15);
-      color: $color-coral;
-    }
+  @media (max-width: $breakpoint-sm) {
+    padding: $spacing-2;
   }
 }
 
-.statusIcon {
-  flex-shrink: 0;
-}
-
-.approvalInfo {
-  flex: 1;
+.approvalCardHeader {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-2;
 }
 
 .approvalType {
@@ -102,17 +59,46 @@
   color: var(--color-text-primary);
 }
 
-.approver {
-  font-size: 0.75rem;
+.approvalMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $spacing-1;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+.metaItem {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.metaLabel {
   color: var(--color-text-muted);
 }
 
-.statusBadge {
-  font-size: 0.6875rem;
+.metaSeparator {
+  color: var(--color-text-muted);
+}
+
+.approvalStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-1;
+  font-size: 0.75rem;
   font-weight: 600;
-  padding: 4px 8px;
-  border-radius: $radius-sm;
-  text-transform: uppercase;
+}
+
+.statusPending {
+  color: $color-gold;
+}
+
+.statusApproved {
+  color: $color-success;
+}
+
+.statusRejected {
+  color: $color-coral;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -143,13 +129,30 @@
   color: var(--color-text-muted);
 }
 
+.complianceMeta {
+  display: flex;
+  align-items: center;
+  gap: $spacing-1;
+  margin-top: $spacing-2;
+  font-size: 0.8125rem;
+}
+
+.metaLabel {
+  color: var(--color-text-muted);
+}
+
+.metaValue {
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // STAKEHOLDER LIST
 // ─────────────────────────────────────────────────────────────────────────────
 
 .stakeholderList {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  flex-direction: column;
   gap: $spacing-2;
 }
 

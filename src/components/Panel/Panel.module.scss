@@ -6,6 +6,11 @@
   border-radius: $radius-lg;
   padding: $spacing-5;
   height: 100%;
+  overflow: auto;
+
+  @media (max-width: $breakpoint-sm) {
+    padding: $spacing-3;
+  }
 }
 
 .title {
@@ -19,4 +24,5 @@
 
 .content {
   color: var(--color-text-secondary);
+  overflow: auto;
 }

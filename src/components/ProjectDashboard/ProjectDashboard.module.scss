@@ -5,6 +5,11 @@
   padding: $spacing-6;
   max-width: 1600px;
   margin: 0 auto;
+  overflow-x: hidden;
+
+  @media (max-width: $breakpoint-sm) {
+    padding: $spacing-3;
+  }
 }
 
 .backButton {

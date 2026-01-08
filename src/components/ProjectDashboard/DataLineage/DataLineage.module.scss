@@ -18,6 +18,7 @@
   flex-direction: column;
   gap: $spacing-2;
   min-height: 180px;
+  overflow-x: auto;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -42,6 +43,10 @@
 .labelSpacer {
   width: 60px;
   flex-shrink: 0;
+
+  @media (max-width: $breakpoint-sm) {
+    width: 40px;
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -67,8 +72,13 @@
 
 .connectors {
   width: 60px;
+  min-width: 40px;
   flex-shrink: 0;
   position: relative;
+
+  @media (max-width: $breakpoint-sm) {
+    width: 40px;
+  }
 }
 
 .svg {
@@ -107,6 +117,11 @@
   cursor: pointer;
   transition: all 0.2s;
   text-align: left;
+  min-width: 0; // Prevent overflow
+
+  @media (max-width: $breakpoint-sm) {
+    padding: $spacing-1-5 $spacing-2;
+  }
 
   &:hover {
     border-color: $color-navy-400;
@@ -142,6 +157,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  min-width: 0; // Allow text to shrink
+
+  @media (max-width: $breakpoint-sm) {
+    font-size: 0.6875rem;
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

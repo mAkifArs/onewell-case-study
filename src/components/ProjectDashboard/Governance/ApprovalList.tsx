@@ -13,6 +13,10 @@ const STATUS_ICONS = {
   Rejected: XCircle,
 } as const;
 
+function formatApprovalType(type: string): string {
+  return type.replace(/([A-Z])/g, " $1").trim();
+}
+
 export function ApprovalList({ approvals }: ApprovalListProps): ReactNode {
   if (approvals.length === 0) {
     return null;
@@ -24,28 +28,42 @@ export function ApprovalList({ approvals }: ApprovalListProps): ReactNode {
       <div className={styles.approvalList}>
         {approvals.map((approval) => {
           const Icon = STATUS_ICONS[approval.status];
+          const statusClass = styles[`status${approval.status}`];
+
           return (
             <div
               key={approval.approval_id}
-              className={styles.approvalItem}
-              data-status={approval.status.toLowerCase()}
+              className={styles.approvalCard}
               data-testid={`approval-item-${approval.approval_id}`}
             >
-              <Icon size={16} className={styles.statusIcon} />
-              <div className={styles.approvalInfo}>
+              <div className={styles.approvalCardHeader}>
                 <span className={styles.approvalType}>
-                  {approval.approval_type.replace(/([A-Z])/g, " $1").trim()}
+                  {formatApprovalType(approval.approval_type)}
                 </span>
-                <span className={styles.approver}>
-                  {approval.approver.name}
+                <span
+                  className={`${styles.approvalStatus} ${statusClass}`}
+                  data-testid={`approval-status-${approval.status.toLowerCase()}`}
+                >
+                  <Icon size={14} />
+                  {approval.status}
                 </span>
               </div>
-              <span
-                className={styles.statusBadge}
-                data-testid={`approval-status-${approval.status.toLowerCase()}`}
-              >
-                {approval.status}
-              </span>
+
+              <div className={styles.approvalMeta}>
+                <span className={styles.metaItem}>
+                  <span className={styles.metaLabel}>Approver:</span>
+                  {approval.approver.name}
+                </span>
+                {approval.requested_by && (
+                  <>
+                    <span className={styles.metaSeparator}>·</span>
+                    <span className={styles.metaItem}>
+                      <span className={styles.metaLabel}>Requested by:</span>
+                      {approval.requested_by.name}
+                    </span>
+                  </>
+                )}
+              </div>
             </div>
           );
         })}

@@ -22,8 +22,13 @@ export function ComplianceProgress({
         </div>
         <ProgressBar
           value={checklist.completion_percentage}
+          colorMode="gradient"
           data-testid="compliance-bar"
         />
+        <div className={styles.complianceMeta}>
+          <span className={styles.metaLabel}>Assigned to:</span>
+          <span className={styles.metaValue}>{checklist.assigned_to.name}</span>
+        </div>
       </div>
     </div>
   );
