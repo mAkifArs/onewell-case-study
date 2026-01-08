@@ -1,9 +1,10 @@
-import { memo, type ReactNode } from "react";
+import { memo, useMemo, type ReactNode } from "react";
 import { useDashboardProject } from "@/hooks";
 import {
   ProjectTypeBadge,
   ProjectStatusBadge,
 } from "@/components/ProjectBadge";
+import { LabelValue } from "@/components/LabelValue";
 import { formatDate } from "@/utils";
 import styles from "./ProjectHeader.module.scss";
 
@@ -13,6 +14,18 @@ import styles from "./ProjectHeader.module.scss";
  */
 export const ProjectHeader = memo(function ProjectHeader(): ReactNode {
   const project = useDashboardProject();
+
+  // Map project data to label-value items
+  const metaItems = useMemo(() => {
+    if (!project) return [];
+    return [
+      { label: "Owner", value: project.owner.name },
+      { label: "Governance", value: project.governance_manager?.name },
+      { label: "Department", value: project.department.name },
+      { label: "Created", value: formatDate(project.created_at) },
+      { label: "Updated", value: formatDate(project.updated_at) },
+    ];
+  }, [project]);
 
   if (!project) return null;
 
@@ -31,38 +44,17 @@ export const ProjectHeader = memo(function ProjectHeader(): ReactNode {
       </div>
 
       <div className={styles.meta}>
-        <div className={styles.metaItem}>
-          <span className={styles.metaLabel}>Owner</span>
-          <span className={styles.metaValue}>{project.owner.name}</span>
-        </div>
-
-        {project.governance_manager && (
-          <div className={styles.metaItem}>
-            <span className={styles.metaLabel}>Governance</span>
-            <span className={styles.metaValue}>
-              {project.governance_manager.name}
-            </span>
-          </div>
+        {metaItems.map(
+          (item) =>
+            item.value && (
+              <LabelValue
+                key={item.label}
+                label={item.label}
+                value={item.value}
+                variant="inline"
+              />
+            )
         )}
-
-        <div className={styles.metaItem}>
-          <span className={styles.metaLabel}>Department</span>
-          <span className={styles.metaValue}>{project.department.name}</span>
-        </div>
-
-        <div className={styles.metaItem}>
-          <span className={styles.metaLabel}>Created</span>
-          <span className={styles.metaValue}>
-            {formatDate(project.created_at)}
-          </span>
-        </div>
-
-        <div className={styles.metaItem}>
-          <span className={styles.metaLabel}>Updated</span>
-          <span className={styles.metaValue}>
-            {formatDate(project.updated_at)}
-          </span>
-        </div>
       </div>
     </header>
   );

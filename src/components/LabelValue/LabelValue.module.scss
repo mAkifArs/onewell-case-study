@@ -1,0 +1,78 @@
+@use "@/styles/variables" as *;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LABEL-VALUE COMPONENT
+// Shared component for displaying label-value pairs
+// ─────────────────────────────────────────────────────────────────────────────
+
+.container {
+  display: flex;
+  gap: $spacing-1;
+}
+
+.label {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.value {
+  color: var(--color-text-primary);
+  font-size: 0.8125rem;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// VARIANTS
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Default: stacked vertically (for headers/meta)
+.default {
+  flex-direction: column;
+  gap: $spacing-1;
+
+  .label {
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .value {
+    font-size: 0.8125rem;
+  }
+}
+
+// Inline: horizontal layout (for compact displays)
+.inline {
+  flex-direction: row;
+  align-items: center;
+  gap: $spacing-2;
+
+  .label {
+    font-size: 0.75rem;
+
+    &::after {
+      content: ":";
+    }
+  }
+
+  .value {
+    font-size: 0.75rem;
+  }
+}
+
+// Stacked: vertical with more spacing (for cards)
+.stacked {
+  flex-direction: column;
+  gap: $spacing-0;
+
+  .label {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .value {
+    font-size: 0.75rem;
+  }
+}
+

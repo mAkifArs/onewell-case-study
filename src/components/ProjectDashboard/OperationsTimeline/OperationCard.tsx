@@ -1,7 +1,8 @@
-import type { ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 import type { Operation } from "@/types";
 import { toTitleCase } from "@/utils";
 import { formatTime } from "@/utils/dateUtils";
+import { LabelValue } from "@/components/LabelValue";
 import { TableIndicator } from "@/components/TableIndicator";
 import {
   Upload,
@@ -79,6 +80,19 @@ export function OperationCard({ operation }: OperationCardProps): ReactNode {
   const config = operationConfig[operation.operation_name] ?? defaultConfig;
   const Icon = config.icon;
 
+  // Map operation data to label-value items
+  const detailItems = useMemo(
+    () => [
+      { label: "Type", value: toTitleCase(operation.operation_type) },
+      { label: "By", value: operation.executed_by.name },
+      {
+        label: "Table",
+        value: <TableIndicator tableName={operation.affected_table} />,
+      },
+    ],
+    [operation]
+  );
+
   return (
     <div
       className={styles.operationCard}
@@ -107,26 +121,14 @@ export function OperationCard({ operation }: OperationCardProps): ReactNode {
         </div>
 
         <div className={styles.operationDetails}>
-          <div className={styles.detailRow}>
-            <span className={styles.detailLabel}>Type</span>
-            <span className={styles.detailValue}>
-              {toTitleCase(operation.operation_type)}
-            </span>
-          </div>
-
-          <div className={styles.detailRow}>
-            <span className={styles.detailLabel}>By</span>
-            <span className={styles.detailValue}>
-              {operation.executed_by.name}
-            </span>
-          </div>
-
-          <div className={styles.detailRow}>
-            <span className={styles.detailLabel}>Table</span>
-            <span className={styles.detailValue}>
-              <TableIndicator tableName={operation.affected_table} />
-            </span>
-          </div>
+          {detailItems.map((item) => (
+            <LabelValue
+              key={item.label}
+              label={item.label}
+              value={item.value}
+              variant="inline"
+            />
+          ))}
         </div>
       </div>
     </div>

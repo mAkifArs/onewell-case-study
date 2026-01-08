@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { ComplianceChecklist } from "@/types";
+import { LabelValue } from "@/components/LabelValue";
 import { ProgressBar } from "@/components/ProgressBar";
 import styles from "./Governance.module.scss";
 
@@ -26,8 +27,11 @@ export function ComplianceProgress({
           data-testid="compliance-bar"
         />
         <div className={styles.complianceMeta}>
-          <span className={styles.metaLabel}>Assigned to:</span>
-          <span className={styles.metaValue}>{checklist.assigned_to.name}</span>
+          <LabelValue
+            label="Assigned to"
+            value={checklist.assigned_to.name}
+            variant="inline"
+          />
         </div>
       </div>
     </div>
