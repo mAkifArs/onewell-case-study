@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, History, CheckCircle } from "lucide-react";
 import type { ProjectTable } from "@/types";
 import { Modal } from "@/components/Modal";
+import { TableIndicator } from "@/components/TableIndicator";
 import { formatCompact, formatVersion, toTitleCase } from "@/utils";
 import { ColumnList } from "./ColumnList";
 import { VersionHistory } from "./VersionHistory";
@@ -56,8 +57,11 @@ export function TableRow({
 
         <div className={styles.tableInfo}>
           <div className={styles.tableName}>
-            <span className={styles.name}>{table.display_name}</span>
-            <code className={styles.code}>{table.table_name}</code>
+            <TableIndicator
+              displayName={table.display_name}
+              tableName={table.table_name}
+              variant="inline"
+            />
           </div>
 
           <div className={styles.tableMeta}>

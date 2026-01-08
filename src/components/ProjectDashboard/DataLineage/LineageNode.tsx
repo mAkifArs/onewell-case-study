@@ -3,6 +3,7 @@ import { memo } from "react";
 import { Handle, Position, type NodeProps } from "@xyflow/react";
 import { Database, GitBranch } from "lucide-react";
 import type { LineageNodeData } from "@/utils/lineageUtils";
+import { TableIndicator } from "@/components/TableIndicator";
 import styles from "./DataLineage.module.scss";
 
 interface LineageNodeComponentProps extends NodeProps {
@@ -32,10 +33,13 @@ function LineageNodeComponent({
       <div className={styles.flowNodeIcon}>
         <Icon size={14} />
       </div>
-      <div className={styles.flowNodeContent}>
-        <span className={styles.flowNodeName}>{data.displayName}</span>
-        <code className={styles.flowNodeCode}>{data.tableName}</code>
-      </div>
+      <TableIndicator
+        displayName={data.displayName}
+        tableName={data.tableName}
+        variant="stacked"
+        size="small"
+        truncate
+      />
 
       {data.tableType === "source" && (
         <Handle

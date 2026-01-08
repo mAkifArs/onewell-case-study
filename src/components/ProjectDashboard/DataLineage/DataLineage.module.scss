@@ -96,43 +96,6 @@
   }
 }
 
-.flowNodeContent {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-  overflow: hidden;
-}
-
-.flowNodeName {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--color-text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.flowNodeCode {
-  font-size: 0.625rem;
-  font-family: $font-family-mono;
-  padding: 1px 4px;
-  border-radius: $radius-sm;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  // Light mode: light bg, dark text
-  color: $color-primary;
-  background: $color-navy-100;
-
-  // Dark mode: dark bg, light text
-  :global([data-theme="dark"]) & {
-    color: white;
-    background: $color-primary;
-  }
-}
-
 // ─────────────────────────────────────────────────────────────────────────────
 // REACT FLOW HANDLES
 // ─────────────────────────────────────────────────────────────────────────────

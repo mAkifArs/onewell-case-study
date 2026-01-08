@@ -1,0 +1,90 @@
+@use "@/styles/variables" as *;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TABLE INDICATOR
+// A reusable component for displaying table names consistently across the app
+// ─────────────────────────────────────────────────────────────────────────────
+
+.indicator {
+  display: inline-flex;
+  min-width: 0;
+
+  // INLINE variant: horizontal layout (display name + code on same line)
+  &.inline {
+    align-items: baseline;
+    gap: $spacing-2;
+  }
+
+  // STACKED variant: vertical layout (display name above code)
+  &.stacked {
+    flex-direction: column;
+    gap: 2px;
+  }
+}
+
+// Display name (e.g., "Customer Purchases")
+.displayName {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  line-height: 1.3;
+
+  .truncate & {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // Size variants
+  .small & {
+    font-size: 0.75rem;
+  }
+
+  .default & {
+    font-size: 0.875rem;
+  }
+
+  .large & {
+    font-size: 1rem;
+  }
+}
+
+// Code badge (e.g., "customer_transactions")
+.code {
+  font-family: $font-family-mono;
+  font-weight: 500;
+  padding: 2px 6px;
+  border-radius: $radius-sm;
+  white-space: nowrap;
+
+  // Light mode: light bg, dark text
+  color: $color-primary;
+  background: $color-navy-100;
+
+  // Dark mode: dark bg, light text
+  :global([data-theme="dark"]) & {
+    color: white;
+    background: $color-primary;
+  }
+
+  .truncate & {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // Size variants
+  .small & {
+    font-size: 0.625rem;
+    padding: 1px 4px;
+  }
+
+  .default & {
+    font-size: 0.6875rem;
+  }
+
+  .large & {
+    font-size: 0.75rem;
+    padding: 3px 8px;
+  }
+}
+

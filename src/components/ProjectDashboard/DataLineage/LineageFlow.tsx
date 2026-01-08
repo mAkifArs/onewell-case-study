@@ -113,7 +113,7 @@ export function LineageFlow({ lineage, tables }: LineageFlowProps): ReactNode {
         onPaneClick={onPaneClick}
         nodeTypes={nodeTypes}
         fitView
-        fitViewOptions={{ padding: 0.1, includeHiddenNodes: true }}
+        fitViewOptions={{ padding: 0.2, includeHiddenNodes: true, maxZoom: 1 }}
         nodesDraggable={false}
         nodesConnectable={false}
         elementsSelectable={true}
@@ -123,7 +123,7 @@ export function LineageFlow({ lineage, tables }: LineageFlowProps): ReactNode {
         panOnDrag={false}
         preventScrolling={false}
         minZoom={0.5}
-        maxZoom={1.5}
+        maxZoom={1}
         proOptions={{ hideAttribution: true }}
       >
         <Background gap={20} size={1} color="var(--color-border-light)" />

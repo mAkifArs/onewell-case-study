@@ -9,25 +9,44 @@ import styles from "./ProjectDashboard.module.scss";
 function HeaderSkeleton(): ReactNode {
   return (
     <div className={styles.headerSkeleton}>
-      {/* Top section: Title, Status, Type, Objectives */}
+      {/* Top section: Title + badges, Objectives */}
       <div className={styles.headerTop}>
         <div className={styles.headerTitleRow}>
-          <Skeleton width="280px" height="1.75rem" />
-          <Skeleton width="80px" height="1.5rem" variant="rectangular" />
+          {/* Title: 1.5rem font × ~1.3 line-height = ~2rem */}
+          <Skeleton width="320px" height="2rem" />
+          <div className={styles.headerBadges}>
+            {/* Badges: 0.75rem font + 8px padding + line-height ≈ 1.75rem */}
+            <Skeleton width="70px" height="1.75rem" variant="rectangular" />
+            <Skeleton width="80px" height="1.75rem" variant="rectangular" />
+          </div>
         </div>
-        <Skeleton width="100px" height="0.75rem" />
-        <Skeleton width="100%" height="1rem" />
-        <Skeleton width="70%" height="1rem" />
+        {/* Objectives: 0.9375rem × 1.5 line-height ≈ 1.4rem */}
+        <Skeleton width="100%" height="1.4rem" />
       </div>
 
-      {/* Meta section */}
+      {/* Meta section - inline style matching actual component */}
       <div className={styles.headerMeta}>
-        {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className={styles.headerMetaItem}>
-            <Skeleton width="60px" height="0.625rem" />
-            <Skeleton width="100px" height="0.875rem" />
-          </div>
-        ))}
+        {/* Label: 0.625rem × ~1.4 ≈ 0.875rem, Value: 0.8125rem × ~1.4 ≈ 1.15rem */}
+        <div className={styles.headerMetaItem}>
+          <Skeleton width="40px" height="0.875rem" />
+          <Skeleton width="75px" height="1.125rem" />
+        </div>
+        <div className={styles.headerMetaItem}>
+          <Skeleton width="70px" height="0.875rem" />
+          <Skeleton width="80px" height="1.125rem" />
+        </div>
+        <div className={styles.headerMetaItem}>
+          <Skeleton width="70px" height="0.875rem" />
+          <Skeleton width="140px" height="1.125rem" />
+        </div>
+        <div className={styles.headerMetaItem}>
+          <Skeleton width="50px" height="0.875rem" />
+          <Skeleton width="85px" height="1.125rem" />
+        </div>
+        <div className={styles.headerMetaItem}>
+          <Skeleton width="52px" height="0.875rem" />
+          <Skeleton width="85px" height="1.125rem" />
+        </div>
       </div>
     </div>
   );
@@ -46,7 +65,8 @@ function PanelSkeleton({ children, className }: PanelSkeletonProps): ReactNode {
   return (
     <div className={`${styles.panelSkeleton} ${className ?? ""}`}>
       <div className={styles.panelSkeletonHeader}>
-        <Skeleton width="120px" height="1rem" />
+        {/* Panel title: ~1rem font × ~1.4 line-height ≈ 1.4rem */}
+        <Skeleton width="130px" height="1.4rem" />
         <Skeleton width="20px" height="20px" variant="circular" />
       </div>
       <div className={styles.panelSkeletonContent}>{children}</div>
@@ -64,16 +84,21 @@ function TableRowSkeleton(): ReactNode {
       <Skeleton width="16px" height="16px" variant="circular" />
       <div className={styles.tableRowInfo}>
         <div className={styles.tableRowName}>
-          <Skeleton width="140px" height="1rem" />
-          <Skeleton width="100px" height="0.75rem" />
+          {/* Display name: ~1rem font × 1.4 ≈ 1.4rem */}
+          <Skeleton width="130px" height="1.4rem" />
+          {/* Code badge: smaller monospace */}
+          <Skeleton width="120px" height="1.25rem" variant="rectangular" />
         </div>
         <div className={styles.tableRowMeta}>
-          <Skeleton width="50px" height="0.625rem" />
-          <Skeleton width="60px" height="0.625rem" />
-          <Skeleton width="50px" height="0.625rem" />
+          {/* Small meta text: ~0.75rem × 1.4 ≈ 1rem */}
+          <Skeleton width="45px" height="1rem" />
+          <Skeleton width="65px" height="1rem" />
+          <Skeleton width="50px" height="1rem" />
+          <Skeleton width="90px" height="1rem" />
         </div>
       </div>
-      <Skeleton width="60px" height="1.5rem" variant="rectangular" />
+      {/* Version button */}
+      <Skeleton width="55px" height="2rem" variant="rectangular" />
     </div>
   );
 }
@@ -95,11 +120,22 @@ function DataTablesSkeleton(): ReactNode {
 function OperationCardSkeleton(): ReactNode {
   return (
     <div className={styles.operationCardSkeleton}>
-      <Skeleton width="100px" height="1rem" />
-      <div className={styles.operationDetails}>
-        <Skeleton width="60%" height="0.75rem" />
-        <Skeleton width="50%" height="0.75rem" />
-        <Skeleton width="70%" height="0.75rem" />
+      {/* Icon */}
+      <Skeleton width="36px" height="36px" variant="rectangular" />
+      {/* Content */}
+      <div className={styles.operationContent}>
+        <div className={styles.operationHeader}>
+          {/* Operation name: ~0.9375rem × 1.4 ≈ 1.3rem */}
+          <Skeleton width="110px" height="1.3rem" />
+          {/* Time badge */}
+          <Skeleton width="55px" height="1.5rem" variant="rectangular" />
+        </div>
+        <div className={styles.operationMeta}>
+          {/* Meta items: ~0.75rem × 1.4 ≈ 1rem */}
+          <Skeleton width="95px" height="1rem" />
+          <Skeleton width="85px" height="1rem" />
+          <Skeleton width="110px" height="1rem" />
+        </div>
       </div>
     </div>
   );
@@ -108,9 +144,10 @@ function OperationCardSkeleton(): ReactNode {
 function OperationsSkeleton(): ReactNode {
   return (
     <div className={styles.operationsSkeleton}>
-      {/* Date group 1 */}
+      {/* Date group */}
       <div className={styles.dateGroupSkeleton}>
-        <Skeleton width="100px" height="0.75rem" />
+        {/* Date label: ~0.75rem × 1.4 ≈ 1rem */}
+        <Skeleton width="110px" height="1rem" />
         <OperationCardSkeleton />
         <OperationCardSkeleton />
       </div>
@@ -127,36 +164,37 @@ function GovernanceSkeleton(): ReactNode {
     <div className={styles.governanceSkeleton}>
       {/* Approvals */}
       <div className={styles.governanceSection}>
-        <Skeleton width="80px" height="0.875rem" />
+        {/* Section title: h4 ~0.875rem × 1.4 ≈ 1.2rem */}
+        <Skeleton width="80px" height="1.2rem" />
         <div className={styles.approvalSkeleton}>
           <div className={styles.approvalRow}>
-            <Skeleton width="100px" height="0.875rem" />
-            <Skeleton width="70px" height="1.25rem" variant="rectangular" />
+            <Skeleton width="100px" height="1.2rem" />
+            <Skeleton width="75px" height="1.625rem" variant="rectangular" />
           </div>
-          <Skeleton width="180px" height="0.75rem" />
+          <Skeleton width="200px" height="1rem" />
         </div>
       </div>
 
       {/* Compliance */}
       <div className={styles.governanceSection}>
-        <Skeleton width="80px" height="0.875rem" />
+        <Skeleton width="90px" height="1.2rem" />
         <div className={styles.complianceSkeleton}>
-          <Skeleton width="180px" height="0.875rem" />
+          <Skeleton width="200px" height="1.2rem" />
           <Skeleton width="100%" height="0.5rem" variant="rectangular" />
-          <Skeleton width="100px" height="0.75rem" />
+          <Skeleton width="120px" height="1rem" />
         </div>
       </div>
 
       {/* Stakeholders */}
       <div className={styles.governanceSection}>
-        <Skeleton width="80px" height="0.875rem" />
+        <Skeleton width="95px" height="1.2rem" />
         <div className={styles.stakeholdersSkeleton}>
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className={styles.stakeholderSkeleton}>
-              <Skeleton width="32px" height="32px" variant="circular" />
+              <Skeleton width="36px" height="36px" variant="circular" />
               <div>
-                <Skeleton width="100px" height="0.875rem" />
-                <Skeleton width="80px" height="0.625rem" />
+                <Skeleton width="100px" height="1.2rem" />
+                <Skeleton width="90px" height="1rem" />
               </div>
             </div>
           ))}

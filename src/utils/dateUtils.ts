@@ -19,6 +19,19 @@ export function formatDate(dateString: string): string {
 }
 
 /**
+ * Format time as "2:30 PM"
+ */
+export function formatTime(dateString: string): string {
+  try {
+    const date = parseISO(dateString);
+    if (!isValid(date)) return "";
+    return format(date, "h:mm a");
+  } catch {
+    return "";
+  }
+}
+
+/**
  * Get a grouping key for operations timeline.
  * Returns "Today", "Yesterday", or "January 15, 2025"
  */

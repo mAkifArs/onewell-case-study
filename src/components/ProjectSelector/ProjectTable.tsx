@@ -1,7 +1,10 @@
 import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Project, ProjectStatus, ProjectType } from "@/types";
-import { Badge } from "@/components/Badge";
+import {
+  ProjectTypeBadge,
+  ProjectStatusBadge,
+} from "@/components/ProjectBadge";
 import {
   DataTable,
   type DataTableColumn,
@@ -45,39 +48,14 @@ const columns: DataTableColumn<Project>[] = [
     header: "Type",
     sortable: true,
     sortFn: (a, b) => TYPE_ORDER[a.project_type] - TYPE_ORDER[b.project_type],
-    render: (p) => (
-      <Badge
-        variant={
-          p.project_type.toLowerCase() as
-            | "ml"
-            | "timeseries"
-            | "scorecard"
-            | "ai"
-        }
-      >
-        {p.project_type}
-      </Badge>
-    ),
+    render: (p) => <ProjectTypeBadge type={p.project_type} />,
   },
   {
     key: "status",
     header: "Status",
     sortable: true,
     sortFn: (a, b) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status],
-    render: (p) => (
-      <Badge
-        variant={
-          p.status.toLowerCase() as
-            | "draft"
-            | "active"
-            | "review"
-            | "approved"
-            | "locked"
-        }
-      >
-        {p.status}
-      </Badge>
-    ),
+    render: (p) => <ProjectStatusBadge status={p.status} />,
   },
   {
     key: "owner",
