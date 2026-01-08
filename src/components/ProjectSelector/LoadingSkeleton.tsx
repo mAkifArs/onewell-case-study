@@ -6,36 +6,60 @@ const SKELETON_ROWS = 5;
 
 export function LoadingSkeleton(): ReactNode {
   return (
-    <div className={styles.tableContainer}>
-      <div className={styles.toolbar}>
-        <Skeleton height="2.5rem" width="280px" />
+    <div className={styles.skeletonContainer}>
+      {/* Toolbar: Search + Count */}
+      <div className={styles.skeletonToolbar}>
+        <Skeleton height="2.5rem" className={styles.skeletonSearch} />
         <Skeleton height="1rem" width="80px" />
       </div>
 
-      <div className={styles.tableWrapper}>
-        <div className={styles.skeletonTable}>
-          {/* Header row */}
-          <div className={styles.skeletonHeader}>
-            <Skeleton height="1rem" width="120px" />
-            <Skeleton height="1rem" width="60px" />
-            <Skeleton height="1rem" width="60px" />
-            <Skeleton height="1rem" width="100px" />
-            <Skeleton height="1rem" width="120px" />
-            <Skeleton height="1rem" width="80px" />
+      {/* Table */}
+      <div className={styles.skeletonTableWrapper}>
+        {/* Header row */}
+        <div className={styles.skeletonHeader}>
+          <div className={styles.skeletonCell}>
+            <Skeleton height="0.75rem" width="80px" />
           </div>
+          <div className={styles.skeletonCell}>
+            <Skeleton height="0.75rem" width="40px" />
+          </div>
+          <div className={styles.skeletonCell}>
+            <Skeleton height="0.75rem" width="50px" />
+          </div>
+          <div className={`${styles.skeletonCell} ${styles.hideOnMobile}`}>
+            <Skeleton height="0.75rem" width="50px" />
+          </div>
+          <div className={`${styles.skeletonCell} ${styles.hideOnTablet}`}>
+            <Skeleton height="0.75rem" width="80px" />
+          </div>
+          <div className={`${styles.skeletonCell} ${styles.hideOnMobile}`}>
+            <Skeleton height="0.75rem" width="60px" />
+          </div>
+        </div>
 
-          {/* Data rows */}
-          {Array.from({ length: SKELETON_ROWS }).map((_, i) => (
-            <div key={i} className={styles.skeletonRow}>
-              <Skeleton height="1rem" width="180px" />
-              <Skeleton height="1.5rem" width="70px" />
-              <Skeleton height="1.5rem" width="70px" />
+        {/* Data rows */}
+        {Array.from({ length: SKELETON_ROWS }).map((_, i) => (
+          <div key={i} className={styles.skeletonRow}>
+            <div className={styles.skeletonCell}>
+              <Skeleton height="1rem" width="160px" />
+            </div>
+            <div className={styles.skeletonCell}>
+              <Skeleton height="1.5rem" width="70px" variant="rectangular" />
+            </div>
+            <div className={styles.skeletonCell}>
+              <Skeleton height="1.5rem" width="70px" variant="rectangular" />
+            </div>
+            <div className={`${styles.skeletonCell} ${styles.hideOnMobile}`}>
               <Skeleton height="1rem" width="100px" />
-              <Skeleton height="1rem" width="140px" />
+            </div>
+            <div className={`${styles.skeletonCell} ${styles.hideOnTablet}`}>
+              <Skeleton height="1rem" width="130px" />
+            </div>
+            <div className={`${styles.skeletonCell} ${styles.hideOnMobile}`}>
               <Skeleton height="1rem" width="80px" />
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );
