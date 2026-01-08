@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { useProjects } from "@/hooks";
 import { ErrorState } from "@/components/ErrorState";
 import { LoadingSkeleton } from "./LoadingSkeleton";
-import { ProjectGrid } from "./ProjectGrid";
+import { ProjectTable } from "./ProjectTable";
 import styles from "./ProjectSelector.module.scss";
 
 export function ProjectSelector(): ReactNode {
@@ -17,9 +17,7 @@ export function ProjectSelector(): ReactNode {
 
       {error && <ErrorState message={error} />}
 
-      <div className={styles.grid}>
-        {isLoading ? <LoadingSkeleton /> : <ProjectGrid projects={projects} />}
-      </div>
+      {isLoading ? <LoadingSkeleton /> : <ProjectTable projects={projects} />}
     </main>
   );
 }

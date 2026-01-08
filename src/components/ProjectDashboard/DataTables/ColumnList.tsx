@@ -1,9 +1,12 @@
 import type { ReactNode } from "react";
 import type { Column } from "@/types";
 import { Badge } from "@/components/Badge";
+import {
+  DataTable,
+  type DataTableColumn,
+  dataTableStyles,
+} from "@/components/DataTable";
 import { formatColumnRole } from "@/utils";
-import { DataTable, type DataTableColumn } from "./DataTable";
-import styles from "./DataTables.module.scss";
 
 interface ColumnListProps {
   columns: Column[];
@@ -15,14 +18,14 @@ const columnConfig: DataTableColumn<Column>[] = [
     key: "display_name",
     header: "Column",
     render: (col) => (
-      <span className={styles.cellPrimary}>{col.display_name}</span>
+      <span className={dataTableStyles.cellPrimary}>{col.display_name}</span>
     ),
   },
   {
     key: "column_name",
     header: "Name",
     render: (col) => (
-      <span className={styles.cellPrimary}>{col.column_name}</span>
+      <span className={dataTableStyles.cellPrimary}>{col.column_name}</span>
     ),
   },
   {
