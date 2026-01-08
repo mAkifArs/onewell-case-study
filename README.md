@@ -194,6 +194,10 @@ Each project includes:
 
 ![Light Theme](docs/screenshots/light-theme.png)
 
+### Offline Support Modal
+
+![Offline Modal](docs/screenshots/offline-modal.png)
+
 ## 🔮 Future Improvements
 
 - [ ] **Unit Tests** — Vitest with React Testing Library

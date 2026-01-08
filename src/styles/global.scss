@@ -26,14 +26,15 @@ body {
   font-family: $font-family-base;
   background: var(--color-bg-secondary);
   color: var(--color-text-primary);
-  min-height: 100vh;
-  overflow-x: hidden;
+  height: 100vh;
+  overflow: hidden;
 }
 
 #root {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────────
@@ -46,6 +47,8 @@ main {
   max-width: 1536px;
   margin: 0 auto;
   padding: $spacing-6;
+  height: calc(100vh - $navbar-height);
+  overflow-y: auto;
 
   @media (min-width: $breakpoint-lg) {
     padding: $spacing-8;
