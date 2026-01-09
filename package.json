@@ -13,6 +13,9 @@
     "test:coverage": "vitest --coverage",
     "cypress": "cypress open",
     "cypress:run": "cypress run",
+    "cypress:headed": "cypress run --headed",
+    "e2e": "cypress run",
+    "e2e:open": "cypress open",
     "format": "prettier --write \"src/**/*.{ts,tsx,scss,json}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,scss,json}\""
   },
@@ -25,6 +28,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.1.0",
+    "react-scan": "^0.4.3",
     "zustand": "^5.0.9"
   },
   "devDependencies": {

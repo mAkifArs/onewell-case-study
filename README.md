@@ -20,9 +20,10 @@ A modern, feature-rich dashboard for data scientists working in regulated indust
 - 📴 **Offline Support** — Cached data with graceful fallbacks
 - 🔍 **Search & Sort** — Filter and sort projects in the selector
 - ✨ **Smooth Animations** — Framer Motion transitions
-- ⚡ **Optimized Performance** — React Compiler for automatic memoization, granular state selectors
+- ⚡ **Optimized Performance** — React Compiler + react-scan for monitoring
 - ♿ **Accessibility** — ARIA labels, semantic HTML, keyboard navigation
 - 📱 **Responsive Design** — Grid-based adaptive layout
+- 🧪 **Comprehensive Testing** — 87 E2E tests + unit tests
 
 ## 🛠 Tech Stack
 
@@ -40,6 +41,9 @@ A modern, feature-rich dashboard for data scientists working in regulated indust
 | Icons                 | Lucide React                      |
 | Date Handling         | date-fns                          |
 | Fonts                 | IBM Plex Sans + IBM Plex Mono     |
+| Unit Testing          | Vitest + React Testing Library    |
+| E2E Testing           | Cypress                           |
+| Performance Monitoring| react-scan                        |
 
 ## 🚀 Getting Started
 
@@ -67,13 +71,23 @@ The app will be available at `http://localhost:5173`
 ### Available Scripts
 
 ```bash
-npm run dev          # Start development server
+# Development
+npm run dev          # Start development server (with react-scan enabled)
 npm run build        # Build for production
 npm run preview      # Preview production build
+
+# Code Quality
 npm run lint         # Run ESLint
 npm run format       # Format code with Prettier
+npm run format:check # Check formatting without changes
+
+# Testing
 npm run test         # Run unit tests (Vitest)
-npm run cypress      # Open Cypress for E2E tests
+npm run test:ui      # Run tests with Vitest UI
+npm run test:coverage # Run tests with coverage report
+npm run e2e          # Run Cypress E2E tests (headless)
+npm run e2e:open     # Open Cypress interactive UI
+npm run cypress:headed # Run E2E tests with browser visible
 ```
 
 ## 📁 Project Structure
@@ -165,6 +179,24 @@ react({
 
 This results in cleaner code without optimization boilerplate while achieving equal or better performance than manual memoization.
 
+#### React-Scan
+
+This project includes [react-scan](https://react-scan.com/) for detecting unnecessary re-renders during development:
+
+```typescript
+// Automatically enabled in development mode
+if (import.meta.env.DEV) {
+  scan({ enabled: true, log: true });
+}
+```
+
+**Visual indicators:**
+- 🟢 **Green flash** — Component rendered (normal)
+- 🟡 **Yellow flash** — Component re-rendered (check if necessary)
+- 🔴 **Red flash** — Component re-rendering too frequently (needs optimization)
+
+React-scan is automatically disabled in production builds.
+
 ### Theme System
 
 CSS variables enable seamless theme switching:
@@ -222,10 +254,43 @@ Each project includes:
 
 ![Offline Modal](docs/screenshots/offline-modal.png)
 
+## 🧪 Testing
+
+### Unit Tests (Vitest)
+
+```bash
+npm run test         # Run all unit tests
+npm run test:ui      # Interactive test UI
+npm run test:coverage # Coverage report
+```
+
+Unit tests cover utilities, hooks, and stores.
+
+### E2E Tests (Cypress)
+
+```bash
+npm run e2e          # Run headless (CI)
+npm run e2e:open     # Interactive mode
+```
+
+**87 E2E tests** covering all major features:
+
+| Test Suite | Tests | Description |
+|------------|-------|-------------|
+| `project-selector.cy.ts` | 13 | Home page, search, sort, navigation |
+| `project-dashboard.cy.ts` | 11 | Header, panels, loading, errors |
+| `data-tables.cy.ts` | 14 | Expand/collapse, columns, versions |
+| `operations-timeline.cy.ts` | 9 | Date groups, operation cards |
+| `governance.cy.ts` | 13 | Approvals, compliance, stakeholders |
+| `data-lineage.cy.ts` | 9 | Nodes, edges, interactions |
+| `navigation.cy.ts` | 18 | Routing, back button, theme |
+
+Tests are **data-agnostic** — they verify structure and behavior without hardcoding specific data values.
+
 ## 🔮 Future Improvements
 
-- [ ] **Unit Tests** — Vitest with React Testing Library
-- [ ] **E2E Tests** — Cypress test suites
+- [x] ~~**Unit Tests** — Vitest with React Testing Library~~
+- [x] ~~**E2E Tests** — Cypress test suites~~
 - [ ] **Panel Error States** — Individual error displays per section
 - [ ] **Table Filtering** — Filter tables by type/checkpoint
 - [ ] **Operation Details Modal** — Expandable operation parameters
