@@ -1,18 +1,48 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 // SERVICES EXPORTS
-// Central export point for all API services
+// Central export point for API services and repositories
 // ═══════════════════════════════════════════════════════════════════════════════
 
-// API Layer - async functions with network simulation
-export {
-  fetchProjects,
-  fetchProjectById,
-  fetchProjectTables,
-  fetchProjectOperations,
-  fetchProjectGovernance,
-  fetchProjectLineage,
-  fetchProjectDashboardData,
-} from "./api";
+// ─────────────────────────────────────────────────────────────────────────────────
+// REPOSITORY LAYER (Class-based)
+// Direct data access - synchronous, in-memory operations
+// ─────────────────────────────────────────────────────────────────────────────────
 
-// Repository Layer - direct data access (for internal use or testing)
-export * as repository from "./repository";
+export {
+  // Classes
+  ProjectRepository,
+  ProjectTableRepository,
+  OperationRepository,
+  GovernanceRepository,
+  LineageRepository,
+  // Singleton instances
+  projectRepository,
+  projectTableRepository,
+  operationRepository,
+  governanceRepository,
+  lineageRepository,
+} from "./repository";
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// API LAYER (Class-based)
+// Async functions with network simulation - wraps repository layer
+// ─────────────────────────────────────────────────────────────────────────────────
+
+export {
+  // Classes
+  ProjectApi,
+  ProjectTableApi,
+  OperationApi,
+  GovernanceApi,
+  LineageApi,
+  // Singleton instances
+  projectApi,
+  projectTableApi,
+  operationApi,
+  governanceApi,
+  lineageApi,
+  // Composite operations
+  fetchProjectDashboardData,
+  // Legacy (deprecated)
+  fetchProjects,
+} from "./api";

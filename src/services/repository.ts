@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// DATA REPOSITORY
-// Handles data access, filtering, and caching from JSON data source
-// This layer is responsible for all data manipulation logic
+// REPOSITORY LAYER
+// Class-based repositories for data access on domain entities
+// Each repository manages its own data collection with type-safe operations
 // ═══════════════════════════════════════════════════════════════════════════════
 
 import type {
@@ -33,81 +33,122 @@ const tableLineageData = data.table_lineage as unknown as Record<
   LineageRelation[]
 >;
 
-// ─────────────────────────────────────────────────────────────────────────────────
-// CACHE
-// In-memory cache for frequently accessed data
-// ─────────────────────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
+// PROJECT REPOSITORY
+// ═══════════════════════════════════════════════════════════════════════════════
 
-const projectCache = new Map<string, Project>();
+export class ProjectRepository {
+  private readonly items: Map<string, Project>;
 
-// Pre-populate project cache for O(1) lookups
-projectsData.forEach((project) => {
-  projectCache.set(project.project_id, project);
-});
+  constructor(initialData: Project[] = projectsData) {
+    this.items = new Map();
+    initialData.forEach((project) => {
+      this.items.set(project.project_id, project);
+    });
+  }
 
-// ─────────────────────────────────────────────────────────────────────────────────
-// REPOSITORY METHODS
-// Pure data access - no async, no network simulation
-// ─────────────────────────────────────────────────────────────────────────────────
+  /**
+   * Get all projects
+   */
+  public getAll(): Project[] {
+    return Array.from(this.items.values());
+  }
 
-/**
- * Get all projects
- */
-export function getAllProjects(): Project[] {
-  return projectsData;
+  /**
+   * Find a project by ID - O(1) lookup
+   */
+  public findById(id: string): Project | null {
+    return this.items.get(id) ?? null;
+  }
 }
 
-/**
- * Get a single project by ID
- * Uses cached Map for O(1) lookup instead of O(n) array search
- */
-export function getProjectById(id: string): Project | null {
-  return projectCache.get(id) ?? null;
+// ═══════════════════════════════════════════════════════════════════════════════
+// PROJECT TABLE REPOSITORY
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export class ProjectTableRepository {
+  private readonly items: Map<string, ProjectTable[]>;
+
+  constructor(initialData: Record<string, ProjectTable[]> = projectTablesData) {
+    this.items = new Map(Object.entries(initialData));
+  }
+
+  /**
+   * Get all tables for a project
+   */
+  public getByProjectId(projectId: string): ProjectTable[] {
+    return this.items.get(projectId) ?? [];
+  }
 }
 
-/**
- * Get all tables for a project
- */
-export function getProjectTables(projectId: string): ProjectTable[] {
-  return projectTablesData[projectId] ?? [];
+// ═══════════════════════════════════════════════════════════════════════════════
+// OPERATION REPOSITORY
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export class OperationRepository {
+  private readonly items: Map<string, Operation[]>;
+
+  constructor(initialData: Record<string, Operation[]> = recentOperationsData) {
+    this.items = new Map(Object.entries(initialData));
+  }
+
+  /**
+   * Get operations for a project
+   * @param limit - Maximum number of operations to return (default: 10)
+   */
+  public getByProjectId(projectId: string, limit: number = 10): Operation[] {
+    const operations = this.items.get(projectId) ?? [];
+    return operations.slice(0, limit);
+  }
 }
 
-/**
- * Get recent operations for a project
- * @param limit - Maximum number of operations to return (default: 10)
- */
-export function getProjectOperations(
-  projectId: string,
-  limit: number = 10
-): Operation[] {
-  const operations = recentOperationsData[projectId] ?? [];
-  return operations.slice(0, limit);
+// ═══════════════════════════════════════════════════════════════════════════════
+// GOVERNANCE REPOSITORY
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export class GovernanceRepository {
+  private readonly items: Map<string, Governance>;
+
+  constructor(initialData: Record<string, Governance> = governanceData) {
+    this.items = new Map(Object.entries(initialData));
+  }
+
+  /**
+   * Get governance data for a project
+   */
+  public getByProjectId(projectId: string): Governance | null {
+    return this.items.get(projectId) ?? null;
+  }
 }
 
-/**
- * Get governance data for a project
- */
-export function getProjectGovernance(projectId: string): Governance | null {
-  return governanceData[projectId] ?? null;
+// ═══════════════════════════════════════════════════════════════════════════════
+// LINEAGE REPOSITORY
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export class LineageRepository {
+  private readonly items: Map<string, LineageRelation[]>;
+
+  constructor(
+    initialData: Record<string, LineageRelation[]> = tableLineageData
+  ) {
+    this.items = new Map(Object.entries(initialData));
+  }
+
+  /**
+   * Get all lineage relations for a project
+   */
+  public getByProjectId(projectId: string): LineageRelation[] {
+    return this.items.get(projectId) ?? [];
+  }
 }
 
-/**
- * Get table lineage data for a project
- */
-export function getProjectLineage(projectId: string): LineageRelation[] {
-  return tableLineageData[projectId] ?? [];
-}
+// ═══════════════════════════════════════════════════════════════════════════════
+// SINGLETON INSTANCES
+// Export pre-initialized repository instances for application-wide use
+// ═══════════════════════════════════════════════════════════════════════════════
 
-/**
- * Check if a project exists
- */
-export function projectExists(projectId: string): boolean {
-  return projectCache.has(projectId);
-}
-
-/**
- * Get project IDs that have data
- */
-export function getAvailableProjectIds(): string[] {
-  return Array.from(projectCache.keys());
-}
+export const projectRepository = new ProjectRepository();
+export const projectTableRepository = new ProjectTableRepository();
+export const operationRepository = new OperationRepository();
+export const governanceRepository = new GovernanceRepository();
+export const lineageRepository = new LineageRepository();

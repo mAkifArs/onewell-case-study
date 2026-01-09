@@ -1,0 +1,17 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// DASHBOARD LAYOUT STYLES
+// Container styles for project dashboard pages
+// ═══════════════════════════════════════════════════════════════════════════════
+
+@use "@/styles/variables" as *;
+
+.page {
+  padding: $spacing-6;
+  max-width: 1600px;
+  margin: 0 auto;
+
+  @media (max-width: $breakpoint-sm) {
+    padding: $spacing-3;
+  }
+}
+

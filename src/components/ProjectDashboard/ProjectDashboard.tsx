@@ -1,11 +1,15 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// PROJECT DASHBOARD
+// Main dashboard view for a single project
+// Layout concerns (back button, page container) are handled by DashboardLayout
+// ═══════════════════════════════════════════════════════════════════════════════
+
 import type { ReactNode } from "react";
 import { useParams } from "react-router-dom";
 import { useProjectDashboard } from "@/hooks";
 import { ErrorState } from "@/components/ErrorState";
-import { BackButton } from "@/components/BackButton";
 import { DashboardSkeleton } from "./DashboardSkeleton";
 import { DashboardContent } from "./DashboardContent";
-import styles from "./ProjectDashboard.module.scss";
 
 export function ProjectDashboard(): ReactNode {
   const { projectId } = useParams<{ projectId: string }>();
@@ -13,12 +17,16 @@ export function ProjectDashboard(): ReactNode {
 
   const showSkeleton = isLoading || !isReady;
 
-  return (
-    <main className={styles.page} data-testid="project-dashboard">
-      <BackButton />
-      {error && <ErrorState message={error} />}
-      {!error && showSkeleton && <DashboardSkeleton />}
-      {!error && !showSkeleton && <DashboardContent />}
-    </main>
-  );
+  // Error state
+  if (error) {
+    return <ErrorState message={error} />;
+  }
+
+  // Loading state
+  if (showSkeleton) {
+    return <DashboardSkeleton />;
+  }
+
+  // Ready state
+  return <DashboardContent />;
 }

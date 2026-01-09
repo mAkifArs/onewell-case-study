@@ -1,15 +1,5 @@
 @use "@/styles/variables" as *;
 
-.page {
-  padding: $spacing-6;
-  max-width: 1600px;
-  margin: 0 auto;
-
-  @media (max-width: $breakpoint-sm) {
-    padding: $spacing-3;
-  }
-}
-
 // ─────────────────────────────────────────────────────────────────────────────
 // MAIN GRID: Data Tables + Operations (side by side, can be tall)
 // ─────────────────────────────────────────────────────────────────────────────

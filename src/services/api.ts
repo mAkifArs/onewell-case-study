@@ -1,8 +1,7 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// API SERVICE
-// Simulates network behavior (delays, errors) and calls the data repository
-// This layer is responsible for async operations and error simulation only
-// Includes request deduplication to prevent redundant simultaneous requests
+// API LAYER
+// Class-based API services that wrap repositories with network simulation
+// Handles async operations, request deduplication, and error simulation
 // ═══════════════════════════════════════════════════════════════════════════════
 
 import type {
@@ -12,167 +11,220 @@ import type {
   Governance,
   LineageRelation,
 } from "../types";
-import * as repository from "./repository";
+import {
+  projectRepository,
+  projectTableRepository,
+  operationRepository,
+  governanceRepository,
+  lineageRepository,
+  type ProjectRepository,
+  type ProjectTableRepository,
+  type OperationRepository,
+  type GovernanceRepository,
+  type LineageRepository,
+} from "./repository";
 
 // ─────────────────────────────────────────────────────────────────────────────────
 // CONFIGURATION
 // ─────────────────────────────────────────────────────────────────────────────────
 
-const SIMULATED_DELAY = {
-  min: 300,
-  max: 800,
-};
-
-// Set to 0 to disable error simulation, or 0.05 for 5% failure rate
-const FAILURE_RATE = 0;
+const API_CONFIG = {
+  delay: { min: 300, max: 800 },
+  failureRate: 0, // Set to 0.05 for 5% failure rate
+} as const;
 
 // ─────────────────────────────────────────────────────────────────────────────────
-// REQUEST DEDUPLICATION
-// Tracks in-flight requests to prevent duplicate simultaneous calls
-// If a request is already in progress, return the same promise
+// BASE API CLASS
+// Common functionality for all API services
 // ─────────────────────────────────────────────────────────────────────────────────
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const inFlightRequests = new Map<string, Promise<any>>();
+abstract class BaseApi {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private static inFlightRequests = new Map<string, Promise<any>>();
 
-/**
- * Wraps an async function with request deduplication.
- * If a request with the same key is already in flight, returns the existing promise.
- * Once the request completes, removes it from the in-flight map.
- */
-function deduplicate<T>(key: string, requestFn: () => Promise<T>): Promise<T> {
-  // Check if this request is already in flight
-  const existing = inFlightRequests.get(key);
-  if (existing) {
-    return existing as Promise<T>;
+  /**
+   * Simulate network delay
+   */
+  protected async simulateDelay(): Promise<void> {
+    const delay =
+      Math.random() * (API_CONFIG.delay.max - API_CONFIG.delay.min) +
+      API_CONFIG.delay.min;
+    await new Promise((resolve) => setTimeout(resolve, delay));
   }
 
-  // Create new request and track it
-  const request = requestFn().finally(() => {
-    // Remove from in-flight map when done (success or error)
-    inFlightRequests.delete(key);
-  });
+  /**
+   * Optionally throw a simulated network error
+   */
+  protected async maybeThrowError(): Promise<void> {
+    if (API_CONFIG.failureRate > 0 && Math.random() < API_CONFIG.failureRate) {
+      throw new Error("Simulated network error. Please try again.");
+    }
+  }
 
-  inFlightRequests.set(key, request);
-  return request;
-}
+  /**
+   * Wrap an async function with request deduplication
+   */
+  protected deduplicate<T>(
+    key: string,
+    requestFn: () => Promise<T>
+  ): Promise<T> {
+    const existing = BaseApi.inFlightRequests.get(key);
+    if (existing) {
+      return existing as Promise<T>;
+    }
 
-// ─────────────────────────────────────────────────────────────────────────────────
-// NETWORK SIMULATION HELPERS
-// ─────────────────────────────────────────────────────────────────────────────────
+    const request = requestFn().finally(() => {
+      BaseApi.inFlightRequests.delete(key);
+    });
 
-/**
- * Simulates network delay with random duration
- */
-async function simulateDelay(): Promise<void> {
-  const delay =
-    Math.random() * (SIMULATED_DELAY.max - SIMULATED_DELAY.min) +
-    SIMULATED_DELAY.min;
-  await new Promise((resolve) => setTimeout(resolve, delay));
-}
+    BaseApi.inFlightRequests.set(key, request);
+    return request;
+  }
 
-/**
- * Optionally throws a simulated network error
- */
-async function maybeThrowError(): Promise<void> {
-  if (FAILURE_RATE > 0 && Math.random() < FAILURE_RATE) {
-    throw new Error("Simulated network error. Please try again.");
+  /**
+   * Execute a request with delay, error simulation, and deduplication
+   */
+  protected async execute<T>(key: string, fn: () => T): Promise<T> {
+    return this.deduplicate(key, async () => {
+      await this.simulateDelay();
+      await this.maybeThrowError();
+      return fn();
+    });
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────────
-// API ENDPOINTS
-// Each function simulates a network call, then delegates to repository
-// All functions are wrapped with deduplication to prevent redundant requests
-// ─────────────────────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
+// PROJECT API
+// ═══════════════════════════════════════════════════════════════════════════════
 
-/**
- * GET /projects
- * Fetches all projects
- */
-export function fetchProjects(): Promise<Project[]> {
-  return deduplicate("projects", async () => {
-    await simulateDelay();
-    await maybeThrowError();
-    return repository.getAllProjects();
-  });
+export class ProjectApi extends BaseApi {
+  constructor(
+    private readonly repository: ProjectRepository = projectRepository
+  ) {
+    super();
+  }
+
+  /**
+   * GET /projects - Fetch all projects
+   */
+  public fetchAll(): Promise<Project[]> {
+    return this.execute("projects", () => this.repository.getAll());
+  }
+
+  /**
+   * GET /projects/:id - Fetch a single project
+   */
+  public fetchById(id: string): Promise<Project | null> {
+    return this.execute(`project:${id}`, () => this.repository.findById(id));
+  }
 }
 
-/**
- * GET /projects/:id
- * Fetches a single project by ID
- */
-export function fetchProjectById(id: string): Promise<Project | null> {
-  return deduplicate(`project:${id}`, async () => {
-    await simulateDelay();
-    await maybeThrowError();
-    return repository.getProjectById(id);
-  });
+// ═══════════════════════════════════════════════════════════════════════════════
+// PROJECT TABLE API
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export class ProjectTableApi extends BaseApi {
+  constructor(
+    private readonly repository: ProjectTableRepository = projectTableRepository
+  ) {
+    super();
+  }
+
+  /**
+   * GET /projects/:id/tables - Fetch all tables for a project
+   */
+  public fetchByProjectId(projectId: string): Promise<ProjectTable[]> {
+    return this.execute(`tables:${projectId}`, () =>
+      this.repository.getByProjectId(projectId)
+    );
+  }
 }
 
-/**
- * GET /projects/:id/tables
- * Fetches all tables for a project
- */
-export function fetchProjectTables(projectId: string): Promise<ProjectTable[]> {
-  return deduplicate(`tables:${projectId}`, async () => {
-    await simulateDelay();
-    await maybeThrowError();
-    return repository.getProjectTables(projectId);
-  });
+// ═══════════════════════════════════════════════════════════════════════════════
+// OPERATION API
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export class OperationApi extends BaseApi {
+  constructor(
+    private readonly repository: OperationRepository = operationRepository
+  ) {
+    super();
+  }
+
+  /**
+   * GET /projects/:id/operations - Fetch recent operations (limited)
+   */
+  public fetchByProjectId(
+    projectId: string,
+    limit: number = 10
+  ): Promise<Operation[]> {
+    return this.execute(`operations:${projectId}:${limit}`, () =>
+      this.repository.getByProjectId(projectId, limit)
+    );
+  }
 }
 
-/**
- * GET /projects/:id/operations
- * Fetches recent operations for a project (last 10)
- */
-export function fetchProjectOperations(
-  projectId: string
-): Promise<Operation[]> {
-  return deduplicate(`operations:${projectId}`, async () => {
-    await simulateDelay();
-    await maybeThrowError();
-    return repository.getProjectOperations(projectId, 10);
-  });
+// ═══════════════════════════════════════════════════════════════════════════════
+// GOVERNANCE API
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export class GovernanceApi extends BaseApi {
+  constructor(
+    private readonly repository: GovernanceRepository = governanceRepository
+  ) {
+    super();
+  }
+
+  /**
+   * GET /projects/:id/governance - Fetch governance data
+   */
+  public fetchByProjectId(projectId: string): Promise<Governance | null> {
+    return this.execute(`governance:${projectId}`, () =>
+      this.repository.getByProjectId(projectId)
+    );
+  }
 }
 
-/**
- * GET /projects/:id/governance
- * Fetches governance data for a project
- */
-export function fetchProjectGovernance(
-  projectId: string
-): Promise<Governance | null> {
-  return deduplicate(`governance:${projectId}`, async () => {
-    await simulateDelay();
-    await maybeThrowError();
-    return repository.getProjectGovernance(projectId);
-  });
+// ═══════════════════════════════════════════════════════════════════════════════
+// LINEAGE API
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export class LineageApi extends BaseApi {
+  constructor(
+    private readonly repository: LineageRepository = lineageRepository
+  ) {
+    super();
+  }
+
+  /**
+   * GET /projects/:id/lineage - Fetch lineage data
+   */
+  public fetchByProjectId(projectId: string): Promise<LineageRelation[]> {
+    return this.execute(`lineage:${projectId}`, () =>
+      this.repository.getByProjectId(projectId)
+    );
+  }
 }
 
-/**
- * GET /projects/:id/lineage
- * Fetches table lineage data for a project
- */
-export function fetchProjectLineage(
-  projectId: string
-): Promise<LineageRelation[]> {
-  return deduplicate(`lineage:${projectId}`, async () => {
-    await simulateDelay();
-    await maybeThrowError();
-    return repository.getProjectLineage(projectId);
-  });
-}
+// ═══════════════════════════════════════════════════════════════════════════════
+// SINGLETON INSTANCES
+// Export pre-initialized API instances for application-wide use
+// ═══════════════════════════════════════════════════════════════════════════════
 
-// ─────────────────────────────────────────────────────────────────────────────────
-// COMPOSITE ENDPOINTS
-// ─────────────────────────────────────────────────────────────────────────────────
+export const projectApi = new ProjectApi();
+export const projectTableApi = new ProjectTableApi();
+export const operationApi = new OperationApi();
+export const governanceApi = new GovernanceApi();
+export const lineageApi = new LineageApi();
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// COMPOSITE API
+// Complex operations that span multiple repositories
+// ═══════════════════════════════════════════════════════════════════════════════
 
 /**
  * Fetches all data for a project dashboard in parallel
  * Uses Promise.allSettled to handle partial failures gracefully
- * - If some APIs fail, we still return data from successful calls
- * - Each panel can show its own error state independently
  */
 export async function fetchProjectDashboardData(projectId: string): Promise<{
   project: Project | null;
@@ -183,16 +235,15 @@ export async function fetchProjectDashboardData(projectId: string): Promise<{
   errors: Record<string, string>;
 }> {
   const results = await Promise.allSettled([
-    fetchProjectById(projectId),
-    fetchProjectTables(projectId),
-    fetchProjectOperations(projectId),
-    fetchProjectGovernance(projectId),
-    fetchProjectLineage(projectId),
+    projectApi.fetchById(projectId),
+    projectTableApi.fetchByProjectId(projectId),
+    operationApi.fetchByProjectId(projectId),
+    governanceApi.fetchByProjectId(projectId),
+    lineageApi.fetchByProjectId(projectId),
   ]);
 
   const errors: Record<string, string> = {};
 
-  // Extract values or set defaults for failed requests
   const project = results[0].status === "fulfilled" ? results[0].value : null;
   if (results[0].status === "rejected") {
     errors.project = results[0].reason?.message ?? "Failed to load project";
@@ -221,12 +272,14 @@ export async function fetchProjectDashboardData(projectId: string): Promise<{
     errors.lineage = results[4].reason?.message ?? "Failed to load lineage";
   }
 
-  return {
-    project,
-    tables,
-    operations,
-    governance,
-    lineage,
-    errors,
-  };
+  return { project, tables, operations, governance, lineage, errors };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// LEGACY EXPORT (for backward compatibility with projectStore)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/** @deprecated Use projectApi.fetchAll() instead */
+export function fetchProjects(): Promise<Project[]> {
+  return projectApi.fetchAll();
 }

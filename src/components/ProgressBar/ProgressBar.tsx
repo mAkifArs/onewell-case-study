@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 import { clsx } from "clsx";
 import styles from "./ProgressBar.module.scss";
 
@@ -45,14 +45,20 @@ export function ProgressBar({
   className,
   "data-testid": testId = "progress-bar",
 }: ProgressBarProps): ReactNode {
-  const clampedValue = Math.min(100, Math.max(0, value));
+  const clampedValue = useMemo(
+    () => Math.min(100, Math.max(0, value)),
+    [value]
+  );
 
-  const fillStyle: React.CSSProperties = {
-    width: `${clampedValue}%`,
-    ...(colorMode === "gradient" && {
-      backgroundColor: getGradientColor(clampedValue),
+  const fillStyle = useMemo<React.CSSProperties>(
+    () => ({
+      width: `${clampedValue}%`,
+      ...(colorMode === "gradient" && {
+        backgroundColor: getGradientColor(clampedValue),
+      }),
     }),
-  };
+    [clampedValue, colorMode]
+  );
 
   return (
     <div className={clsx(styles.container, className)} data-testid={testId}>
