@@ -1,3 +1,3 @@
 export { DataLineage } from "./DataLineage";
 export { LineageFlow } from "./LineageFlow";
-export { LineageNodeMemo } from "./LineageNode";
+export { LineageNode } from "./LineageNode";

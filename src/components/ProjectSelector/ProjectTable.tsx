@@ -1,4 +1,4 @@
-import { memo, useCallback, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Project } from "@/types";
 import { DataTable } from "@/components/DataTable";
@@ -10,18 +10,9 @@ interface ProjectTableProps {
 
 /**
  * Project list table component.
- * Memoized to prevent re-renders when parent re-renders but projects unchanged.
  */
-export const ProjectTable = memo(function ProjectTable({
-  projects,
-}: ProjectTableProps): ReactNode {
+export function ProjectTable({ projects }: ProjectTableProps): ReactNode {
   const navigate = useNavigate();
-
-  // Stable callback reference - won't cause DataTable to re-render
-  const handleRowClick = useCallback(
-    (p: Project) => navigate(`/projects/${p.project_id}`),
-    [navigate]
-  );
 
   return (
     <DataTable
@@ -39,11 +30,11 @@ export const ProjectTable = memo(function ProjectTable({
       ]}
       sortable
       defaultSort={{ field: "updated_at", direction: "desc" }}
-      onRowClick={handleRowClick}
+      onRowClick={(p) => navigate(`/projects/${p.project_id}`)}
       showCount
       countLabel="project"
       emptyMessage="No projects found matching"
       testId="project-table"
     />
   );
-});
+}

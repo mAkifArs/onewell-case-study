@@ -1,4 +1,4 @@
-import { memo, useMemo, type ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 import type { Operation } from "@/types";
 import { getOperationStyle } from "@/constants";
 import { toTitleCase } from "@/utils";
@@ -13,11 +13,8 @@ interface OperationCardProps {
 
 /**
  * Operation card component - displays a single operation.
- * Memoized to prevent re-renders when parent re-renders.
  */
-export const OperationCard = memo(function OperationCard({
-  operation,
-}: OperationCardProps): ReactNode {
+export function OperationCard({ operation }: OperationCardProps): ReactNode {
   const time = formatTime(operation.execution_timestamp);
   const config = getOperationStyle(operation.operation_name);
 
@@ -60,7 +57,7 @@ export const OperationCard = memo(function OperationCard({
       </div>
     </div>
   );
-});
+}
 
 // ─────────────────────────────────────────────────────────────────────────────────
 // SUB-COMPONENTS

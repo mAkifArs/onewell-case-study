@@ -1,4 +1,4 @@
-import { memo, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import clsx from "clsx";
 import { Skeleton } from "@/components/Skeleton";
 import styles from "./LoadingSkeleton.module.scss";
@@ -8,9 +8,8 @@ const SKELETON_ROWS = [0, 1, 2, 3, 4];
 
 /**
  * Loading skeleton for the project list table.
- * Memoized since this is a pure static component with no props.
  */
-export const LoadingSkeleton = memo(function LoadingSkeleton(): ReactNode {
+export function LoadingSkeleton(): ReactNode {
   return (
     <div className={styles.container}>
       {/* Toolbar: Search + Count */}
@@ -69,4 +68,4 @@ export const LoadingSkeleton = memo(function LoadingSkeleton(): ReactNode {
       </div>
     </div>
   );
-});
+}

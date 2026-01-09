@@ -1,4 +1,4 @@
-import { memo, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import type { ProjectType, ProjectStatus } from "@/types";
 import { Badge } from "@/components/Badge";
 
@@ -15,9 +15,8 @@ interface ProjectTypeBadgeProps {
 
 /**
  * Project type badge component.
- * Memoized to prevent unnecessary re-renders in lists.
  */
-export const ProjectTypeBadge = memo(function ProjectTypeBadge({
+export function ProjectTypeBadge({
   type,
   className,
   "data-testid": testId,
@@ -37,7 +36,7 @@ export const ProjectTypeBadge = memo(function ProjectTypeBadge({
       {type}
     </Badge>
   );
-});
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PROJECT STATUS BADGE
@@ -52,9 +51,8 @@ interface ProjectStatusBadgeProps {
 
 /**
  * Project status badge component.
- * Memoized to prevent unnecessary re-renders in lists.
  */
-export const ProjectStatusBadge = memo(function ProjectStatusBadge({
+export function ProjectStatusBadge({
   status,
   className,
   "data-testid": testId,
@@ -75,4 +73,4 @@ export const ProjectStatusBadge = memo(function ProjectStatusBadge({
       {status}
     </Badge>
   );
-});
+}

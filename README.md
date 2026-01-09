@@ -20,25 +20,26 @@ A modern, feature-rich dashboard for data scientists working in regulated indust
 - 📴 **Offline Support** — Cached data with graceful fallbacks
 - 🔍 **Search & Sort** — Filter and sort projects in the selector
 - ✨ **Smooth Animations** — Framer Motion transitions
-- ⚡ **Optimized Performance** — Memoized components, granular state selectors
+- ⚡ **Optimized Performance** — React Compiler for automatic memoization, granular state selectors
 - ♿ **Accessibility** — ARIA labels, semantic HTML, keyboard navigation
 - 📱 **Responsive Design** — Grid-based adaptive layout
 
 ## 🛠 Tech Stack
 
-| Category              | Technology                      |
-| --------------------- | ------------------------------- |
-| Framework             | React 19                        |
-| Language              | TypeScript (strict mode)        |
-| Build Tool            | Vite 6                          |
-| Routing               | React Router v7                 |
-| State Management      | Zustand with persist middleware |
-| Styling               | Modular SCSS with CSS variables |
-| Animations            | Framer Motion                   |
-| Lineage Visualization | ReactFlow (@xyflow/react)       |
-| Icons                 | Lucide React                    |
-| Date Handling         | date-fns                        |
-| Fonts                 | IBM Plex Sans + IBM Plex Mono   |
+| Category              | Technology                        |
+| --------------------- | --------------------------------- |
+| Framework             | React 19                          |
+| Language              | TypeScript (strict mode)          |
+| Build Tool            | Vite 6                            |
+| Compiler              | React Compiler (auto-memoization) |
+| Routing               | React Router v7                   |
+| State Management      | Zustand with persist middleware   |
+| Styling               | Modular SCSS with CSS variables   |
+| Animations            | Framer Motion                     |
+| Lineage Visualization | ReactFlow (@xyflow/react)         |
+| Icons                 | Lucide React                      |
+| Date Handling         | date-fns                          |
+| Fonts                 | IBM Plex Sans + IBM Plex Mono     |
 
 ## 🚀 Getting Started
 
@@ -136,10 +137,33 @@ This separation prevents unnecessary re-renders and keeps the codebase maintaina
 
 ### Performance Optimizations
 
-1. **Granular Selectors** — Each panel subscribes only to its specific data slice
-2. **Memoization** — Components wrapped with `memo()` where beneficial
+1. **React Compiler** — Automatic memoization at build time (no manual `memo()`, `useMemo`, or `useCallback` wrappers needed)
+2. **Granular Selectors** — Each panel subscribes only to its specific data slice
 3. **Parallel Fetching** — Dashboard data loaded with `Promise.allSettled`
 4. **Skeleton Loading** — Layout-matched skeletons prevent content shift
+
+#### React Compiler
+
+This project uses [React Compiler](https://react.dev/learn/react-compiler) (introduced in React 19) for automatic performance optimization. The compiler analyzes component data flow and applies memoization at build time, eliminating the need for manual optimization.
+
+**What it handles automatically:**
+
+- Component re-render skipping (equivalent to `React.memo()`)
+- Computed value caching (equivalent to `useMemo()`)
+- Callback stability (equivalent to `useCallback()`)
+
+**Configuration:**
+
+```typescript
+// vite.config.ts
+react({
+  babel: {
+    plugins: [["babel-plugin-react-compiler", {}]],
+  },
+});
+```
+
+This results in cleaner code without optimization boilerplate while achieving equal or better performance than manual memoization.
 
 ### Theme System
 

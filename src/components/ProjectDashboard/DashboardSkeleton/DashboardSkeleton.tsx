@@ -1,4 +1,4 @@
-import { memo, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import clsx from "clsx";
 import { Skeleton } from "@/components/Skeleton";
 import styles from "./DashboardSkeleton.module.scss";
@@ -217,9 +217,8 @@ function LineageSkeleton(): ReactNode {
 
 /**
  * Dashboard loading skeleton.
- * Memoized since it's a pure static component.
  */
-export const DashboardSkeleton = memo(function DashboardSkeleton(): ReactNode {
+export function DashboardSkeleton(): ReactNode {
   return (
     <>
       <HeaderSkeleton />
@@ -243,4 +242,4 @@ export const DashboardSkeleton = memo(function DashboardSkeleton(): ReactNode {
       </div>
     </>
   );
-});
+}

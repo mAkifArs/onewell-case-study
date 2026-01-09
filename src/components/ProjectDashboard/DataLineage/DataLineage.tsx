@@ -1,4 +1,4 @@
-import { memo, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useDashboardLineage } from "@/hooks";
 import { EmptyState } from "@/components/EmptyState";
 import { LineageFlow } from "./LineageFlow";
@@ -6,9 +6,8 @@ import styles from "./DataLineage.module.scss";
 
 /**
  * Data lineage component - uses store directly.
- * Only re-renders when lineage or tables data changes.
  */
-export const DataLineage = memo(function DataLineage(): ReactNode {
+export function DataLineage(): ReactNode {
   const { lineage, tables } = useDashboardLineage();
 
   if (lineage.length === 0) {
@@ -20,4 +19,4 @@ export const DataLineage = memo(function DataLineage(): ReactNode {
       <LineageFlow lineage={lineage} tables={tables} />
     </div>
   );
-});
+}

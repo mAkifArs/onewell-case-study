@@ -1,4 +1,4 @@
-import { memo, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { User } from "lucide-react";
 import type { Stakeholder } from "@/types";
 import styles from "./Governance.module.scss";
@@ -9,9 +9,8 @@ interface StakeholderListProps {
 
 /**
  * Stakeholder list component.
- * Memoized to prevent re-renders when parent re-renders.
  */
-export const StakeholderList = memo(function StakeholderList({
+export function StakeholderList({
   stakeholders,
 }: StakeholderListProps): ReactNode {
   if (stakeholders.length === 0) {
@@ -31,7 +30,7 @@ export const StakeholderList = memo(function StakeholderList({
       </div>
     </div>
   );
-});
+}
 
 // ─────────────────────────────────────────────────────────────────────────────────
 // SUB-COMPONENTS
@@ -41,9 +40,7 @@ interface StakeholderItemProps {
   stakeholder: Stakeholder;
 }
 
-const StakeholderItem = memo(function StakeholderItem({
-  stakeholder,
-}: StakeholderItemProps): ReactNode {
+function StakeholderItem({ stakeholder }: StakeholderItemProps): ReactNode {
   return (
     <div
       className={styles.stakeholderItem}
@@ -58,4 +55,4 @@ const StakeholderItem = memo(function StakeholderItem({
       </div>
     </div>
   );
-});
+}

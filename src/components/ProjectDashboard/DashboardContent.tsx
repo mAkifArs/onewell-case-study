@@ -1,4 +1,4 @@
-import { memo, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { PanelInfo } from "@/constants";
 import { Panel } from "@/components/Panel";
 import { ProjectHeader } from "./ProjectHeader";
@@ -12,7 +12,7 @@ import styles from "./ProjectDashboard.module.scss";
  * Dashboard content layout.
  * Each panel component fetches its own data from the store.
  */
-export const DashboardContent = memo(function DashboardContent(): ReactNode {
+export function DashboardContent(): ReactNode {
   return (
     <>
       <ProjectHeader />
@@ -56,4 +56,4 @@ export const DashboardContent = memo(function DashboardContent(): ReactNode {
       </div>
     </>
   );
-});
+}

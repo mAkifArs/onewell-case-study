@@ -1,4 +1,4 @@
-import { memo, useMemo, type ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 import clsx from "clsx";
 import type { Approval } from "@/types";
 import { getApprovalStatusIcon } from "@/constants";
@@ -12,11 +12,8 @@ interface ApprovalListProps {
 
 /**
  * Approval list component.
- * Memoized to prevent re-renders when parent re-renders.
  */
-export const ApprovalList = memo(function ApprovalList({
-  approvals,
-}: ApprovalListProps): ReactNode {
+export function ApprovalList({ approvals }: ApprovalListProps): ReactNode {
   if (approvals.length === 0) {
     return null;
   }
@@ -31,7 +28,7 @@ export const ApprovalList = memo(function ApprovalList({
       </div>
     </div>
   );
-});
+}
 
 // ─────────────────────────────────────────────────────────────────────────────────
 // SUB-COMPONENTS
@@ -41,9 +38,7 @@ interface ApprovalCardProps {
   approval: Approval;
 }
 
-const ApprovalCard = memo(function ApprovalCard({
-  approval,
-}: ApprovalCardProps): ReactNode {
+function ApprovalCard({ approval }: ApprovalCardProps): ReactNode {
   const Icon = getApprovalStatusIcon(approval.status);
   const statusClass = styles[`status${approval.status}`];
 
@@ -91,4 +86,4 @@ const ApprovalCard = memo(function ApprovalCard({
       </div>
     </div>
   );
-});
+}

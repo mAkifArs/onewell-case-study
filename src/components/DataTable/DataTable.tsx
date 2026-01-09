@@ -1,4 +1,4 @@
-import { memo, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useState, useMemo } from "react";
 import { Search, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import type { DataTableProps, SortState, DataTableColumn } from "./types";
@@ -188,5 +188,4 @@ function DataTableComponent<T>({
   );
 }
 
-// Export memoized version with generic type preserved
-export const DataTable = memo(DataTableComponent) as typeof DataTableComponent;
+export { DataTableComponent as DataTable };

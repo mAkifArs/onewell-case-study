@@ -1,4 +1,4 @@
-import { memo, useMemo, type ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 import { useDashboardProject } from "@/hooks";
 import {
   ProjectTypeBadge,
@@ -10,9 +10,8 @@ import styles from "./ProjectHeader.module.scss";
 
 /**
  * Project header component - uses store directly.
- * Only re-renders when project data changes.
  */
-export const ProjectHeader = memo(function ProjectHeader(): ReactNode {
+export function ProjectHeader(): ReactNode {
   const project = useDashboardProject();
 
   // Map project data to label-value items
@@ -58,4 +57,4 @@ export const ProjectHeader = memo(function ProjectHeader(): ReactNode {
       </div>
     </header>
   );
-});
+}

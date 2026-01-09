@@ -1,19 +1,15 @@
 import type { ReactNode } from "react";
-import { memo } from "react";
 import { Handle, Position, type NodeProps } from "@xyflow/react";
 import { Database, GitBranch } from "lucide-react";
 import type { LineageNodeData } from "@/utils/lineageUtils";
 import { TableIndicator } from "@/components/TableIndicator";
 import styles from "./DataLineage.module.scss";
 
-interface LineageNodeComponentProps extends NodeProps {
+interface LineageNodeProps extends NodeProps {
   data: LineageNodeData;
 }
 
-function LineageNodeComponent({
-  data,
-  selected,
-}: LineageNodeComponentProps): ReactNode {
+export function LineageNode({ data, selected }: LineageNodeProps): ReactNode {
   const Icon = data.tableType === "source" ? Database : GitBranch;
 
   return (
@@ -59,5 +55,3 @@ function LineageNodeComponent({
     </div>
   );
 }
-
-export const LineageNodeMemo = memo(LineageNodeComponent);

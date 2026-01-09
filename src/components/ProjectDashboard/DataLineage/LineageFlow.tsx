@@ -1,5 +1,4 @@
-import { memo, type ReactNode, type MouseEvent } from "react";
-import { useCallback, useMemo } from "react";
+import { type ReactNode, type MouseEvent, useCallback, useMemo } from "react";
 import {
   ReactFlow,
   Background,
@@ -16,7 +15,7 @@ import {
   type LineageNodeData,
 } from "@/utils/lineageUtils";
 import { getUpstreamTables } from "@/utils/lineageUtils";
-import { LineageNodeMemo } from "./LineageNode";
+import { LineageNode } from "./LineageNode";
 import styles from "./DataLineage.module.scss";
 
 interface LineageFlowProps {
@@ -25,7 +24,7 @@ interface LineageFlowProps {
 }
 
 const nodeTypes: NodeTypes = {
-  lineageNode: LineageNodeMemo,
+  lineageNode: LineageNode,
 };
 
 // CSS variable for highlight color (theme-aware)
@@ -33,12 +32,8 @@ const HIGHLIGHT_STROKE = "var(--color-interactive)";
 
 /**
  * Lineage flow component using ReactFlow.
- * Memoized to prevent unnecessary re-renders.
  */
-export const LineageFlow = memo(function LineageFlow({
-  lineage,
-  tables,
-}: LineageFlowProps): ReactNode {
+export function LineageFlow({ lineage, tables }: LineageFlowProps): ReactNode {
   // Build initial graph
   const initialGraph = useMemo(
     () => buildReactFlowGraph(lineage, tables),
@@ -139,4 +134,4 @@ export const LineageFlow = memo(function LineageFlow({
       </ReactFlow>
     </div>
   );
-});
+}

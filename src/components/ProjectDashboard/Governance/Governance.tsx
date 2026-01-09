@@ -1,4 +1,4 @@
-import { memo, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useDashboardGovernance } from "@/hooks";
 import { EmptyState } from "@/components/EmptyState";
 import { ApprovalList } from "./ApprovalList";
@@ -8,9 +8,8 @@ import styles from "./Governance.module.scss";
 
 /**
  * Governance component - uses store directly.
- * Only re-renders when governance data changes.
  */
-export const Governance = memo(function Governance(): ReactNode {
+export function Governance(): ReactNode {
   const governance = useDashboardGovernance();
 
   if (!governance) {
@@ -28,4 +27,4 @@ export const Governance = memo(function Governance(): ReactNode {
       <StakeholderList stakeholders={governance.stakeholders} />
     </div>
   );
-});
+}

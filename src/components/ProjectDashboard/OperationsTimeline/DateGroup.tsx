@@ -1,4 +1,4 @@
-import { memo, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import type { Operation } from "@/types";
 import { OperationCard } from "./OperationCard";
 import styles from "./OperationsTimeline.module.scss";
@@ -10,12 +10,8 @@ interface DateGroupProps {
 
 /**
  * Date group component - renders operations for a single date.
- * Memoized to prevent re-renders when parent re-renders.
  */
-export const DateGroup = memo(function DateGroup({
-  date,
-  operations,
-}: DateGroupProps): ReactNode {
+export function DateGroup({ date, operations }: DateGroupProps): ReactNode {
   return (
     <div className={styles.dateGroup} data-testid={`date-group-${date}`}>
       <div className={styles.dateHeader}>
@@ -31,4 +27,4 @@ export const DateGroup = memo(function DateGroup({
       </div>
     </div>
   );
-});
+}
