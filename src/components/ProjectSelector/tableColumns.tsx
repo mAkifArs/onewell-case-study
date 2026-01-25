@@ -11,8 +11,12 @@ import {
 } from "@/components/ProjectBadge";
 import { type DataTableColumn, dataTableStyles } from "@/components/DataTable";
 import { formatDate } from "@/utils";
+import { Copy } from "lucide-react";
 
-export const projectColumns: DataTableColumn<Project>[] = [
+export function createProjectColumns(
+  onDuplicate: (projectId: string) => void
+): DataTableColumn<Project>[] {
+  return [
   {
     key: "project_name",
     header: "Project Name",
@@ -65,4 +69,44 @@ export const projectColumns: DataTableColumn<Project>[] = [
       </span>
     ),
   },
-];
+  {
+    key: "actions",
+    header: "",
+    sortable: false,
+    render: (p) => (
+      <button
+        onClick={(e) => {
+          e.stopPropagation(); // Prevent row click from firing
+          onDuplicate(p.project_id);
+        }}
+        type="button"
+        data-testid={`duplicate-button-${p.project_id}`}
+        style={{
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          padding: "4px 8px",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "var(--color-text-secondary)",
+          borderRadius: "4px",
+          transition: "all 0.2s",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.color = "var(--color-text-primary)";
+          e.currentTarget.style.backgroundColor = "var(--color-bg-tertiary)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.color = "var(--color-text-secondary)";
+          e.currentTarget.style.backgroundColor = "transparent";
+        }}
+        title="Duplicate project"
+        aria-label={`Duplicate ${p.project_name}`}
+      >
+        <Copy size={16} />
+      </button>
+    ),
+  },
+  ];
+}

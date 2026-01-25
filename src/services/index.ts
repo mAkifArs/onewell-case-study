@@ -4,17 +4,23 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 
 // ─────────────────────────────────────────────────────────────────────────────────
-// REPOSITORY LAYER (Class-based)
+// REPOSITORY LAYER (Functional)
 // Direct data access - synchronous, in-memory operations
 // ─────────────────────────────────────────────────────────────────────────────────
 
 export {
-  // Classes
-  ProjectRepository,
-  ProjectTableRepository,
-  OperationRepository,
-  GovernanceRepository,
-  LineageRepository,
+  // Factory functions (for testing and custom instances)
+  createProjectRepository,
+  createProjectTableRepository,
+  createOperationRepository,
+  createGovernanceRepository,
+  createLineageRepository,
+  // Type exports
+  type ProjectRepository,
+  type ProjectTableRepository,
+  type OperationRepository,
+  type GovernanceRepository,
+  type LineageRepository,
   // Singleton instances
   projectRepository,
   projectTableRepository,
@@ -24,18 +30,20 @@ export {
 } from "./repository";
 
 // ─────────────────────────────────────────────────────────────────────────────────
-// API LAYER (Class-based)
+// API LAYER (Functional)
 // Async functions with network simulation - wraps repository layer
 // ─────────────────────────────────────────────────────────────────────────────────
 
 export {
-  // Classes
-  ProjectApi,
-  ProjectTableApi,
-  OperationApi,
-  GovernanceApi,
-  LineageApi,
-  // Singleton instances
+  // Functional API functions
+  fetchAllProjects,
+  fetchProjectById,
+  duplicateProject,
+  fetchProjectTables,
+  fetchProjectOperations,
+  fetchProjectGovernance,
+  fetchProjectLineage,
+  // Object-based API (for backward compatibility)
   projectApi,
   projectTableApi,
   operationApi,

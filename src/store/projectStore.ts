@@ -52,6 +52,9 @@ interface ProjectState {
   /** Fetch all projects from API */
   loadProjects: () => Promise<void>;
 
+  /** Reload projects from API (forces refresh even if projects exist) */
+  reloadProjects: () => Promise<void>;
+
   /** Select a project by ID (or null to deselect) */
   selectProject: (id: string | null) => void;
 
@@ -101,6 +104,40 @@ export const useProjectStore = create<ProjectState>()((set, get) => ({
     } catch (err) {
       set({
         error: err instanceof Error ? err.message : "Failed to load projects",
+        isLoading: false,
+      });
+    }
+  },
+
+  reloadProjects: async () => {
+    set({ isLoading: true, error: null });
+
+    const isOnline = navigator.onLine;
+
+    // OFFLINE: Try to load from localStorage
+    if (!isOnline) {
+      const cached = loadFromOfflineStorage();
+      if (cached && cached.length > 0) {
+        set({ projects: cached, isLoading: false });
+        return;
+      }
+      set({
+        error: "No internet connection and no cached data available",
+        isLoading: false,
+      });
+      return;
+    }
+
+    // ONLINE: Fetch from API
+    try {
+      const data = await fetchProjects();
+      set({ projects: data, isLoading: false, error: null });
+
+      // Save for offline use
+      saveForOffline(data);
+    } catch (err) {
+      set({
+        error: err instanceof Error ? err.message : "Failed to reload projects",
         isLoading: false,
       });
     }

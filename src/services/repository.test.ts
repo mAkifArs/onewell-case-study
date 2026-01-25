@@ -4,11 +4,16 @@
 
 import { describe, it, expect } from "vitest";
 import {
-  ProjectRepository,
-  ProjectTableRepository,
-  OperationRepository,
-  GovernanceRepository,
-  LineageRepository,
+  createProjectRepository,
+  createProjectTableRepository,
+  createOperationRepository,
+  createGovernanceRepository,
+  createLineageRepository,
+  type ProjectRepository,
+  type ProjectTableRepository,
+  type OperationRepository,
+  type GovernanceRepository,
+  type LineageRepository,
 } from "./repository";
 import type {
   Project,
@@ -101,7 +106,7 @@ describe("ProjectRepository", () => {
         createProject("proj-1", "Project 1"),
         createProject("proj-2", "Project 2"),
       ];
-      const repo = new ProjectRepository(projects);
+      const repo = createProjectRepository(projects);
 
       const result = repo.getAll();
 
@@ -119,7 +124,7 @@ describe("ProjectRepository", () => {
   describe("findById", () => {
     it("returns project when found", () => {
       const projects = [createProject("proj-1", "Project 1")];
-      const repo = new ProjectRepository(projects);
+      const repo = createProjectRepository(projects);
 
       const result = repo.findById("proj-1");
 
@@ -144,7 +149,7 @@ describe("ProjectTableRepository", () => {
       const data = {
         "proj-1": [createTable("t-1", "customers"), createTable("t-2", "orders")],
       };
-      const repo = new ProjectTableRepository(data);
+      const repo = createProjectTableRepository(data);
 
       const result = repo.getByProjectId("proj-1");
 
@@ -169,7 +174,7 @@ describe("OperationRepository", () => {
       const operations = Array.from({ length: 15 }, (_, i) =>
         createOperation(`op-${i}`, `2025-01-${String(i + 1).padStart(2, "0")}T00:00:00Z`)
       );
-      const repo = new OperationRepository({ "proj-1": operations });
+      const repo = createOperationRepository({ "proj-1": operations });
 
       const result = repo.getByProjectId("proj-1");
 
@@ -180,14 +185,14 @@ describe("OperationRepository", () => {
       const operations = Array.from({ length: 15 }, (_, i) =>
         createOperation(`op-${i}`, `2025-01-${String(i + 1).padStart(2, "0")}T00:00:00Z`)
       );
-      const repo = new OperationRepository({ "proj-1": operations });
+      const repo = createOperationRepository({ "proj-1": operations });
 
       expect(repo.getByProjectId("proj-1", 5)).toHaveLength(5);
       expect(repo.getByProjectId("proj-1", 20)).toHaveLength(15);
     });
 
     it("returns empty array for unknown project", () => {
-      const repo = new OperationRepository({});
+      const repo = createOperationRepository({});
       expect(repo.getByProjectId("unknown")).toEqual([]);
     });
   });
@@ -201,7 +206,7 @@ describe("GovernanceRepository", () => {
   describe("getByProjectId", () => {
     it("returns governance data when exists", () => {
       const governance = createGovernance();
-      const repo = new GovernanceRepository({ "proj-1": governance });
+      const repo = createGovernanceRepository({ "proj-1": governance });
 
       const result = repo.getByProjectId("proj-1");
 
@@ -210,7 +215,7 @@ describe("GovernanceRepository", () => {
     });
 
     it("returns null when not found", () => {
-      const repo = new GovernanceRepository({});
+      const repo = createGovernanceRepository({});
       expect(repo.getByProjectId("unknown")).toBeNull();
     });
   });
@@ -227,7 +232,7 @@ describe("LineageRepository", () => {
         createLineageRelation("source", "derived"),
         createLineageRelation("source2", "derived"),
       ];
-      const repo = new LineageRepository({ "proj-1": relations });
+      const repo = createLineageRepository({ "proj-1": relations });
 
       const result = repo.getByProjectId("proj-1");
 
@@ -237,7 +242,7 @@ describe("LineageRepository", () => {
     });
 
     it("returns empty array for unknown project", () => {
-      const repo = new LineageRepository({});
+      const repo = createLineageRepository({});
       expect(repo.getByProjectId("unknown")).toEqual([]);
     });
   });

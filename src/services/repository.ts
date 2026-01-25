@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 // REPOSITORY LAYER
-// Class-based repositories for data access on domain entities
+// Functional repositories for data access on domain entities
 // Each repository manages its own data collection with type-safe operations
 // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -37,109 +37,140 @@ const tableLineageData = data.table_lineage as unknown as Record<
 // PROJECT REPOSITORY
 // ═══════════════════════════════════════════════════════════════════════════════
 
-export class ProjectRepository {
-  private readonly items: Map<string, Project>;
+// Private state - using closure to encapsulate the data store
+export function createProjectRepository(initialData: Project[] = projectsData) {
+  const items = new Map<string, Project>();
+  initialData.forEach((project) => {
+    items.set(project.project_id, project);
+  });
 
-  constructor(initialData: Project[] = projectsData) {
-    this.items = new Map();
-    initialData.forEach((project) => {
-      this.items.set(project.project_id, project);
-    });
-  }
+  return {
+    /**
+     * Get all projects
+     */
+    getAll: (): Project[] => {
+      return Array.from(items.values());
+    },
 
-  /**
-   * Get all projects
-   */
-  public getAll(): Project[] {
-    return Array.from(this.items.values());
-  }
+    /**
+     * Find a project by ID - O(1) lookup
+     */
+    findById: (id: string): Project | null => {
+      return items.get(id) ?? null;
+    },
 
-  /**
-   * Find a project by ID - O(1) lookup
-   */
-  public findById(id: string): Project | null {
-    return this.items.get(id) ?? null;
-  }
-}
+    /**
+     * Add a new project to the repository
+     */
+    add: (project: Project): void => {
+      items.set(project.project_id, project);
+    },
+  };
+};
 
-// ═══════════════════════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────────
 // PROJECT TABLE REPOSITORY
-// ═══════════════════════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────────
 
-export class ProjectTableRepository {
-  private readonly items: Map<string, ProjectTable[]>;
+export function createProjectTableRepository(
+  initialData: Record<string, ProjectTable[]> = projectTablesData
+) {
+  const items = new Map<string, ProjectTable[]>();
+  Object.entries(initialData).forEach(([key, value]) => {
+    items.set(key, value);
+  });
 
-  constructor(initialData: Record<string, ProjectTable[]> = projectTablesData) {
-    this.items = new Map(Object.entries(initialData));
-  }
+  return {
+    /**
+     * Get all tables for a project
+     */
+    getByProjectId: (projectId: string): ProjectTable[] => {
+      return items.get(projectId) ?? [];
+    },
+  };
+};
 
-  /**
-   * Get all tables for a project
-   */
-  public getByProjectId(projectId: string): ProjectTable[] {
-    return this.items.get(projectId) ?? [];
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────────
 // OPERATION REPOSITORY
-// ═══════════════════════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────────
 
-export class OperationRepository {
-  private readonly items: Map<string, Operation[]>;
+export function createOperationRepository(
+  initialData: Record<string, Operation[]> = recentOperationsData
+) {
+  const items = new Map<string, Operation[]>();
+  Object.entries(initialData).forEach(([key, value]) => {
+    items.set(key, value);
+  });
 
-  constructor(initialData: Record<string, Operation[]> = recentOperationsData) {
-    this.items = new Map(Object.entries(initialData));
-  }
+  return {
+    /**
+     * Get operations for a project
+     * @param limit - Maximum number of operations to return (default: 10)
+     */
+    getByProjectId: (projectId: string, limit: number = 10): Operation[] => {
+      const operations = items.get(projectId) ?? [];
+      return operations.slice(0, limit);
+    },
+  };
+};
 
-  /**
-   * Get operations for a project
-   * @param limit - Maximum number of operations to return (default: 10)
-   */
-  public getByProjectId(projectId: string, limit: number = 10): Operation[] {
-    const operations = this.items.get(projectId) ?? [];
-    return operations.slice(0, limit);
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────────
 // GOVERNANCE REPOSITORY
-// ═══════════════════════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────────
 
-export class GovernanceRepository {
-  private readonly items: Map<string, Governance>;
+export function createGovernanceRepository(
+  initialData: Record<string, Governance> = governanceData
+) {
+  const items = new Map<string, Governance>();
+  Object.entries(initialData).forEach(([key, value]) => {
+    items.set(key, value);
+  });
 
-  constructor(initialData: Record<string, Governance> = governanceData) {
-    this.items = new Map(Object.entries(initialData));
-  }
+  return {
+    /**
+     * Get governance data for a project
+     */
+    getByProjectId: (projectId: string): Governance | null => {
+      return items.get(projectId) ?? null;
+    },
+  };
+};
 
-  /**
-   * Get governance data for a project
-   */
-  public getByProjectId(projectId: string): Governance | null {
-    return this.items.get(projectId) ?? null;
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────────
 // LINEAGE REPOSITORY
-// ═══════════════════════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────────
 
-export class LineageRepository {
-  private readonly items: Map<string, LineageRelation[]>;
+export function createLineageRepository(
+  initialData: Record<string, LineageRelation[]> = tableLineageData
+) {
+  const items = new Map<string, LineageRelation[]>();
+  Object.entries(initialData).forEach(([key, value]) => {
+    items.set(key, value);
+  });
 
-  constructor(
-    initialData: Record<string, LineageRelation[]> = tableLineageData
-  ) {
-    this.items = new Map(Object.entries(initialData));
+  return {
+    /**
+     * Get all lineage relations for a project
+     */
+    getByProjectId: (projectId: string): LineageRelation[] => {
+      return items.get(projectId) ?? [];
+    },
+  };
+};
+
+
+export function duplicateProject(projectId: string) {
+  const {findById,add} = createProjectRepository()
+  const selectedProject = findById(projectId)
+  if (!selectedProject) {
+    throw new Error("Project not found")
   }
-
-  /**
-   * Get all lineage relations for a project
-   */
-  public getByProjectId(projectId: string): LineageRelation[] {
-    return this.items.get(projectId) ?? [];
-  }
+  const  newProject: Project = {
+    ...selectedProject,
+    project_id: "newProject",
+    project_name: `Copy of ${selectedProject.project_name}`
+  } 
+  add(newProject)
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -147,8 +178,22 @@ export class LineageRepository {
 // Export pre-initialized repository instances for application-wide use
 // ═══════════════════════════════════════════════════════════════════════════════
 
-export const projectRepository = new ProjectRepository();
-export const projectTableRepository = new ProjectTableRepository();
-export const operationRepository = new OperationRepository();
-export const governanceRepository = new GovernanceRepository();
-export const lineageRepository = new LineageRepository();
+export const projectRepository = createProjectRepository();
+export const projectTableRepository = createProjectTableRepository();
+export const operationRepository = createOperationRepository();
+export const governanceRepository = createGovernanceRepository();
+export const lineageRepository = createLineageRepository();
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// TYPE EXPORTS (for backward compatibility if needed)
+// ─────────────────────────────────────────────────────────────────────────────────
+
+export type ProjectRepository = ReturnType<typeof createProjectRepository>;
+export type ProjectTableRepository = ReturnType<
+  typeof createProjectTableRepository
+>;
+export type OperationRepository = ReturnType<typeof createOperationRepository>;
+export type GovernanceRepository = ReturnType<
+  typeof createGovernanceRepository
+>;
+export type LineageRepository = ReturnType<typeof createLineageRepository>;

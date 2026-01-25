@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 // API LAYER
-// Class-based API services that wrap repositories with network simulation
+// Functional API services that wrap repositories with network simulation
 // Handles async operations, request deduplication, and error simulation
 // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -34,188 +34,194 @@ const API_CONFIG = {
 } as const;
 
 // ─────────────────────────────────────────────────────────────────────────────────
-// BASE API CLASS
+// SHARED API UTILITIES
 // Common functionality for all API services
 // ─────────────────────────────────────────────────────────────────────────────────
 
-abstract class BaseApi {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private static inFlightRequests = new Map<string, Promise<any>>();
+// Request deduplication cache - shared across all API functions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const inFlightRequests = new Map<string, Promise<any>>();
 
-  /**
-   * Simulate network delay
-   */
-  protected async simulateDelay(): Promise<void> {
-    const delay =
-      Math.random() * (API_CONFIG.delay.max - API_CONFIG.delay.min) +
-      API_CONFIG.delay.min;
-    await new Promise((resolve) => setTimeout(resolve, delay));
+/**
+ * Simulate network delay
+ */
+async function simulateDelay(): Promise<void> {
+  const delay =
+    Math.random() * (API_CONFIG.delay.max - API_CONFIG.delay.min) +
+    API_CONFIG.delay.min;
+  await new Promise((resolve) => setTimeout(resolve, delay));
+}
+
+/**
+ * Optionally throw a simulated network error
+ */
+async function maybeThrowError(): Promise<void> {
+  if (API_CONFIG.failureRate > 0 && Math.random() < API_CONFIG.failureRate) {
+    throw new Error("Simulated network error. Please try again.");
+  }
+}
+
+/**
+ * Wrap an async function with request deduplication
+ */
+function deduplicate<T>(
+  key: string,
+  requestFn: () => Promise<T>
+): Promise<T> {
+  const existing = inFlightRequests.get(key);
+  if (existing) {
+    return existing as Promise<T>;
   }
 
-  /**
-   * Optionally throw a simulated network error
-   */
-  protected async maybeThrowError(): Promise<void> {
-    if (API_CONFIG.failureRate > 0 && Math.random() < API_CONFIG.failureRate) {
-      throw new Error("Simulated network error. Please try again.");
-    }
-  }
+  const request = requestFn().finally(() => {
+    inFlightRequests.delete(key);
+  });
 
-  /**
-   * Wrap an async function with request deduplication
-   */
-  protected deduplicate<T>(
-    key: string,
-    requestFn: () => Promise<T>
-  ): Promise<T> {
-    const existing = BaseApi.inFlightRequests.get(key);
-    if (existing) {
-      return existing as Promise<T>;
-    }
+  inFlightRequests.set(key, request);
+  return request;
+}
 
-    const request = requestFn().finally(() => {
-      BaseApi.inFlightRequests.delete(key);
-    });
-
-    BaseApi.inFlightRequests.set(key, request);
-    return request;
-  }
-
-  /**
-   * Execute a request with delay, error simulation, and deduplication
-   */
-  protected async execute<T>(key: string, fn: () => T): Promise<T> {
-    return this.deduplicate(key, async () => {
-      await this.simulateDelay();
-      await this.maybeThrowError();
-      return fn();
-    });
-  }
+/**
+ * Execute a request with delay, error simulation, and deduplication
+ */
+function execute<T>(key: string, fn: () => T): Promise<T> {
+  return deduplicate(key, async () => {
+    await simulateDelay();
+    await maybeThrowError();
+    return fn();
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // PROJECT API
 // ═══════════════════════════════════════════════════════════════════════════════
 
-export class ProjectApi extends BaseApi {
-  constructor(
-    private readonly repository: ProjectRepository = projectRepository
-  ) {
-    super();
-  }
-
-  /**
-   * GET /projects - Fetch all projects
-   */
-  public fetchAll(): Promise<Project[]> {
-    return this.execute("projects", () => this.repository.getAll());
-  }
-
-  /**
-   * GET /projects/:id - Fetch a single project
-   */
-  public fetchById(id: string): Promise<Project | null> {
-    return this.execute(`project:${id}`, () => this.repository.findById(id));
-  }
+/**
+ * GET /projects - Fetch all projects
+ */
+export function fetchAllProjects(
+  repository: ProjectRepository = projectRepository
+): Promise<Project[]> {
+  return execute("projects", () => repository.getAll());
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
+/**
+ * GET /projects/:id - Fetch a single project
+ */
+export function fetchProjectById(
+  id: string,
+  repository: ProjectRepository = projectRepository
+): Promise<Project | null> {
+  return execute(`project:${id}`, () => repository.findById(id));
+}
+
+/**
+ * POST /projects/:id/duplicate - Duplicate a project
+ * Creates a new project based on an existing one with a new ID and "Copy of" prefix
+ */
+export function duplicateProject(
+  id: string,
+  repository: ProjectRepository = projectRepository
+): Promise<Project> {
+  return execute(`duplicate:${id}`, () => {
+    const original = repository.findById(id);
+    if (!original) {
+      throw new Error(`Project with id ${id} not found`);
+    }
+
+    // Generate new project ID (increment the number part)
+    const allProjects = repository.getAll();
+    const maxId = allProjects.reduce((max, p) => {
+      const match = p.project_id.match(/^proj-(\d+)$/);
+      if (match) {
+        const num = parseInt(match[1], 10);
+        return Math.max(max, num);
+      }
+      return max;
+    }, 0);
+    const newId = `proj-${String(maxId + 1).padStart(3, "0")}`;
+
+    // Create duplicate with new ID, modified name, Draft status, and current timestamps
+    const now = new Date().toISOString();
+    const duplicate: Project = {
+      ...original,
+      project_id: newId,
+      project_name: `Copy of ${original.project_name}`,
+      created_at: now,
+      updated_at: now,
+    };
+
+    // Add to repository
+    repository.add(duplicate);
+
+    return duplicate;
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────────
 // PROJECT TABLE API
-// ═══════════════════════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────────
 
-export class ProjectTableApi extends BaseApi {
-  constructor(
-    private readonly repository: ProjectTableRepository = projectTableRepository
-  ) {
-    super();
-  }
-
-  /**
-   * GET /projects/:id/tables - Fetch all tables for a project
-   */
-  public fetchByProjectId(projectId: string): Promise<ProjectTable[]> {
-    return this.execute(`tables:${projectId}`, () =>
-      this.repository.getByProjectId(projectId)
-    );
-  }
+/**
+ * GET /projects/:id/tables - Fetch all tables for a project
+ */
+export function fetchProjectTables(
+  projectId: string,
+  repository: ProjectTableRepository = projectTableRepository
+): Promise<ProjectTable[]> {
+  return execute(`tables:${projectId}`, () =>
+    repository.getByProjectId(projectId)
+  );
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────────
 // OPERATION API
-// ═══════════════════════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────────
 
-export class OperationApi extends BaseApi {
-  constructor(
-    private readonly repository: OperationRepository = operationRepository
-  ) {
-    super();
-  }
-
-  /**
-   * GET /projects/:id/operations - Fetch recent operations (limited)
-   */
-  public fetchByProjectId(
-    projectId: string,
-    limit: number = 10
-  ): Promise<Operation[]> {
-    return this.execute(`operations:${projectId}:${limit}`, () =>
-      this.repository.getByProjectId(projectId, limit)
-    );
-  }
+/**
+ * GET /projects/:id/operations - Fetch recent operations (limited)
+ */
+export function fetchProjectOperations(
+  projectId: string,
+  limit: number = 10,
+  repository: OperationRepository = operationRepository
+): Promise<Operation[]> {
+  return execute(`operations:${projectId}:${limit}`, () =>
+    repository.getByProjectId(projectId, limit)
+  );
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────────
 // GOVERNANCE API
-// ═══════════════════════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────────
 
-export class GovernanceApi extends BaseApi {
-  constructor(
-    private readonly repository: GovernanceRepository = governanceRepository
-  ) {
-    super();
-  }
-
-  /**
-   * GET /projects/:id/governance - Fetch governance data
-   */
-  public fetchByProjectId(projectId: string): Promise<Governance | null> {
-    return this.execute(`governance:${projectId}`, () =>
-      this.repository.getByProjectId(projectId)
-    );
-  }
+/**
+ * GET /projects/:id/governance - Fetch governance data
+ */
+export function fetchProjectGovernance(
+  projectId: string,
+  repository: GovernanceRepository = governanceRepository
+): Promise<Governance | null> {
+  return execute(`governance:${projectId}`, () =>
+    repository.getByProjectId(projectId)
+  );
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────────
 // LINEAGE API
-// ═══════════════════════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────────
 
-export class LineageApi extends BaseApi {
-  constructor(
-    private readonly repository: LineageRepository = lineageRepository
-  ) {
-    super();
-  }
-
-  /**
-   * GET /projects/:id/lineage - Fetch lineage data
-   */
-  public fetchByProjectId(projectId: string): Promise<LineageRelation[]> {
-    return this.execute(`lineage:${projectId}`, () =>
-      this.repository.getByProjectId(projectId)
-    );
-  }
+/**
+ * GET /projects/:id/lineage - Fetch lineage data
+ */
+export function fetchProjectLineage(
+  projectId: string,
+  repository: LineageRepository = lineageRepository
+): Promise<LineageRelation[]> {
+  return execute(`lineage:${projectId}`, () =>
+    repository.getByProjectId(projectId)
+  );
 }
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// SINGLETON INSTANCES
-// Export pre-initialized API instances for application-wide use
-// ═══════════════════════════════════════════════════════════════════════════════
-
-export const projectApi = new ProjectApi();
-export const projectTableApi = new ProjectTableApi();
-export const operationApi = new OperationApi();
-export const governanceApi = new GovernanceApi();
-export const lineageApi = new LineageApi();
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // COMPOSITE API
@@ -235,11 +241,11 @@ export async function fetchProjectDashboardData(projectId: string): Promise<{
   errors: Record<string, string>;
 }> {
   const results = await Promise.allSettled([
-    projectApi.fetchById(projectId),
-    projectTableApi.fetchByProjectId(projectId),
-    operationApi.fetchByProjectId(projectId),
-    governanceApi.fetchByProjectId(projectId),
-    lineageApi.fetchByProjectId(projectId),
+    fetchProjectById(projectId),
+    fetchProjectTables(projectId),
+    fetchProjectOperations(projectId),
+    fetchProjectGovernance(projectId),
+    fetchProjectLineage(projectId),
   ]);
 
   const errors: Record<string, string> = {};
@@ -276,10 +282,38 @@ export async function fetchProjectDashboardData(projectId: string): Promise<{
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// LEGACY EXPORT (for backward compatibility with projectStore)
+// LEGACY EXPORTS (for backward compatibility)
 // ═══════════════════════════════════════════════════════════════════════════════
 
-/** @deprecated Use projectApi.fetchAll() instead */
+/** @deprecated Use fetchAllProjects() instead */
 export function fetchProjects(): Promise<Project[]> {
-  return projectApi.fetchAll();
+  return fetchAllProjects();
 }
+
+// ─────────────────────────────────────────────────────────────────────────────────
+// OBJECT-BASED API (for backward compatibility with existing code)
+// Provides the same interface as the old class-based API
+// ─────────────────────────────────────────────────────────────────────────────────
+
+export const projectApi = {
+  fetchAll: () => fetchAllProjects(),
+  fetchById: (id: string) => fetchProjectById(id),
+  duplicateById: (id: string) => duplicateProject(id),
+};
+
+export const projectTableApi = {
+  fetchByProjectId: (projectId: string) => fetchProjectTables(projectId),
+};
+
+export const operationApi = {
+  fetchByProjectId: (projectId: string, limit?: number) =>
+    fetchProjectOperations(projectId, limit),
+};
+
+export const governanceApi = {
+  fetchByProjectId: (projectId: string) => fetchProjectGovernance(projectId),
+};
+
+export const lineageApi = {
+  fetchByProjectId: (projectId: string) => fetchProjectLineage(projectId),
+};

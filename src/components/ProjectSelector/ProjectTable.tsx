@@ -2,7 +2,9 @@ import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Project } from "@/types";
 import { DataTable } from "@/components/DataTable";
-import { projectColumns } from "./tableColumns";
+import { createProjectColumns } from "./tableColumns";
+import { projectApi } from "@/services";
+import { useProjectStore } from "@/store";
 
 interface ProjectTableProps {
   projects: Project[];
@@ -13,10 +15,22 @@ interface ProjectTableProps {
  */
 export function ProjectTable({ projects }: ProjectTableProps): ReactNode {
   const navigate = useNavigate();
+  const reloadProjects = useProjectStore((state) => state.reloadProjects);
+
+  const handleDuplicate = async (projectId: string) => {
+    try {
+      await projectApi.duplicateById(projectId);
+      // Reload projects to show the new duplicate
+      await reloadProjects();
+    } catch (error) {
+      console.error("Failed to duplicate project:", error);
+      // You could add toast notification here
+    }
+  };
 
   return (
     <DataTable
-      columns={projectColumns}
+      columns={createProjectColumns(handleDuplicate)}
       data={projects}
       getRowKey={(p) => p.project_id}
       searchable
